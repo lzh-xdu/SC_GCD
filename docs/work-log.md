@@ -102,3 +102,10 @@
 - 在用户环境中认证推送成功；首次提交 `73407ee` 已同步 origin/main，没有强制推送或重写历史。
 - 原题 PDF、third_party、build、tmp 和波形未进入提交。
 - 远端当前检查为私有；内容同步完成不代表公开访问条件完成。已请用户调整可见性。
+
+## 2026-09-06：接入 VS Code IntelliSense
+
+- 目标：消除 `src/stage1/modules.hpp` 等文件因缺少 SystemC 编译上下文产生的预编译/语法解析错误。
+- 修改：CMake 开启 `CMAKE_EXPORT_COMPILE_COMMANDS`；新增 `.vscode/settings.json` 和 `.vscode/extensions.json`，让 C/C++ 扩展复用真实 GCC/CMake 编译参数。协作详情见 [A-007](ai-log.md#a-007配置-vs-code-的-c-语法解析)。
+- 验证：`cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=C:/Strawberry/c/bin/g++.exe`、`cmake --build build --parallel 4` 和 `ctest --test-dir build --output-on-failure` 均退出 0，CTest 2/2 通过；编译数据库确认 Stage 1 含 SystemC include、`SC_ENABLE_ASSERTIONS` 和 C++17。
+- 范围：没有改变功能及时序；未包含用户已有的 `README.md` 修改。

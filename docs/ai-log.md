@@ -54,3 +54,11 @@
 - 用户明确要求：顺序完成、持续设计调试验证记录、公开 Git、AI 方案修改和错误处理记录、阶段 3/4 主动缺陷案例。
 - AI 实施：建立项目 AGENTS.md 和分类记录文档，补记有对话证据的结论。
 - 重要限制：不把计划案例算成发现，不把 AI 建议算成用户设计，不补造历史测试和提交。
+
+## A-007：配置 VS Code 的 C++ 语法解析
+
+- 日期：2026-09-06；用户要求让当前项目进入 VS Code 语法解析，并修复预编译诊断。
+- 定位：仓库原先没有 `.vscode` 配置，CMake 也没有生成 `compile_commands.json`；编辑器无法获知 SystemC 源码头文件目录、`SC_ENABLE_ASSERTIONS` 和 C++17 等真实编译参数。
+- AI 实施：启用 CMake 编译数据库；将 VS Code C/C++ 扩展指向该数据库，并固定为项目实际使用的 Strawberry GCC、Ninja 和构建目录；推荐 C/C++ 与 CMake Tools 扩展。
+- 验证：重新配置后生成 `build/compile_commands.json`，其中 `modules.cpp` 命令包含 SystemC include、宏和 `-std=c++17`；两个 VS Code JSON 文件解析通过；构建无新增工作且 CTest 2/2 通过。
+- 范围：这是编辑器与构建配置修复，没有修改 Stage 1 功能或时序设计；用户原有 `README.md` 工作树改动未触碰。
