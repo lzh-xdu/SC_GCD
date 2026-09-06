@@ -2,6 +2,8 @@
 
 2026-09-06；设计见 [严格轮转架构](stage3-design.md)，真实容量案例见 [B-006](defects.md)。
 
+后续用户选择择闲+滑动窗口，新目标和比较见[优化方案](stage3-window.md)。本页保留旧轮转目标的可复现说明与结果。
+
 ```powershell
 ./scripts/build-test.ps1 -Configuration Debug -BuildDirectory build/debug -ToolchainBin C:/Strawberry/c/bin
 ./build/debug/stage3_gcd.exe tests/stage1/basic.txt build/debug/stage3-output.txt build/debug/stage3-stats.csv 2 build/debug/stage3-events.csv

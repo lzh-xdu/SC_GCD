@@ -121,6 +121,26 @@
                 }
             },
             "problemMatcher": []
+        },
+        {
+            "label": "SystemC: Run Stage3 Window",
+            "type": "process",
+            "command": "${workspaceFolder}/build/debug/stage3_window_gcd.exe",
+            "args": [
+                "${workspaceFolder}/tests/stage1/basic.txt",
+                "${workspaceFolder}/build/debug/window-output.txt",
+                "${workspaceFolder}/build/debug/window-stats.csv",
+                "2",
+                "${workspaceFolder}/build/debug/window-events.csv"
+            ],
+            "dependsOn": "SystemC: Build Debug",
+            "options": {
+                "cwd": "${workspaceFolder}/build/debug",
+                "env": {
+                    "PATH": "${config:scGcd.toolchainBin};${env:PATH}"
+                }
+            },
+            "problemMatcher": []
         }
     ]
 }

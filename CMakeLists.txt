@@ -81,3 +81,16 @@ add_test(NAME stage3_performance_comparison
     COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/stage3/compare.py"
             "$<TARGET_FILE:stage2_gcd>" "$<TARGET_FILE:stage3_gcd>" "${CMAKE_CURRENT_BINARY_DIR}/stage3-comparison")
 set_tests_properties(stage3_performance_comparison PROPERTIES TIMEOUT 60)
+
+add_executable(stage3_window_gcd
+    src/stage3_window/main.cpp src/stage3_window/dispatcher.cpp src/stage3_window/collector.cpp)
+target_link_libraries(stage3_window_gcd PRIVATE handshake_modules)
+if(MSVC)
+    target_compile_options(stage3_window_gcd PRIVATE /W4)
+else()
+    target_compile_options(stage3_window_gcd PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+add_test(NAME stage3_ready_window
+    COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/handshake/verify.py"
+            "$<TARGET_FILE:stage3_window_gcd>" "${CMAKE_CURRENT_BINARY_DIR}/stage3-window-tests" "2" "8")
+set_tests_properties(stage3_ready_window PROPERTIES TIMEOUT 60)

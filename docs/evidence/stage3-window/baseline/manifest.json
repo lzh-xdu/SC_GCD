@@ -1,0 +1,8 @@
+{
+  "mode": "baseline",
+  "executable": "D:\\0_lzh\\GPU\\MOORE\\build\\stage3_gcd.exe",
+  "executable_sha256": "26e06302767ad03fee2bd2f958c1bbb80c5a459d33b9122c43a8fff8391f3a88",
+  "cases": 32,
+  "depth": 2,
+  "trace": false
+}
