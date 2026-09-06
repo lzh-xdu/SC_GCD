@@ -1,5 +1,17 @@
 # 学习与理解记录
 
+## L-004：从 C++ 到 SystemC，再到电路
+
+- 2026-09-06 用户要求面向三年 C++ 经验、已知时钟和信号概念的初学者进行完整讲解；以下为 AI 教学结论，尚无用户掌握情况的验证。
+- SystemC 通过 C++ 类型、模块/端口/通道、进程和离散事件内核表达硬件结构与并发；普通编译生成主机仿真程序。SC_THREAD 是可挂起的仿真进程，不等于 GPU 执行线程或必须并行运行的操作系统线程。
+- 普通赋值立即生效；sc_signal 写入在更新阶段生效。同一模拟时刻可以有多轮 delta 调度，不能把 delta 当成物理门延迟，也不能认为任意组合链等待一个 delta 就全部稳定。
+- 信号本身不必对应寄存器：组合敏感进程与时钟触发进程表达不同硬件；位宽、跨周期状态和读写行为决定硬件含义。复位行为需要明确描述，仿真默认初值不能替代真实复位。
+- 功能模型、周期模型和 TLM 选择不同抽象层次。架构模型可用主机立即计算结果再安排未来完成，但需要单独建模容量、占用、接收间隔和反压；模型设定的延迟不是电路实测结果。
+- 延续 D-006：模型可以作为人工 RTL 实现的规格/参考，也可以在符合指定工具可综合子集和约束时，经 HLS 生成 RTL。HLS 再经逻辑综合与物理实现才到芯片版图；FPGA 则映射已有资源并生成配置位流。仿真可执行文件、测试平台和 VCD 不会直接变成电路。
+- HLS 需要调度运算、分配/共享资源、保存跨周期状态并生成控制逻辑。延迟与启动间隔 II 是不同指标；循环次数、C++ 语句数和 wait(ns) 均不能直接当作硬件周期数或物理实现保证。
+- 核对依据：本地 SystemC 3.0.1 内核与信号源码、现有 day01 示例；[Accellera 综合子集说明](https://www.accellera.org/activities/working-groups/systemc-synthesis)、[Siemens Catapult](https://www.siemens.com/en-us/products/ic/catapult-high-level-synthesis/hls/c-cplus/)、[HLS 架构与调度手册](https://docs.altera.com/r/docs/683152/current)、[OpenROAD 实现流程](https://openroad-flow-scripts.readthedocs.io/en/latest/user/UserGuide.html)。
+- 本轮只做概念讲解和记录，未修改模型、未运行新测试或综合，也未提前实现任何作业阶段。
+
 ## L-003：时钟、波形与生命周期接口
 
 - 2026-09-06 用户选择八处调用要求详细解释；说明见 [接口学习说明](day01-api-guide.md)。
