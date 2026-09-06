@@ -1,0 +1,12 @@
+{
+  "code_baseline": "338534d",
+  "configuration": "Release",
+  "seed": 1,
+  "trace": false,
+  "runs": 58,
+  "executable_sha256": {
+    "stage1": "7a261a7ab6942621dcd276cbe908b7b3a46f4a2e8653d8846cf0759a1f51d4e8",
+    "stage2": "b93d998e8ba8ed2af4f39f5d697dcb5b8bbe0612273543e5d6bce90bc164be4e",
+    "stage3_window": "0ab9b75db7077228cd985c86440b0221d0bd3593733148f84e43f3fe75df96ac"
+  }
+}

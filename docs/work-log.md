@@ -1,5 +1,12 @@
 # 工作与 AI 协作记录
 
+## 2026-09-07：作业1～3优化空间审查
+
+- 基线338534d；用户请求分析，关联A-016/L-012。现有模型和默认参数不改。
+- 执行tests/stage3/optimization_probe.py build build/optimization-review，58组配置全部通过独立GCD检查；没有声称重新跑完整时序回归或已测主机加速。
+- 报告覆盖硬性边界、FIFO气泡、窗口/R容量、头部旁路、指标可比性、测试和工程/主机改进，区分实测/建议及优先级。
+- 证据evidence/optimization-review，报告stages1-3-optimization-review.md；用户README既有改动不纳入。
+
 ## 2026-09-06～07：择闲调度与滑动窗口性能对比
 
 - 用户方案D-016/L-011/A-015；旧基线ad4b33e先运行32次并保留，后新增stage3_window独立目标，旧源码未改。
