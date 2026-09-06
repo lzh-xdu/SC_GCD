@@ -1,5 +1,11 @@
 # AI 协作记录
 
+## A-010：澄清用户的显式握手提议
+
+- 用户询问进入作业 2 并提供 ready + nb_read 条件；AI 解释它是 FIFO 门控，不能代替 valid/ready/data 接口。
+- 新增 stage2-interface-proposal.md，提出只替换指定边界，保留上游/下游 FIFO，并指出缓冲数量改变影响性能比较。
+- 尚未修改模型或宣称用户已批准具体缓冲和周期实现；下一步是定时间线后编码。
+
 ## A-009：用户审查流水寄存器名称
 
 - 用户认为 m_stage1/m_stage2 与 namespace stage1 容易混淆，提出更新顺序的解释。

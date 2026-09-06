@@ -1,5 +1,12 @@
 # 学习与理解记录
 
+## L-007：显式握手不是给 FIFO 增加 ready 条件
+
+- 用户提出 `if (!m_computReady || !m_tasksIn.nb_read(task))`；表达下游不准备时不取数据。
+- 澄清：短路语义正确，但实际边界仍为 FIFO，尚无显式 valid/data 信号；题目要求接收由同沿 valid && ready 决定。
+- 区分 Compute 接收分支和整个 tick：忙碌时还需推进计数，不能在 tick 顶部因 ready=false 提前返回。
+- 接口方案与缓冲变化的注意事项见 stage2-interface-proposal.md；作业 2 尚未实现。
+
 ## L-006：命名空间与流水更新顺序
 
 - 2026-09-06 用户指出 m_stage1/m_stage2 含义不清，询问 namespace stage1，并推断逆序推进用于避免同沿新值覆盖旧值。
