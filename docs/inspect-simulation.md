@@ -47,3 +47,21 @@ Day01 在检查结束后调用 sc_stop；Stage1 在 EOF、输出条数匹配且�
 该信息本身不证明功能正确，结合 PASS、退出码 0、结果/统计与测试判断；若提前结束或结果缺失，应检查停止条件。
 
 本页为解释，未重新运行测试；具体运行是否成功应以用户那一次的完整输出和退出码为准。
+
+## Day01 VCD 实读与查看（2026-09-06）
+
+VCD（Value Change Dump）是信号值变化的纯文本记录。src/day01_basics.cpp 中 sc_create_vcd_trace_file 创建文件、sc_trace 注册四个信号、sc_close_vcd_trace_file 关闭文件。相对文件名写入进程工作目录；VS Code Debug 配置下为 build/debug/day01_basics.vcd。
+
+本次实读：timescale=1 ns；aaaaa=clk，aaaab=tb_to_registers_data，aaaac=stage1，aaaad=registers_to_tb_data。`#15` 表示 15 ns；`b10100 aaaac` 表示 stage1 变为十进制 20。不重复记录未变化的信号。
+
+| 时间/ns | clk | 输入 | stage1 | 输出 |
+|---|---|---|---|---|
+| 0 | 0 | 10 | 0 | 0 |
+| 5 | 1 | 10 | 10 | 0 |
+| 10 | 0 | 20 | 10 | 0 |
+| 15 | 1 | 20 | 20 | 10 |
+| 20 | 0 | 30 | 20 | 10 |
+
+当前文件最后仅有 #25，无后续变化行，不能以文件证明 25 ns 输出已更新为 20；代码确实安排了该检查并在同一时刻 sc_stop。库 sc_vcd_trace.cpp 中关闭析构可仅补最后时间戳，默认未启用 delta tracing。停止/trace 刷新时序是末沿缺失的解释方向，本轮没有重新运行或修改代码验证修复。观察 5→15 ns 即可看到 stage2 读取 stage1 旧值；两次采样沿之间为一个 10 ns 周期。
+
+可用 GTKWave：安装并加入 PATH 后运行 `gtkwave D:/0_lzh/GPU/MOORE/build/debug/day01_basics.vcd`，在 SystemC 层级选择四个信号并 Append，使用 Zoom Fit/Zoom Full，数据总线设 Data Format → Decimal 或 Signed。官方依据：[信号添加](https://gtkwave.github.io/gtkwave/quickstart/launching.html)、[菜单](https://gtkwave.github.io/gtkwave/ui/menu.html)。本机 PATH 未找到 gtkwave，不等于确认全机未安装；本轮没有安装或启动该查看器。VS Code 直接打开可读原文。现有 Python trace_tui.py 仅支持 Stage 1 CSV，不支持 VCD。

@@ -133,3 +133,9 @@
 - 实际输入得到 8 任务、79 事件周期、66 忙周期、83.54% 利用率、结果阻塞 0；当前数据主要体现计算与上游积压，不能度量主机模拟速度。
 - 5/5 工具测试通过；实际 Windows 伪终端导航、播放与退出通过；[验证及快照](evidence/stage1/trace-viewer-validation.md)。不修改 C++，不重复模型 CTest，不推进后续阶段。
 - 协作记录 [A-008](ai-log.md#a-008python-终端-trace-可视化)，学习记录 [L-006](learning-log.md#l-006用-trace-区分驻留计算与主机运行效率)。下一步由用户结合时间线审阅现有时序，尚未实施优化设计。
+
+## 2026-09-06：解释 Day01 VCD 与查看方式
+
+- 实读 build/debug/day01_basics.vcd、示例源码及本地 VCD tracing 源码；核对 GTKWave 官方文档，补充 [波形说明](inspect-simulation.md) 和 [L-007](learning-log.md#l-007vcd-与实际波形末尾的区别)。
+- 新观察：文件末尾 #25 无信号变化；保留事实，未将代码预期冒充波形记录，未实施末沿记录修复。
+- 文档轮次，未安装查看器、未运行模型测试；本机 PATH 无 gtkwave。未触碰 README 原有改动。
