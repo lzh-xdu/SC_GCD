@@ -13,6 +13,8 @@
 
 ## 示例的确定行为
 
+2026-09-06 按用户审查意见重命名：顶层 input/output 信号现为 tb_to_registers_data/registers_to_tb_data；模型端口为 data_in/data_out，TB 端口为 stimulus_out/result_in。下表 input/output 是数据角色的简称，时间线不变。
+
 时钟周期为 10 ns，第一次上升沿特意设在 5 ns，避免时间零初始化混淆。
 输入在 0 ns 写入 10，在下降沿 10 ns 写入 20，在下降沿 20 ns 写入 30。
 

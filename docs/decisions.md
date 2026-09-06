@@ -1,5 +1,21 @@
 # 设计决策
 
+## D-005：连接与端口命名
+
+- 日期：2026-09-06；来源：用户指出 tb.input 是 sc_out 容易误导，建议连接信号表达来源和去向。
+- 选择：顶层信号用 tb_to_registers_data / registers_to_tb_data；模型端口用 data_in / data_out；TB 端口用 stimulus_out / result_in。
+- 理由：顶层表达连接拓扑，端口表达相对于本模块的方向和职责；模块端口不绑定具体外部实例，便于复用。
+- 状态：已实施并验证，现有 CTest 1/1 通过；功能和时间线不变，波形信号名同步调整。
+- 替代：旧 input/output 同名命名，仅作为历史讨论保留。
+
+## D-006：仿真编译与硬件综合的边界
+
+- 日期：2026-09-06；来源：用户提出应使用 LLVM，理由为后续可能生成硬件电路。
+- 核对：Clang 是 LLVM 项目的 C++ 前端；普通 Clang/GCC 编译 SystemC 生成仿真程序，不自动生成电路。硬件路径需要支持 SystemC 可综合子集的综合/HLS 工具及其约束。
+- AI 建议：本题仅要求架构性能仿真，保留已验证 GCC；如用户另有工具链偏好，可独立迁移 Clang 并重建库与模型。
+- 状态：编译器尚未切换；保留 GCC 是本轮 AI 建议，不记录为用户已同意。
+- 官方依据：https://clang.llvm.org/ 、https://www.accellera.org/activities/working-groups/systemc-synthesis 、https://www.accellera.org/resources/videos/systemc-tutorial-2019 。
+
 2026-09-06 初始化；下列既有内容为对话与文件的历史补记，未伪造历史提交。
 
 ## D-001：构建环境
