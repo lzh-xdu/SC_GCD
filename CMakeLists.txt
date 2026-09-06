@@ -46,3 +46,22 @@ add_test(NAME stage1_function_timing_backpressure
 set_tests_properties(stage1_function_timing_backpressure PROPERTIES TIMEOUT 45)
 add_test(NAME day01_signal_timing COMMAND day01_basics)
 set_tests_properties(day01_signal_timing PROPERTIES TIMEOUT 10)
+
+add_library(handshake_modules STATIC
+    src/stage1/types.cpp src/stage1/parser.cpp src/stage1/output.cpp
+    src/stage2/payload.cpp src/stage2/transform.cpp src/stage2/compute.cpp)
+target_link_libraries(handshake_modules PUBLIC SystemC::systemc)
+target_compile_definitions(handshake_modules PUBLIC SC_ENABLE_ASSERTIONS)
+add_executable(stage2_gcd src/stage2/main.cpp)
+target_link_libraries(stage2_gcd PRIVATE handshake_modules)
+foreach(target handshake_modules stage2_gcd)
+    if(MSVC)
+        target_compile_options(${target} PRIVATE /W4)
+    else()
+        target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+endforeach()
+add_test(NAME stage2_handshake
+    COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/handshake/verify.py"
+            "$<TARGET_FILE:stage2_gcd>" "${CMAKE_CURRENT_BINARY_DIR}/stage2-tests" "1")
+set_tests_properties(stage2_handshake PROPERTIES TIMEOUT 60)
