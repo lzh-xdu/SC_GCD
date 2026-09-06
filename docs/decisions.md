@@ -1,5 +1,19 @@
 # 设计决策
 
+## D-008：代码风格与测试变量前缀
+
+- 来源：2026-09-06 用户明确要求，规则来源和项目适配见 coding-style.md。
+- 选择：成员 m_ + camelCase，测试成员 m_test、测试局部/参数 test、常量 TEST_；数据/资源性能计数不标为测试。
+- D-005 的方向/职责原则保持，接口 C++ 名称变为 m_dataIn/m_dataOut、m_tasksIn/m_tasksOut 等；旧命名是历史，不是当前代码引用。
+- 状态：已实施；Release/Debug 回归和基本统计对照通过，数值和周期不变。
+
+## D-009：VS Code Debug 工作流
+
+- 来源：用户要求创建 JSON 配置用于运行和调试。
+- 使用当前 GCC 配套 GDB，build/debug 独立 Debug 构建；不混用 Release 产物；设置运行库路径和启动参数。
+- 保留已有 CMake Tools/IntelliSense 设置；新增任务和启动配置，见 vscode-debug.md。
+- 状态：两模式测试通过，GDB 命中 Parser::tick/Testbench::run、读取变量、next 和继续退出均成功；VS Code GUI 未实际点击验证。
+
 ## D-007：作业 1 四模块接口与时序
 
 - 2026-09-06 用户要求先写四模块输入输出规格，再转为代码。

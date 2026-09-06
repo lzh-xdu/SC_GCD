@@ -1,0 +1,60 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "SystemC: Build Debug",
+            "type": "process",
+            "command": "powershell.exe",
+            "args": [
+                "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
+                "${workspaceFolder}/scripts/build-test.ps1",
+                "-Configuration", "Debug", "-BuildDirectory", "build/debug",
+                "-SkipTests", "-ToolchainBin", "${config:scGcd.toolchainBin}"
+            ],
+            "options": { "cwd": "${workspaceFolder}" },
+            "problemMatcher": ["$gcc"],
+            "group": { "kind": "build", "isDefault": true }
+        },
+        {
+            "label": "SystemC: Test Debug",
+            "type": "process",
+            "command": "${config:scGcd.toolchainBin}/ctest.exe",
+            "args": ["--test-dir", "${workspaceFolder}/build/debug", "--output-on-failure"],
+            "dependsOn": "SystemC: Build Debug",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": { "PATH": "${config:scGcd.toolchainBin};${env:PATH}" }
+            },
+            "problemMatcher": [],
+            "group": "test"
+        },
+        {
+            "label": "SystemC: Run Stage1",
+            "type": "process",
+            "command": "${workspaceFolder}/build/debug/stage1_gcd.exe",
+            "args": [
+                "${workspaceFolder}/tests/stage1/basic.txt",
+                "${workspaceFolder}/build/debug/stage1-output.txt",
+                "${workspaceFolder}/build/debug/stage1-stats.csv",
+                "2", "${workspaceFolder}/build/debug/stage1-events.csv"
+            ],
+            "dependsOn": "SystemC: Build Debug",
+            "options": {
+                "cwd": "${workspaceFolder}/build/debug",
+                "env": { "PATH": "${config:scGcd.toolchainBin};${env:PATH}" }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "SystemC: Run Day01",
+            "type": "process",
+            "command": "${workspaceFolder}/build/debug/day01_basics.exe",
+            "dependsOn": "SystemC: Build Debug",
+            "options": {
+                "cwd": "${workspaceFolder}/build/debug",
+                "env": { "PATH": "${config:scGcd.toolchainBin};${env:PATH}" }
+            },
+            "problemMatcher": []
+        }
+    ]
+}

@@ -1,5 +1,7 @@
 # 作业 1：四模块输入输出规格
 
+命名更新（2026-09-06）：按用户 CleanCode 要求，下面接口简称 tasks_in/tasks_out/results_in/results_out 在当前 C++ 中分别为 m_tasksIn/m_tasksOut/m_resultsIn/m_resultsOut，clk 为 m_clk；数据成员加 m_。语义和 CSV 名称保持不变，测试事件观察器现为 TestEventLog。
+
 2026-09-06：先制定本规格，再按规格实现。以下具体 FIFO、时间戳、边界选择是本次 AI 实现方案，供用户审阅；题目要求与选择分开。
 
 ## 数据路径

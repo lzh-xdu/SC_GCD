@@ -1,5 +1,16 @@
 # 工作与 AI 协作记录
 
+## 2026-09-06：代码规范、测试前缀与 VS Code 调试
+
+- 用户要求与反馈对应 D-008/D-009、A-007、L-004；读取指定 CleanCode 文件，应用于自有 C++ 源码。
+- 基线：作业 1 提交 7558cfe，期间已存在 719360f IntelliSense 配置提交，保留并扩展；README 既有改动未纳入。
+- 变更：测试前缀、成员命名、函数拆分、显式转换、大括号、常量、版权文档头；.clang-format；VS Code 五个 JSON；构建脚本支持独立 Debug。
+- 真实失败 B-004 已保留：Python 第三方 text 参数误改，修正后 Release/Debug 各 2/2 通过。
+- 验证：./scripts/build-test.ps1；./scripts/build-test.ps1 -Configuration Debug -BuildDirectory build/debug -ToolchainBin C:/Strawberry/c/bin；JSON 解析及 clang-format --dry-run --Werror；C++ 行宽不超 120。
+- 基本八组 Debug 统计与旧证据逐字一致，仍为 79 周期；未改变处理算法或时间约定。
+- GDB 14.2 分别命中 Parser::tick/Testbench::run，读取计数器为 0，next 后继续正常退出；GUI F5 流程未实测。
+- 状态：继续作业 1 用户审阅，不推进作业 2。
+
 ## 2026-09-06：作业 1 规格与首版实现
 
 - 用户目标：先写四模块输入输出规格，再代码化；先产出 stage1-design.md，后实现 modules.hpp/.cpp 和 main.cpp。

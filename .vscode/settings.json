@@ -1,7 +1,9 @@
 {
-    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
-    "C_Cpp.default.compilerPath": "C:/Strawberry/c/bin/g++.exe",
+    "scGcd.toolchainBin": "C:/Strawberry/c/bin",
+    "C_Cpp.clang_format_style": "file",
     "C_Cpp.default.cppStandard": "c++17",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/debug/compile_commands.json",
+    "C_Cpp.default.compilerPath": "C:/Strawberry/c/bin/g++.exe",
     "C_Cpp.default.intelliSenseMode": "windows-gcc-x64",
     "C_Cpp.errorSquiggles": "enabled",
     "cmake.buildDirectory": "${workspaceFolder}/build",
@@ -9,5 +11,11 @@
     "cmake.configureSettings": {
         "CMAKE_CXX_COMPILER": "C:/Strawberry/c/bin/g++.exe",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+    },
+    "files.associations": {
+        "*.hpp": "cpp"
+    },
+    "[cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
     }
 }
