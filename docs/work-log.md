@@ -1,5 +1,14 @@
 # 工作与 AI 协作记录
 
+## 2026-09-06：独立模块文件及注释接口图
+
+- 基线 8009f6f，按用户要求拆分，关联 D-010、A-008。
+- 新增四组模块 .hpp/.cpp 及 types.hpp/.cpp，删除旧 modules 文件；更新 main include、CMake 和当前阅读/断点路径。
+- 每个头文件给出数据方向、上升沿触发、内外缓存、基础延迟/吞吐及背压行为；中文注释以 UTF-8 保存。
+- 生成注释时发现本机 Python 默认编码导致中文显示异常，转换中又出现多余空行；改用显式 UTF-8 从原提交重新迁移并格式化，重新通过 Debug 回归。未改动算法。
+- 验证命令：./scripts/build-test.ps1；./scripts/build-test.ps1 -Configuration Debug -BuildDirectory build/debug -ToolchainBin C:/Strawberry/c/bin。两者各 2/2 通过。
+- 没有改动算法与时序；历史证据不改写，README 既有用户修改不纳入提交。
+
 ## 2026-09-06：仿真观察与停止信息说明
 
 - 用户报告停止信息并询问如何观察仿真；核对现有启动参数、两处 sc_stop 和本地内核消息来源。

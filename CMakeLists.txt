@@ -24,7 +24,14 @@ else()
 endif()
 
 enable_testing()
-add_executable(stage1_gcd src/stage1/main.cpp src/stage1/modules.cpp)
+add_executable(stage1_gcd
+    src/stage1/main.cpp
+    src/stage1/types.cpp
+    src/stage1/parser.cpp
+    src/stage1/transform.cpp
+    src/stage1/compute.cpp
+    src/stage1/output.cpp
+)
 target_link_libraries(stage1_gcd PRIVATE SystemC::systemc)
 target_compile_definitions(stage1_gcd PRIVATE SC_ENABLE_ASSERTIONS)
 if(MSVC)

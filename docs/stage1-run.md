@@ -6,8 +6,8 @@
 
 事件 CSV 图形展示见 [终端查看器](trace-viewer.md)：`python -B scripts/trace_tui.py build/debug/stage1-events.csv`。
 
-1. src/stage1/modules.hpp：四个模块的端口、消息类型、内部状态。
-2. src/stage1/modules.cpp：每个模块的逐沿 tick 行为。
+1. src/stage1/types.hpp：共享消息类型、时钟单位及测试事件观察器。
+2. src/stage1/parser.hpp/.cpp、transform.hpp/.cpp、compute.hpp/.cpp、output.hpp/.cpp：分别阅读模块头文件中的接口/缓存/时序图，再读对应 tick 行为。
 3. src/stage1/main.cpp：连接、结束检测和统计；System 是顶层容器/监测，不是额外的数据处理阶段。
 4. tests/stage1/verify.py：独立功能参考、时间线和资源统计检查。
 

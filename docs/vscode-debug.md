@@ -6,7 +6,7 @@
 ## 快捷操作
 
 1. Ctrl+Shift+B：执行 SystemC: Build Debug，首次编译 Debug 版 SystemC，之后增量构建。
-2. 在 src/stage1/modules.cpp 的 Parser::tick 内第一行设置断点。
+2. 在 src/stage1/parser.cpp 的 Parser::tick 内第一行设置断点（原 modules.cpp 已拆分）。
 3. 运行和调试下拉框选 SystemC: Stage1 (GDB)，按 F5：自动先构建，再运行题目八组数据。
 4. F10 单步跳过，F11 单步进入，Shift+F11 跳出，F5 继续；悬停或 Watch 查看 m_sent、m_eof、m_tasksOut。
 5. Ctrl+F5：使用选中的启动配置运行而不调试。

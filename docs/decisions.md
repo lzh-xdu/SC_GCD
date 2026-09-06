@@ -1,5 +1,13 @@
 # 设计决策
 
+## D-010：每模块独立文件与接口图
+
+- 2026-09-06 用户要求每个模块单独头文件和 cpp，头文件注释说明输入输出、触发、缓存、时钟周期。
+- Parser/Transform/Compute/Output 分别移入 parser/transform/compute/output 的 .hpp/.cpp；共享类型、打印与测试事件观察器放 types.hpp/.cpp。
+- 绝对值 helper 只在 transform.cpp；GCD/延迟 helper 只在 compute.cpp；main 显式包含四个模块。
+- 图中区分外部 FIFO（默认容量 2）、内部寄存器/任务位置；列出正常节拍、阻塞与零延迟边界。
+- 状态：已实现，Release/Debug 各 2/2 CTest 通过；算法、输入输出格式和时序未改变。
+
 ## D-008：代码风格与测试变量前缀
 
 - 来源：2026-09-06 用户明确要求，规则来源和项目适配见 coding-style.md。

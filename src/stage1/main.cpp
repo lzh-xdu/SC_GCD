@@ -6,7 +6,10 @@
  * @file main.cpp
  * @brief Connect and observe the stage 1 simulation.
  */
-#include "modules.hpp"
+#include "compute.hpp"
+#include "output.hpp"
+#include "parser.hpp"
+#include "transform.hpp"
 
 #include <algorithm>
 #include <array>
