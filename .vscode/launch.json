@@ -10,18 +10,25 @@
                 "${workspaceFolder}/tests/stage1/basic.txt",
                 "${workspaceFolder}/build/debug/stage1-output.txt",
                 "${workspaceFolder}/build/debug/stage1-stats.csv",
-                "2", "${workspaceFolder}/build/debug/stage1-events.csv"
+                "2",
+                "${workspaceFolder}/build/debug/stage1-events.csv"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build/debug",
             "environment": [
-                { "name": "PATH", "value": "${config:scGcd.toolchainBin};${env:PATH}" }
+                {
+                    "name": "PATH",
+                    "value": "${config:scGcd.toolchainBin};${env:PATH}"
+                }
             ],
             "externalConsole": false,
             "MIMode": "gdb",
             "miDebuggerPath": "${config:scGcd.toolchainBin}/gdb.exe",
             "setupCommands": [
-                { "text": "-enable-pretty-printing", "ignoreFailures": true }
+                {
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
             ],
             "preLaunchTask": "SystemC: Build Debug"
         },
@@ -34,13 +41,81 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build/debug",
             "environment": [
-                { "name": "PATH", "value": "${config:scGcd.toolchainBin};${env:PATH}" }
+                {
+                    "name": "PATH",
+                    "value": "${config:scGcd.toolchainBin};${env:PATH}"
+                }
             ],
             "externalConsole": false,
             "MIMode": "gdb",
             "miDebuggerPath": "${config:scGcd.toolchainBin}/gdb.exe",
             "setupCommands": [
-                { "text": "-enable-pretty-printing", "ignoreFailures": true }
+                {
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "SystemC: Build Debug"
+        },
+        {
+            "name": "SystemC: Stage2 (GDB)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/debug/stage2_gcd.exe",
+            "args": [
+                "${workspaceFolder}/tests/stage1/basic.txt",
+                "${workspaceFolder}/build/debug/stage2-output.txt",
+                "${workspaceFolder}/build/debug/stage2-stats.csv",
+                "2",
+                "${workspaceFolder}/build/debug/stage2-events.csv"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/debug",
+            "environment": [
+                {
+                    "name": "PATH",
+                    "value": "${config:scGcd.toolchainBin};${env:PATH}"
+                }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "${config:scGcd.toolchainBin}/gdb.exe",
+            "setupCommands": [
+                {
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "SystemC: Build Debug"
+        },
+        {
+            "name": "SystemC: Stage3 (GDB)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/debug/stage3_gcd.exe",
+            "args": [
+                "${workspaceFolder}/tests/stage1/basic.txt",
+                "${workspaceFolder}/build/debug/stage3-output.txt",
+                "${workspaceFolder}/build/debug/stage3-stats.csv",
+                "2",
+                "${workspaceFolder}/build/debug/stage3-events.csv"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/debug",
+            "environment": [
+                {
+                    "name": "PATH",
+                    "value": "${config:scGcd.toolchainBin};${env:PATH}"
+                }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "${config:scGcd.toolchainBin}/gdb.exe",
+            "setupCommands": [
+                {
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
             ],
             "preLaunchTask": "SystemC: Build Debug"
         }

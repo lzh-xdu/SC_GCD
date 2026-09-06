@@ -33,6 +33,12 @@ def check_links(test_rows, test_events, test_metrics):
     test_last = None
     test_transfers = []
     for test_row in test_links:
+        test_unit = test_row["id"] % TEST_UNITS
+        test_busy_before_edge = any(
+            test_id % TEST_UNITS == test_unit and test_start["cycle"] < test_row["cycle"] <=
+            test_events["compute_emit"][test_id]["cycle"]
+            for test_id, test_start in test_events["compute_accept"].items())
+        require(bool(test_row["value"]) == (not test_busy_before_edge), "ready does not reflect acceptance capacity")
         if test_last is not None and test_last["value"] == 0:
             require(test_row["cycle"] == test_last["cycle"] + 1, "valid withdrawn while stalled")
             require(all(test_row[test_key] == test_last[test_key] for test_key in ("id", "a", "b")),
@@ -157,6 +163,12 @@ def run_case(test_name, test_tasks, test_depth=2, test_period=1, test_result_dep
     check_links(test_rows, test_events, test_metrics)
     check_timing(test_tasks, test_events, test_metrics, test_period)
     check_occupancy(test_events, test_metrics)
+    if TEST_UNITS == 2:
+        for test_event, test_metric in (("dispatch_idle_other", "dispatch_idle_other_blocked_cycles"),
+                                       ("reorder_wait", "reorder_wait_cycles"),
+                                       ("collector_blocked", "collector_output_blocked_cycles")):
+            require(sum(test_row["event"] == test_event for test_row in test_rows) == test_metrics[test_metric],
+                    "control counter mismatch")
     test_summary.append({"case": test_folder.name, **test_metrics})
     print(f"PASS {test_folder.name}: {len(test_tasks)} tasks, {int(test_metrics['cycles'])} cycles, "
           f"{int(test_metrics['handshake_blocked_cycles'])} blocked")
@@ -179,6 +191,23 @@ for test_index, test_case in enumerate(json.loads((TEST_CASES / "manifest.json")
     test_tasks = [tuple(map(int, test_line.split()))
                   for test_line in (TEST_CASES / (test_case["name"] + ".txt")).read_text().splitlines()]
     run_case(test_case["name"], test_tasks, test_depth=1 if test_index % 2 == 0 else 4)
+
+if TEST_UNITS == 2:
+    test_stage3_cases = Path(__file__).parents[1] / "stage3/cases"
+    test_tasks = [tuple(map(int, test_line.split()))
+                  for test_line in (test_stage3_cases / "capacity_pressure.txt").read_text().splitlines()]
+    test_events, test_small = run_case("capacity_before", test_tasks, test_period=3, test_result_depth=1)
+    test_events, test_fixed = run_case("capacity_after", test_tasks, test_period=3, test_result_depth=2)
+    require(test_fixed["cycles"] < test_small["cycles"], "capacity improvement regressed")
+    require(test_fixed["compute_result_wait_cycles"] < test_small["compute_result_wait_cycles"], "wait improvement")
+    require(test_events["compute_complete"][1]["cycle"] < test_events["compute_complete"][0]["cycle"],
+            "scenario did not produce out-of-order completion")
+    require(test_fixed["reorder_wait_cycles"] > 0, "ordering pressure was not exercised")
+    test_tasks = [tuple(map(int, test_line.split()))
+                  for test_line in (test_stage3_cases / "round_robin_skew.txt").read_text().splitlines()]
+    test_events, test_skew = run_case("round_robin_skew", test_tasks)
+    require(test_skew["dispatch_idle_other_blocked_cycles"] > 0, "RR limitation not exercised")
+    require(test_skew["compute0_busy_cycles"] > 10 * test_skew["compute1_busy_cycles"], "no load imbalance")
 
 for test_index, test_text in enumerate(["1\n", "a 2\n", "1 2 3\n", "2147483648 1\n", "\n", "1 2.5\n",
                                        "-2147483649 1\n", "1 2147483648\n", "1 -2147483649\n"]):
