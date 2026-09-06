@@ -1,5 +1,12 @@
 # 学习与理解记录
 
+## L-005：观察仿真与 sc_stop 提示
+
+- 2026-09-06 用户询问如何看仿真过程，并报告 Simulation stopped by user 信息。
+- 解释见 inspect-simulation.md：阶段 1 事件 CSV、性能汇总、断点，与 Day01 VCD 区分。
+- 代码和库源码确认提示来自 sc_stop 的正常结束流程；不是单凭消息就认定用户手动中断或功能失败。
+- 强调 compute_accept 中提前算出的 value 只是模型数值预测，完成时刻仍由 compute_complete 定义。
+
 ## L-004：用户独立阅读 Parser
 
 - 2026-09-06 用户明确反馈：tick 中 num_free 判断决定满时停止，构造函数 sensitive << clk.pos() 决定每拍读取。
