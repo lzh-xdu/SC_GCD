@@ -71,3 +71,11 @@
 - AI 实施：启用 CMake 编译数据库；将 VS Code C/C++ 扩展指向该数据库，并固定为项目实际使用的 Strawberry GCC、Ninja 和构建目录；推荐 C/C++ 与 CMake Tools 扩展。
 - 验证：重新配置后生成 `build/compile_commands.json`，其中 `modules.cpp` 命令包含 SystemC include、宏和 `-std=c++17`；两个 VS Code JSON 文件解析通过；构建无新增工作且 CTest 2/2 通过。
 - 范围：这是编辑器与构建配置修复，没有修改 Stage 1 功能或时序设计；用户原有 `README.md` 工作树改动未触碰。
+
+## A-008：Python 终端 trace 可视化
+
+- 2026-09-06，用户要求：图形化展示 SystemC 运行 trace，帮助理解过程、效率与优化。
+- AI 实施：纯 Python 标准库彩色终端时间线、逐周期/事件导航、任务详情、FIFO 当前占用、播放、缩放与静态导出；只读 CSV，不改模型。
+- 取舍：无需安装依赖；ASCII 图格配合中文说明。指标明确以最后事件为窗口边界；主机运行速度标为不可用，避免伪造效率数据。
+- 实际修正：空键轮询原会使平移窗口回到游标，代码审查时修正并加入回归；小尺寸伪终端触发提示后放宽至 80×24 并复测。文档补丁一度因上下文不匹配未应用，修正后重新写入。
+- 验证与限制见 [证据](evidence/stage1/trace-viewer-validation.md)；没有用户后续设计决策或手动修改可记录。原有 README.md 修改未包含。

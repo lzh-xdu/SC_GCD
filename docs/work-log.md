@@ -126,3 +126,10 @@
 - 修改：CMake 开启 `CMAKE_EXPORT_COMPILE_COMMANDS`；新增 `.vscode/settings.json` 和 `.vscode/extensions.json`，让 C/C++ 扩展复用真实 GCC/CMake 编译参数。协作详情见 [A-007](ai-log.md#a-007配置-vs-code-的-c-语法解析)。
 - 验证：`cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=C:/Strawberry/c/bin/g++.exe`、`cmake --build build --parallel 4` 和 `ctest --test-dir build --output-on-failure` 均退出 0，CTest 2/2 通过；编译数据库确认 Stage 1 含 SystemC include、`SC_ENABLE_ASSERTIONS` 和 C++17。
 - 范围：没有改变功能及时序；未包含用户已有的 `README.md` 修改。
+
+## 2026-09-06：Stage 1 trace 终端可视化
+
+- 用户请求以 Python 终端交互图形理解过程和效率；新增 scripts/trace_tui.py、针对性单元测试和[中文使用说明](trace-viewer.md)，在 stage1-run.md 增加入口。
+- 实际输入得到 8 任务、79 事件周期、66 忙周期、83.54% 利用率、结果阻塞 0；当前数据主要体现计算与上游积压，不能度量主机模拟速度。
+- 5/5 工具测试通过；实际 Windows 伪终端导航、播放与退出通过；[验证及快照](evidence/stage1/trace-viewer-validation.md)。不修改 C++，不重复模型 CTest，不推进后续阶段。
+- 协作记录 [A-008](ai-log.md#a-008python-终端-trace-可视化)，学习记录 [L-006](learning-log.md#l-006用-trace-区分驻留计算与主机运行效率)。下一步由用户结合时间线审阅现有时序，尚未实施优化设计。

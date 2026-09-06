@@ -1,0 +1,28 @@
+SYSTEMC / STAGE 1 TRACE EXPLORER
+TRACE WINDOW [0,79] | tasks 8/8 complete | PAUSE
+Compute 66 cyc (83.54%) | throughput 0.1013 task/cyc | result wait 0 cyc
+Mean completed latency 38.12 cyc | Host simulation speed: unavailable in event CSV
+F input FIFO | T transform (includes stalls) | Q compute FIFO | C computing | B result blocked | O output FIFO | * output
+Cycle 13 (after edge) | view 0..114 | 1 cyc/column
+At cursor: FIFO P>T=1   Transform=2   FIFO T>C=2   Compute=1   Pending=0   FIFO C>O=0
+            0         10        20        30        40        50        60        70        80        90        100       110
+                         ^
+> id 0      .FTTQCCCCCCO*......................................................................................................
+  id 1      ..FTTQQQQQQQCCCO*..................................................................................................
+  id 2      ...FTTQQQQQQQQQQCCCCCCCCCCCCCCCO*..................................................................................
+  id 3      ....FTTTTTTTTQQQQQQQQQQQQQQQQQQQCCCCO*.............................................................................
+  id 4      .....FTTTTTTTTTTTQQQQQQQQQQQQQQQQQQQQCCCCCCCCO*....................................................................
+  id 5      ......FFFFFFFTTTTTTTTTTTTTTTTTTTTQQQQQQQQQQQQQCCCCCCCCCCCCCO*......................................................
+  id 6      .......FFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTQQQQQQQQQQQQQQQQQQQQQQCCCCO*.................................................
+  id 7      ..............FFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTQQQQQQQQQQQQQQQQQQCCCCCCCCCCCCCO*...................................
+Tasks 1-8/8; zoomed columns sample their LEFT edge (short phases may be hidden).
+--------------------------------------------------------------------------------------------------------------
+SELECTED id=0 | ordered operands=(48, 18) | output GCD=6
+Events: P_send@1 > T_accept@2 > T_emit@4 > C_accept@5 > C_complete@11 > C_emit@11 > output@12
+Durations: F=1 | T=2 | Q=1 | C=6 | B=0 | O=1
+Transform above 2-cycle baseline: 0 cyc | end-to-end: 11 cyc
+Cursor events: #3 transform_emit, #5 transform_accept
+[a/d] cycle -/+  [n/p] next/prev event  [w/s] select task  [j] jump to task start
+[h/l] pan  [+/-] zoom in/out  [f] fit  [0] reset  [Space] play/pause  [q] quit
+Intervals use [start,end); zero-cycle phases remain visible in selected event details.
+Metrics use last EVENT as denominator, not verified run end. No FIFO capacity or host timing in this file.
