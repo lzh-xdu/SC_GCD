@@ -23,5 +23,18 @@ else()
 endif()
 
 enable_testing()
+add_executable(stage1_gcd src/stage1/main.cpp src/stage1/modules.cpp)
+target_link_libraries(stage1_gcd PRIVATE SystemC::systemc)
+target_compile_definitions(stage1_gcd PRIVATE SC_ENABLE_ASSERTIONS)
+if(MSVC)
+    target_compile_options(stage1_gcd PRIVATE /W4)
+else()
+    target_compile_options(stage1_gcd PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+add_test(NAME stage1_function_timing_backpressure
+    COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/stage1/verify.py"
+            "$<TARGET_FILE:stage1_gcd>" "${CMAKE_CURRENT_BINARY_DIR}/stage1-tests")
+set_tests_properties(stage1_function_timing_backpressure PROPERTIES TIMEOUT 45)
 add_test(NAME day01_signal_timing COMMAND day01_basics)
 set_tests_properties(day01_signal_timing PROPERTIES TIMEOUT 10)
