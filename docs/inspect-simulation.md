@@ -29,7 +29,7 @@ CSV 是任务关键事件记录，不是每拍所有寄存器快照。
 ## 逐行观察
 
 在 Parser::tick、Transform::tick、Compute::tick 或 Output::tick 断点，F5 运行，F10 单步。
-查看 m_sent、m_stage1/m_stage2、m_state/m_remaining 等模块状态；代码入口及操作步骤见 vscode-debug.md。
+查看 m_sent、m_magnitudeStage/m_orderedStage、m_state/m_remaining 等模块状态；代码入口及操作步骤见 vscode-debug.md。
 tick 内单步是软件执行过程，信号/FIFO 本沿写入仍遵守延迟更新，不应把单步次数当作硬件周期。
 
 ## 波形

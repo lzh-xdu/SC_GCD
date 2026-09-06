@@ -25,18 +25,19 @@ Transform::Transform(sc_core::sc_module_name name, TestEventLog& testEventLog)
 }
 void Transform::tick() {
     // Downstream-to-upstream order: a newly accepted task cannot cross two stages.
-    if (m_stage2 && m_tasksOut.nb_write(*m_stage2)) {
-        m_testEventLog.record(m_stage2->m_id, "transform_emit", m_stage2->m_a, m_stage2->m_b);
-        m_stage2.reset();
+    // These optional values update immediately, unlike sc_signal's deferred writes.
+    if (m_orderedStage && m_tasksOut.nb_write(*m_orderedStage)) {
+        m_testEventLog.record(m_orderedStage->m_id, "transform_emit", m_orderedStage->m_a, m_orderedStage->m_b);
+        m_orderedStage.reset();
     }
-    if (!m_stage2 && m_stage1) {
-        m_stage2 =
-            OrderedTask{m_stage1->m_id, std::max(m_stage1->m_a, m_stage1->m_b), std::min(m_stage1->m_a, m_stage1->m_b)};
-        m_stage1.reset();
+    if (!m_orderedStage && m_magnitudeStage) {
+        m_orderedStage = OrderedTask{m_magnitudeStage->m_id, std::max(m_magnitudeStage->m_a, m_magnitudeStage->m_b),
+                                     std::min(m_magnitudeStage->m_a, m_magnitudeStage->m_b)};
+        m_magnitudeStage.reset();
     }
     RawTask task;
-    if (!m_stage1 && m_tasksIn.nb_read(task)) {
-        m_stage1 = MagnitudeTask{task.m_id, magnitude(task.m_a), magnitude(task.m_b)};
+    if (!m_magnitudeStage && m_tasksIn.nb_read(task)) {
+        m_magnitudeStage = MagnitudeTask{task.m_id, magnitude(task.m_a), magnitude(task.m_b)};
         m_testEventLog.record(task.m_id, "transform_accept");
     }
 }

@@ -1,5 +1,12 @@
 # 工作与 AI 协作记录
 
+## 2026-09-06：流水职责命名和逆序推进解释
+
+- 用户审查意见见 A-009、D-011；理解与解释见 L-006。
+- 重命名 Transform 两个内部槽，补充 namespace 与立即更新注释，更新观察指南；不改动算法。
+- 保留头文件既有用户注释调整，README 独立修改不纳入。
+- 验证：./scripts/build-test.ps1 -Configuration Debug -BuildDirectory build/debug -ToolchainBin C:/Strawberry/c/bin，退出 0，CTest 2/2 通过。
+
 ## 2026-09-06：独立模块文件及注释接口图
 
 - 基线 8009f6f，按用户要求拆分，关联 D-010、A-008。
