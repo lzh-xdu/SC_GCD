@@ -1,5 +1,6 @@
 """Black-box checks: numerical oracle, event timing and bounded-resource accounting."""
 import csv
+import json
 import math
 from pathlib import Path
 import random
@@ -9,6 +10,7 @@ import sys
 test_exe = str(Path(sys.argv[1]).resolve())
 test_root = Path(sys.argv[2]).resolve()
 test_root.mkdir(parents=True, exist_ok=True)
+test_summary = []
 
 
 def require(test_condition, test_message):
@@ -36,6 +38,8 @@ def run_case(test_name, test_tasks, test_depth=2, test_period=1):
     require(test_result.returncode == 0, f"{test_name}: {test_result.stdout} {test_result.stderr}")
     test_expected = "".join(f"{math.gcd(test_a,test_b)}\n" for test_a, test_b in test_tasks)
     require(test_output.read_text() == test_expected, f"{test_name}: functional output mismatch")
+    require(all(test_line.isascii() and test_line.isdecimal() for test_line in test_output.read_text().splitlines()),
+            f"{test_name}: diagnostic/statistics leaked into functional output")
     test_metrics = {test_row["metric"]: float(test_row["value"]) for test_row in csv.DictReader(test_stats.open())}
     test_rows = [{test_k: test_v if test_k == "event" else int(test_v) for test_k, test_v in test_row.items()}
             for test_row in csv.DictReader(test_events.open())]
@@ -93,6 +97,7 @@ def run_case(test_name, test_tasks, test_depth=2, test_period=1):
         require(test_metrics[test_prefix + "_peak"] == test_peak, "peak metric mismatch")
         require(abs(test_metrics[test_prefix + "_average"] - test_area/test_cycles) < 1e-9, "average metric mismatch")
     print(f"PASS {test_name}: {len(test_tasks)} tasks, {test_cycles} cycles")
+    test_summary.append({"case": test_name, **test_metrics})
     return test_by_event, test_metrics
 
 
@@ -116,14 +121,73 @@ test_tasks = [(test_rng.randint(-2**31, 2**31-1), test_rng.randint(-2**31, 2**31
 run_case("random", test_tasks, test_depth=1)
 run_case("random_buffered", test_tasks, test_depth=4, test_period=3)
 
-for test_i, test_text in enumerate(["1\n", "a 2\n", "1 2 3\n", "2147483648 1\n", "\n", "1 2.5\n"]):
+test_cases = Path(__file__).parent / "cases"
+for test_index, test_case in enumerate(json.loads((test_cases / "manifest.json").read_text())):
+    test_name = test_case["name"]
+    test_tasks = [tuple(map(int, test_line.split()))
+                  for test_line in (test_cases / f"{test_name}.txt").read_text().splitlines()]
+    require(len(test_tasks) == test_case["tasks"], "fixture count mismatch")
+    test_events, test_metrics = run_case(test_name, test_tasks, test_depth=1 if test_index % 2 == 0 else 4)
+    require((test_root / test_name / "output.txt").read_text() ==
+            (test_cases / f"{test_name}.expected.txt").read_text(), "fixture expected output mismatch")
+    if test_name == "fibonacci_consecutive":
+        require(all(latency(*test_task) >= 40 for test_task in test_tasks), "not a long-latency workload")
+        require(all(math.gcd(*test_task) == 1 for test_task in test_tasks), "adjacent Fibonacci GCD")
+        require(test_metrics["parser_to_transform_peak"] == test_metrics["parser_to_transform_capacity"],
+                "long tasks did not fill upstream FIFO")
+    if test_name == "short_baseline":
+        test_short_metrics = test_metrics
+    if test_name == "short_with_long":
+        # Compare at the same capacity and sink rate, including the added tasks.
+        test_mixed_events, test_mixed_metrics = run_case("mixed_depth1", test_tasks, test_depth=1)
+        test_short_events, test_short_metrics = run_case("short_depth1", [(test_i, test_i) for test_i in range(1, 41)],
+                                                       test_depth=1)
+        require(test_mixed_metrics["cycles"] > test_short_metrics["cycles"], "mixed workload did not take longer")
+        for test_id in (10, 21, 32):
+            require(test_mixed_events["compute_accept"][test_id + 1]["cycle"] >
+                    test_mixed_events["compute_complete"][test_id]["cycle"], "short task overtook long task")
+
+# Instrumentation must not change results or simulated performance.
+test_folder = test_root / "without_events"
+test_folder.mkdir(exist_ok=True)
+test_result = subprocess.run([test_exe, str(test_root / "basic/input.txt"), str(test_folder / "output.txt"),
+                              str(test_folder / "stats.csv"), "2", "-"],
+                             capture_output=True, text=True, timeout=10)
+(test_folder / "run.log").write_text(test_result.stdout + test_result.stderr, encoding="utf-8")
+require(test_result.returncode == 0, "run without tracing failed")
+for test_file in ("output.txt", "stats.csv"):
+    require((test_folder / test_file).read_bytes() == (test_root / "basic" / test_file).read_bytes(),
+            "tracing changed output or simulated statistics")
+
+test_invalid = ["1\n", "a 2\n", "1 2 3\n", "2147483648 1\n", "\n", "1 2.5\n",
+                "-2147483649 1\n", "1 2147483648\n", "1 -2147483649\n",
+                "99999999999999999999999999999 1\n", "1e3 2\n", "1 0x10\n", "--1 2\n", "3 3\n1\n"]
+for test_i, test_text in enumerate(test_invalid):
     test_folder = test_root / f"invalid_{test_i}"
     test_folder.mkdir(exist_ok=True)
-    (test_folder / "input.txt").write_text(test_text)
+    (test_folder / "input.txt").write_text(test_text, encoding="utf-8")
     test_result = subprocess.run([test_exe, str(test_folder/"input.txt"), str(test_folder/"output.txt"), str(test_folder/"stats.csv")],
                             capture_output=True, text=True, timeout=10)
-    require(test_result.returncode != 0, "invalid input accepted")
+    (test_folder / "run.log").write_text(test_result.stdout + test_result.stderr, encoding="utf-8")
+    require(test_result.returncode != 0 and "invalid input line" in test_result.stderr, "invalid input not diagnosed")
+    require("PASS:" not in test_result.stderr, "invalid input reported success")
+
+# Reject path aliasing before opening/truncating any data file.
+test_source = test_root / "single/input.txt"
+test_original = test_source.read_bytes()
+for test_output_path, test_stats_path in [(test_source, test_root / "collision.csv"),
+                                          (test_root / "collision.txt", test_root / "collision.txt")]:
+    test_result = subprocess.run([test_exe, str(test_source), str(test_output_path), str(test_stats_path)],
+                                 capture_output=True, text=True, timeout=10)
+    require(test_result.returncode != 0 and "distinct files" in test_result.stderr, "path collision accepted")
+    require(test_source.read_bytes() == test_original, "input truncated by path collision")
 test_result = subprocess.run([test_exe, str(test_root/"single/input.txt"), str(test_root/"timeout.txt"), str(test_root/"timeout.csv"),
                          "2", "-", "1", "5"], capture_output=True, text=True, timeout=10)
 require(test_result.returncode != 0 and "cycle limit" in test_result.stderr, "timeout not detected")
-print("PASS invalid inputs and simulation timeout; all stage1 checks passed")
+with (test_root / "summary.csv").open("w", newline="", encoding="utf-8") as test_stream:
+    test_writer = csv.DictWriter(test_stream, fieldnames=test_summary[0].keys())
+    test_writer.writeheader()
+    test_writer.writerows(test_summary)
+print(f"PASS {len(test_invalid)} invalid inputs, output separation, path collisions and simulation timeout")
+print(f"PASS all stage1 checks: {len(test_summary)} valid scenarios, "
+      f"{int(sum(test_row['tasks'] for test_row in test_summary))} tasks")

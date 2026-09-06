@@ -1,0 +1,72 @@
+[
+  {
+    "name": "extreme_grid",
+    "tasks": 49,
+    "seed": null
+  },
+  {
+    "name": "fibonacci_consecutive",
+    "tasks": 17,
+    "seed": null
+  },
+  {
+    "name": "short_baseline",
+    "tasks": 40,
+    "seed": null
+  },
+  {
+    "name": "short_with_long",
+    "tasks": 43,
+    "seed": null
+  },
+  {
+    "name": "random_01",
+    "tasks": 64,
+    "seed": 2026090600
+  },
+  {
+    "name": "random_02",
+    "tasks": 64,
+    "seed": 2026090601
+  },
+  {
+    "name": "random_03",
+    "tasks": 64,
+    "seed": 2026090602
+  },
+  {
+    "name": "random_04",
+    "tasks": 64,
+    "seed": 2026090603
+  },
+  {
+    "name": "random_05",
+    "tasks": 64,
+    "seed": 2026090604
+  },
+  {
+    "name": "random_06",
+    "tasks": 64,
+    "seed": 2026090605
+  },
+  {
+    "name": "random_07",
+    "tasks": 64,
+    "seed": 2026090606
+  },
+  {
+    "name": "random_08",
+    "tasks": 64,
+    "seed": 2026090607
+  },
+  {
+    "name": "random_09",
+    "tasks": 64,
+    "seed": 2026090608
+  },
+  {
+    "name": "random_10",
+    "tasks": 64,
+    "seed": 2026090609
+  }
+]

@@ -1,5 +1,14 @@
 # 工作与 AI 协作记录
 
+## 2026-09-06：补齐作业 1 测试及 6.6 审核
+
+- 基线 3db794c；按用户要求先完善作业 1，不实施作业 2。关联 A-011、L-008、B-005。
+- 已有独立功能/性能文件，本轮将自有 PASS 诊断移至 stderr，验证功能纯数字、追踪开关等价和路径冲突保护。
+- 增加可复现的极值网格、连续相邻斐波那契、10×64 随机和短长混合输入，扩充至 14 类非法输入，保留实际输出/统计。
+- 首轮断言错误及原始失败已留存，修复后 Debug/Release 各 CTest 2/2，24 有效场景/1434 任务；模拟指标汇总逐字节相同。命令及配置见 stage1-test-matrix.md。
+- 原题 6.6 逐项核对见 engineering-audit.md：记录体系已有证据，仍缺公开仓库、完整理解验收、阶段 3/4 真实案例与模型效率比较。GitHub 元数据确认仍 private。
+- 修正重复日志编号和远端过时状态，历史结论/失败不删除。用户既有 README.md 修改不纳入。
+
 ## 2026-09-06：进入作业 2 的接口澄清
 
 - 用户询问阶段推进并给出接收判断；核对现有 Compute/Transform 实现后，说明显式握手与 FIFO 门控的区别。
@@ -61,7 +70,7 @@
 ## 2026-09-06：SystemC 与电路实现的完整入门讲解
 
 - 阶段：环境与学习；用户要求用 C++ 背景理解 SystemC 全貌和硬件生成路径。
-- 修改：学习记录 [L-004](learning-log.md#l-004从-c-到-systemc再到电路)、AI 协作记录 [A-006](ai-log.md#a-006systemc-全景教学与硬件生成边界)。
+- 修改：学习记录 [L-004b](learning-log.md#l-004b从-c-到-systemc再到电路)、AI 协作记录 [A-006b](ai-log.md#a-006bsystemc-全景教学与硬件生成边界)。
 - 验证：核对本地 SystemC 3.0.1 调度/信号源码、现有示例和官方综合/物理实现资料；检查文档差异和链接。纯教学文档改动，未新增运行、时序、性能或综合通过结论。
 - 范围：未推进作业实现，未改变工具链和待定时序约定。工作树原有 README.md 修改不属于本轮记录提交。
 
@@ -145,7 +154,7 @@
 ## 2026-09-06：接入 VS Code IntelliSense
 
 - 目标：消除 `src/stage1/modules.hpp` 等文件因缺少 SystemC 编译上下文产生的预编译/语法解析错误。
-- 修改：CMake 开启 `CMAKE_EXPORT_COMPILE_COMMANDS`；新增 `.vscode/settings.json` 和 `.vscode/extensions.json`，让 C/C++ 扩展复用真实 GCC/CMake 编译参数。协作详情见 [A-007](ai-log.md#a-007配置-vs-code-的-c-语法解析)。
+- 修改：CMake 开启 `CMAKE_EXPORT_COMPILE_COMMANDS`；新增 `.vscode/settings.json` 和 `.vscode/extensions.json`，让 C/C++ 扩展复用真实 GCC/CMake 编译参数。协作详情见 [A-007b](ai-log.md#a-007b配置-vs-code-的-c-语法解析)。
 - 验证：`cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=C:/Strawberry/c/bin/g++.exe`、`cmake --build build --parallel 4` 和 `ctest --test-dir build --output-on-failure` 均退出 0，CTest 2/2 通过；编译数据库确认 Stage 1 含 SystemC include、`SC_ENABLE_ASSERTIONS` 和 C++17。
 - 范围：没有改变功能及时序；未包含用户已有的 `README.md` 修改。
 
@@ -154,10 +163,10 @@
 - 用户请求以 Python 终端交互图形理解过程和效率；新增 scripts/trace_tui.py、针对性单元测试和[中文使用说明](trace-viewer.md)，在 stage1-run.md 增加入口。
 - 实际输入得到 8 任务、79 事件周期、66 忙周期、83.54% 利用率、结果阻塞 0；当前数据主要体现计算与上游积压，不能度量主机模拟速度。
 - 5/5 工具测试通过；实际 Windows 伪终端导航、播放与退出通过；[验证及快照](evidence/stage1/trace-viewer-validation.md)。不修改 C++，不重复模型 CTest，不推进后续阶段。
-- 协作记录 [A-008](ai-log.md#a-008python-终端-trace-可视化)，学习记录 [L-006](learning-log.md#l-006用-trace-区分驻留计算与主机运行效率)。下一步由用户结合时间线审阅现有时序，尚未实施优化设计。
+- 协作记录 [A-008b](ai-log.md#a-008bpython-终端-trace-可视化)，学习记录 [L-006b](learning-log.md#l-006b用-trace-区分驻留计算与主机运行效率)。下一步由用户结合时间线审阅现有时序，尚未实施优化设计。
 
 ## 2026-09-06：解释 Day01 VCD 与查看方式
 
-- 实读 build/debug/day01_basics.vcd、示例源码及本地 VCD tracing 源码；核对 GTKWave 官方文档，补充 [波形说明](inspect-simulation.md) 和 [L-007](learning-log.md#l-007vcd-与实际波形末尾的区别)。
+- 实读 build/debug/day01_basics.vcd、示例源码及本地 VCD tracing 源码；核对 GTKWave 官方文档，补充 [波形说明](inspect-simulation.md) 和 [L-007b](learning-log.md#l-007bvcd-与实际波形末尾的区别)。
 - 新观察：文件末尾 #25 无信号变化；保留事实，未将代码预期冒充波形记录，未实施末沿记录修复。
 - 文档轮次，未安装查看器、未运行模型测试；本机 PATH 无 gtkwave。未触碰 README 原有改动。

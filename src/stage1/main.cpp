@@ -252,7 +252,8 @@ int run(int argc, char** argv) {
     }
     writeStats(stats, system, options);
     flushFiles(output, stats, testEvents, options.m_testTraceEnabled);
-    std::cout << "PASS: " << system.m_output.m_received << " tasks, " << system.m_cycles << " cycles\n";
+    // Diagnostics belong to the console; OUTPUT contains only final GCD values.
+    std::cerr << "PASS: " << system.m_output.m_received << " tasks, " << system.m_cycles << " cycles\n";
     return 0;
 }
 } // namespace

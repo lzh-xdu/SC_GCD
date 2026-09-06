@@ -1,0 +1,74 @@
+Start testing: Sep 06 20:07 中国标准时间
+----------------------------------------------------------
+1/2 Testing: stage1_function_timing_backpressure
+1/2 Test: stage1_function_timing_backpressure
+Command: "C:/Python314/python.exe" "D:/0_lzh/GPU/MOORE/tests/stage1/verify.py" "D:/0_lzh/GPU/MOORE/build/debug/stage1_gcd.exe" "D:/0_lzh/GPU/MOORE/build/debug/stage1-tests"
+Directory: D:/0_lzh/GPU/MOORE/build/debug
+"stage1_function_timing_backpressure" start time: Sep 06 20:07 中国标准时间
+Output:
+----------------------------------------------------------
+PASS single: 1 tasks, 12 cycles
+PASS basic: 8 tasks, 79 cycles
+PASS empty: 0 tasks, 1 cycles
+PASS boundaries: 9 tasks, 58 cycles
+PASS pipeline: 20 tasks, 25 cycles
+PASS slow_sink: 24 tasks, 312 cycles
+PASS random: 250 tasks, 11913 cycles
+PASS random_buffered: 250 tasks, 11913 cycles
+PASS extreme_grid: 49 tasks, 901 cycles
+PASS fibonacci_consecutive: 17 tasks, 1054 cycles
+PASS short_baseline: 40 tasks, 85 cycles
+PASS short_with_long: 43 tasks, 306 cycles
+PASS mixed_depth1: 43 tasks, 306 cycles
+PASS short_depth1: 40 tasks, 85 cycles
+PASS random_01: 64 tasks, 3064 cycles
+PASS random_02: 64 tasks, 3059 cycles
+PASS random_03: 64 tasks, 3011 cycles
+PASS random_04: 64 tasks, 3077 cycles
+PASS random_05: 64 tasks, 3058 cycles
+PASS random_06: 64 tasks, 3012 cycles
+PASS random_07: 64 tasks, 3014 cycles
+PASS random_08: 64 tasks, 2997 cycles
+PASS random_09: 64 tasks, 3011 cycles
+PASS random_10: 64 tasks, 3057 cycles
+PASS 14 invalid inputs, output separation, path collisions and simulation timeout
+PASS all stage1 checks: 24 valid scenarios, 1434 tasks
+<end of output>
+Test time =   1.21 sec
+----------------------------------------------------------
+Test Passed.
+"stage1_function_timing_backpressure" end time: Sep 06 20:07 中国标准时间
+"stage1_function_timing_backpressure" time elapsed: 00:00:01
+----------------------------------------------------------
+
+2/2 Testing: day01_signal_timing
+2/2 Test: day01_signal_timing
+Command: "D:/0_lzh/GPU/MOORE/build/debug/day01_basics.exe"
+Directory: D:/0_lzh/GPU/MOORE/build/debug
+"day01_signal_timing" start time: Sep 06 20:07 中国标准时间
+Output:
+----------------------------------------------------------
+
+        SystemC 3.0.1-Accellera --- Sep  6 2026 15:58:34
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+
+Info: (I703) tracing timescale unit set: 1 ns (day01_basics.vcd)
+5 ns | edge 1 before update | output=0 expected=0
+5 ns | edge 1 after update | output=0 expected=0
+15 ns | edge 2 before update | output=0 expected=0
+15 ns | edge 2 after update | output=10 expected=10
+25 ns | edge 3 before update | output=10 expected=10
+25 ns | edge 3 after update | output=20 expected=20
+
+Info: /OSCI/SystemC: Simulation stopped by user.
+PASS
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"day01_signal_timing" end time: Sep 06 20:07 中国标准时间
+"day01_signal_timing" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Sep 06 20:07 中国标准时间
