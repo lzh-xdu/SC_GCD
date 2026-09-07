@@ -1,5 +1,13 @@
 # 学习与理解记录
 
+## L-014：从代码追踪握手发布与零延迟交付
+
+- 2026-09-08，用户追问代码依据，并提出“一个周期内完成直接deliver”的理解。
+- Transform 在第3沿把旧 magnitude 槽移入 ordered 槽，再调用 valid/data.write；信号在该时间点的 update 阶段生效。Compute 仅敏感于 posedge，所以不会因 valid 改变再次运行，第4沿才通过 valid&&ready 调用 accept；与同沿两个进程的执行先后无关。
+- b=0 不进入 gcdAndLatency 的 while，latency保持0；accept 直接记录complete、设 RESULT_PENDING 并调用deliver。准确表述为“接收沿同一仿真时间完成”，没有推进一个周期。
+- deliver 只是尝试nb_write，FIFO满则保持结果待交付；成功后下游也只能在后续上升沿读取。普通C++函数执行耗费主机时间，但不自行推进SystemC仿真时间；非零任务也先算数值，再由后续tick倒计时表达规定延迟。
+- 依据当前 src/stage2/transform.cpp、compute.cpp；仅代码讲解，未修改模型或重跑测试。用户理解尚待后续验证。
+
 ## L-013：传输少一拍、零计算延迟与等待归因
 
 - 2026-09-07，用户提问；AI结合已验证时间线解释：阶段2直接握手省去中间FIFO的可见性等待，GCD计算仍6拍；不保证所有工作负载总周期都少1。
