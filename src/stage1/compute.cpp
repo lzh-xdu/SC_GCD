@@ -65,6 +65,7 @@ void Compute::tick() {
     }
     OrderedTask task;
     if (!m_tasksIn.nb_read(task)) {
+        ++m_idleNoInputCycles;
         return;
     }
     const auto [value, latency] = gcdAndLatency(task.m_a, task.m_b);

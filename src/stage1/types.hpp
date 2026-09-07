@@ -8,6 +8,8 @@
  */
 #pragma once
 
+#include "../common/task_statistics.hpp"
+
 #include <cstdint>
 #include <iosfwd>
 
@@ -39,6 +41,7 @@ std::ostream& operator<<(std::ostream&, const Result&);
 // Diagnostic observer only: it cannot change module state or timing.
 struct TestEventLog {
     std::ostream* m_testStream = nullptr;
+    mutable TaskStatistics m_statistics;
     void record(std::uint64_t testId, const char* testEvent, std::uint64_t testA = 0, std::uint64_t testB = 0,
                 std::uint64_t testValue = 0, std::uint64_t testLatency = 0) const;
 };

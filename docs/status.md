@@ -28,3 +28,5 @@
 6.6 逐项审核及未完成项见 [工程审核](engineering-audit.md)。
 
 作业1～3进一步优化建议与58组配置探测见[优化审查](stages1-3-optimization-review.md)；本轮只分析，未替换默认模型或参数。
+
+2026-09-07：提交设计统一入口见 [最终设计](final-design.md)；各阶段新增 [统一任务延迟与阻塞原因](task-statistics.md)。

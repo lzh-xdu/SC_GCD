@@ -26,6 +26,7 @@ endif()
 enable_testing()
 add_executable(stage1_gcd
     src/stage1/main.cpp
+    src/common/task_statistics.cpp
     src/stage1/types.cpp
     src/stage1/parser.cpp
     src/stage1/transform.cpp
@@ -48,6 +49,7 @@ add_test(NAME day01_signal_timing COMMAND day01_basics)
 set_tests_properties(day01_signal_timing PROPERTIES TIMEOUT 10)
 
 add_library(handshake_modules STATIC
+    src/common/task_statistics.cpp
     src/stage1/types.cpp src/stage1/parser.cpp src/stage1/output.cpp
     src/stage2/payload.cpp src/stage2/transform.cpp src/stage2/compute.cpp)
 target_link_libraries(handshake_modules PUBLIC SystemC::systemc)

@@ -37,6 +37,7 @@ SC_MODULE(Compute) {
     sc_core::sc_fifo_in<OrderedTask> m_tasksIn{"tasks_in"};
     sc_core::sc_fifo_out<Result> m_resultsOut{"results_out"};
     std::uint64_t m_busyCycles = 0;
+    std::uint64_t m_idleNoInputCycles = 0;
     std::uint64_t m_resultWaitCycles = 0;
     bool idle() const {
         return m_state == State::IDLE;

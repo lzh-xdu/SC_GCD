@@ -6,6 +6,9 @@ from pathlib import Path
 import subprocess
 import sys
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from task_statistics import check_statistics
+
 TEST_EXE = str(Path(sys.argv[1]).resolve())
 TEST_ROOT = Path(sys.argv[2]).resolve()
 TEST_UNITS = int(sys.argv[3])
@@ -33,6 +36,7 @@ def check_links(test_rows, test_events, test_metrics):
     test_links = [test_row for test_row in test_rows if test_row["event"] == "link"]
     test_last = None
     test_transfers = []
+    test_window_ready_blocked = 0
     test_random = int(test_metrics.get("random_seed", 1))
     for test_row in test_links:
         test_ready = [not any(
@@ -44,6 +48,7 @@ def check_links(test_rows, test_events, test_metrics):
                             for test_retire in test_events["reorder_emit"].values())
             test_credit = test_row["id"] - test_base < test_metrics["window_capacity"]
             require(bool(test_row["value"]) == (test_credit and any(test_ready)), "window/ready capacity mismatch")
+            test_window_ready_blocked += int(not test_credit and any(test_ready))
             if test_row["value"]:
                 test_selected = test_events["compute_unit"][test_row["id"]]["a"]
                 if all(test_ready):
@@ -65,6 +70,8 @@ def check_links(test_rows, test_events, test_metrics):
     require(test_last is None or test_last["value"] == 1, "last transfer left stalled")
     require(test_transfers == [(test_id, test_row["cycle"])
                               for test_id, test_row in test_events["compute_accept"].items()], "handshake mismatch")
+    if TEST_WINDOW:
+        require(test_window_ready_blocked == test_metrics["window_blocked_with_ready_cycles"], "ready window blockage")
     require(len(test_links) == test_metrics["handshake_valid_cycles"], "valid metric")
     test_blocked = sum(test_row["value"] == 0 for test_row in test_links)
     require(test_blocked == test_metrics["handshake_blocked_cycles"], "blocked metric")
@@ -218,6 +225,7 @@ def run_case(test_name, test_tasks, test_depth=2, test_period=1, test_result_dep
         check_window(test_events, test_metrics)
         require(test_metrics["handshake_blocked_cycles"] ==
                 test_metrics["window_blocked_cycles"] + test_metrics["engines_blocked_cycles"], "blocked split")
+    check_statistics(test_rows, test_metrics, TEST_UNITS)
     test_summary.append({"case": test_folder.name, **test_metrics})
     print(f"PASS {test_folder.name}: {len(test_tasks)} tasks, {int(test_metrics['cycles'])} cycles, "
           f"{int(test_metrics['handshake_blocked_cycles'])} blocked")

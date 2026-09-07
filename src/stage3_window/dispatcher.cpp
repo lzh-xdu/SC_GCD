@@ -60,6 +60,9 @@ void Dispatcher::tick() {
     const auto id = m_dataIn.read().m_id;
     if (!hasCredit()) {
         ++m_windowBlockedCycles;
+        if (m_readyIn[0].read() || m_readyIn[1].read()) {
+            ++m_windowBlockedWithReadyCycles;
+        }
         m_testEventLog.record(id, "window_blocked");
     } else if (!m_readyIn[selectedUnit()].read()) {
         ++m_engineBlockedCycles;

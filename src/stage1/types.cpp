@@ -26,6 +26,7 @@ std::uint64_t currentCycle() {
 }
 void TestEventLog::record(std::uint64_t testId, const char* testEvent, std::uint64_t testA, std::uint64_t testB,
                           std::uint64_t testValue, std::uint64_t testLatency) const {
+    m_statistics.record(testId, testEvent, currentCycle());
     if (m_testStream) {
         *m_testStream << testId << ',' << testEvent << ',' << currentCycle() << ',' << testA << ',' << testB << ','
                       << testValue << ',' << testLatency << '\n';

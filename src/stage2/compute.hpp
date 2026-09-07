@@ -21,6 +21,7 @@ SC_MODULE(Compute) {
     sc_core::sc_out<bool> m_readyOut{"ready_out"};
     sc_core::sc_fifo_out<Result> m_resultsOut{"results_out"};
     std::uint64_t m_busyCycles = 0;
+    std::uint64_t m_idleNoInputCycles = 0;
     std::uint64_t m_resultWaitCycles = 0;
     std::uint64_t m_accepted = 0;
     bool idle() const {

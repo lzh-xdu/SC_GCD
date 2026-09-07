@@ -265,6 +265,8 @@ int run(int argc, char** argv) {
         throw std::runtime_error("simulation cycle limit exceeded");
     }
     writeStats(stats, system, options);
+    testEventLog.m_statistics.write(stats);
+    stats << "compute0_idle_no_input_cycles," << system.m_compute.m_idleNoInputCycles << '\n';
     flushFiles(output, stats, testEvents, options.m_testTraceEnabled);
     // Diagnostics belong to the console; OUTPUT contains only final GCD values.
     std::cerr << "PASS: " << system.m_output.m_received << " tasks, " << system.m_cycles << " cycles\n";

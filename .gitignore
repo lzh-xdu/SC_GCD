@@ -3,3 +3,4 @@
 /tmp/
 *.vcd
 /SystemC 流式处理器作业.pdf
+__pycache__/

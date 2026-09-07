@@ -73,6 +73,8 @@ void Compute::tick() {
         deliver();
     } else if (m_validIn.read() && m_readyOut.read()) {
         accept();
+    } else {
+        ++m_idleNoInputCycles;
     }
     // else-if prevents completion falling through into acceptance on this edge.
     m_readyOut.write(m_state == State::IDLE);

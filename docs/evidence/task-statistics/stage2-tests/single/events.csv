@@ -1,0 +1,10 @@
+id,event,cycle,a,b,value,latency
+0,parser_send,1,0,0,0,0
+0,transform_accept,2,0,0,0,0
+0,link,4,48,18,1,0
+0,transform_emit,4,48,18,0,0
+0,compute_unit,4,0,0,0,0
+0,compute_accept,4,48,18,6,6
+0,compute_complete,10,0,0,6,0
+0,compute_emit,10,0,0,6,0
+0,output,11,0,0,6,0

@@ -26,6 +26,7 @@ SC_MODULE(Dispatcher) {
     sc_core::sc_vector<sc_core::sc_in<bool>> m_readyIn{"ready_in", UNIT_COUNT};
     std::uint64_t m_dispatched = 0;
     std::uint64_t m_windowBlockedCycles = 0;
+    std::uint64_t m_windowBlockedWithReadyCycles = 0;
     std::uint64_t m_engineBlockedCycles = 0;
     std::uint64_t m_randomChoices = 0;
     Dispatcher(sc_core::sc_module_name name, stage1::TestEventLog & testEventLog, unsigned window, std::uint32_t seed);
