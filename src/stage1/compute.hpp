@@ -39,6 +39,7 @@ SC_MODULE(Compute) {
     std::uint64_t m_busyCycles = 0;
     std::uint64_t m_idleNoInputCycles = 0;
     std::uint64_t m_resultWaitCycles = 0;
+    /// @brief 是否可在后续上升沿接收任务；待交付结果也算非空闲。
     bool idle() const {
         return m_state == State::IDLE;
     }
@@ -50,7 +51,9 @@ private:
     Result m_result;
     std::uint64_t m_remaining = 0;
     TestEventLog & m_testEventLog;
+    /// @brief 上升沿推进；BUSY 必须有剩余周期，异常状态抛 logic_error。
     void tick();
+    /// @brief 仅在 RESULT_PENDING 尝试交付；FIFO 满是正常背压并保留结果。
     void deliver();
 };
 } // namespace stage1

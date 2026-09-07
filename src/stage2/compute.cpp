@@ -3,6 +3,7 @@
  * @brief Handshake-controlled GCD latency model.
  */
 #include "compute.hpp"
+#include "../common/contract.hpp"
 
 #include <algorithm>
 #include <utility>
@@ -17,6 +18,7 @@ static unsigned bits(std::uint64_t value) {
     return count;
 }
 static std::pair<std::uint64_t, std::uint64_t> gcdAndLatency(std::uint64_t a, std::uint64_t b) {
+    requireCondition<std::logic_error>(a >= b, "compute requires ordered magnitudes");
     std::uint64_t latency = 0;
     while (b != 0) {
         constexpr int MIN_REMAINDER_CYCLES = 1;
@@ -39,6 +41,7 @@ Compute::Compute(sc_core::sc_module_name name, TestEventLog& testEventLog, unsig
     dont_initialize();
 }
 void Compute::deliver() {
+    requireCondition<std::logic_error>(m_state == State::RESULT_PENDING, "compute result is not ready");
     if (m_resultsOut.nb_write(m_result)) {
         m_testEventLog.record(m_result.m_id, "compute_emit", 0, 0, m_result.m_gcd);
         m_state = State::IDLE;
@@ -47,6 +50,8 @@ void Compute::deliver() {
     }
 }
 void Compute::accept() {
+    requireCondition<std::logic_error>(m_state == State::IDLE && m_validIn.read() && m_readyOut.read(),
+                                       "compute acceptance requires idle valid/ready handshake");
     const auto task = m_dataIn.read();
     const auto [value, latency] = gcdAndLatency(task.m_a, task.m_b);
     m_result = {task.m_id, value};
@@ -62,6 +67,8 @@ void Compute::accept() {
     }
 }
 void Compute::tick() {
+    requireCondition<std::logic_error>(m_state != State::BUSY || m_remaining > 0,
+                                       "busy compute has no remaining cycles");
     if (m_state == State::BUSY) {
         ++m_busyCycles;
         if (--m_remaining == 0) {

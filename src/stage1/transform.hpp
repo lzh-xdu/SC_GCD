@@ -38,9 +38,11 @@ SC_MODULE(Transform) {
     sc_core::sc_in<bool> m_clk{"clk"};
     sc_core::sc_fifo_in<RawTask> m_tasksIn{"tasks_in"};
     sc_core::sc_fifo_out<OrderedTask> m_tasksOut{"tasks_out"};
+    /// @brief 两个内部槽都空；不包含顶层输入/输出 FIFO。
     bool empty() const {
         return !m_magnitudeStage && !m_orderedStage;
     }
+    /// @brief 当前内部任务数，范围 0..2；不包含外部 FIFO。
     unsigned occupancy() const {
         return static_cast<unsigned>(m_magnitudeStage.has_value()) + static_cast<unsigned>(m_orderedStage.has_value());
     }

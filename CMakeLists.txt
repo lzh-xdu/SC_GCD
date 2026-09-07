@@ -96,3 +96,11 @@ add_test(NAME stage3_ready_window
     COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/handshake/verify.py"
             "$<TARGET_FILE:stage3_window_gcd>" "${CMAKE_CURRENT_BINARY_DIR}/stage3-window-tests" "2" "8")
 set_tests_properties(stage3_ready_window PROPERTIES TIMEOUT 60)
+
+# Public-interface contract checks must also run with NDEBUG in Release.
+add_executable(contract_checks tests/contracts/verify.cpp)
+target_link_libraries(contract_checks PRIVATE handshake_modules)
+foreach(test_case helper period input output event statistics)
+    add_test(NAME contract_${test_case} COMMAND contract_checks ${test_case})
+    set_tests_properties(contract_${test_case} PROPERTIES TIMEOUT 10)
+endforeach()

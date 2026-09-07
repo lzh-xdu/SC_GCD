@@ -1,0 +1,335 @@
+Start testing: Sep 07 23:54 中国标准时间
+----------------------------------------------------------
+1/12 Testing: stage1_function_timing_backpressure
+1/12 Test: stage1_function_timing_backpressure
+Command: "C:/Python314/python.exe" "D:/0_lzh/GPU/MOORE/tests/stage1/verify.py" "D:/0_lzh/GPU/MOORE/build/debug/stage1_gcd.exe" "D:/0_lzh/GPU/MOORE/build/debug/stage1-tests"
+Directory: D:/0_lzh/GPU/MOORE/build/debug
+"stage1_function_timing_backpressure" start time: Sep 07 23:54 中国标准时间
+Output:
+----------------------------------------------------------
+PASS single: 1 tasks, 12 cycles
+PASS basic: 8 tasks, 79 cycles
+PASS empty: 0 tasks, 1 cycles
+PASS boundaries: 9 tasks, 58 cycles
+PASS pipeline: 20 tasks, 25 cycles
+PASS slow_sink: 24 tasks, 312 cycles
+PASS random: 250 tasks, 11913 cycles
+PASS random_buffered: 250 tasks, 11913 cycles
+PASS extreme_grid: 49 tasks, 901 cycles
+PASS fibonacci_consecutive: 17 tasks, 1054 cycles
+PASS short_baseline: 40 tasks, 85 cycles
+PASS short_with_long: 43 tasks, 306 cycles
+PASS mixed_depth1: 43 tasks, 306 cycles
+PASS short_depth1: 40 tasks, 85 cycles
+PASS random_01: 64 tasks, 3064 cycles
+PASS random_02: 64 tasks, 3059 cycles
+PASS random_03: 64 tasks, 3011 cycles
+PASS random_04: 64 tasks, 3077 cycles
+PASS random_05: 64 tasks, 3058 cycles
+PASS random_06: 64 tasks, 3012 cycles
+PASS random_07: 64 tasks, 3014 cycles
+PASS random_08: 64 tasks, 2997 cycles
+PASS random_09: 64 tasks, 3011 cycles
+PASS random_10: 64 tasks, 3057 cycles
+PASS 14 invalid inputs, output separation, path collisions and simulation timeout
+PASS all stage1 checks: 24 valid scenarios, 1434 tasks
+<end of output>
+Test time =   1.13 sec
+----------------------------------------------------------
+Test Passed.
+"stage1_function_timing_backpressure" end time: Sep 07 23:54 中国标准时间
+"stage1_function_timing_backpressure" time elapsed: 00:00:01
+----------------------------------------------------------
+
+2/12 Testing: day01_signal_timing
+2/12 Test: day01_signal_timing
+Command: "D:/0_lzh/GPU/MOORE/build/debug/day01_basics.exe"
+Directory: D:/0_lzh/GPU/MOORE/build/debug
+"day01_signal_timing" start time: Sep 07 23:54 中国标准时间
+Output:
+----------------------------------------------------------
+
+        SystemC 3.0.1-Accellera --- Sep  6 2026 15:58:34
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+
+Info: (I703) tracing timescale unit set: 1 ns (day01_basics.vcd)
+5 ns | edge 1 before update | output=0 expected=0
+5 ns | edge 1 after update | output=0 expected=0
+15 ns | edge 2 before update | output=0 expected=0
+15 ns | edge 2 after update | output=10 expected=10
+25 ns | edge 3 before update | output=10 expected=10
+25 ns | edge 3 after update | output=20 expected=20
+
+Info: /OSCI/SystemC: Simulation stopped by user.
+PASS
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Passed.
+"day01_signal_timing" end time: Sep 07 23:54 中国标准时间
+"day01_signal_timing" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/12 Testing: stage2_handshake
+3/12 Test: stage2_handshake
+Command: "C:/Python314/python.exe" "D:/0_lzh/GPU/MOORE/tests/handshake/verify.py" "D:/0_lzh/GPU/MOORE/build/debug/stage2_gcd.exe" "D:/0_lzh/GPU/MOORE/build/debug/stage2-tests" "1"
+Directory: D:/0_lzh/GPU/MOORE/build/debug
+"stage2_handshake" start time: Sep 07 23:54 中国标准时间
+Output:
+----------------------------------------------------------
+PASS single: 1 tasks, 11 cycles, 0 blocked
+PASS empty: 0 tasks, 1 cycles, 0 blocked
+PASS basic: 8 tasks, 78 cycles, 53 blocked
+PASS zero_pipeline: 24 tasks, 51 cycles, 0 blocked
+PASS slow_sink: 40 tasks, 520 cycles, 451 blocked
+PASS extreme_grid: 49 tasks, 900 cycles, 844 blocked
+PASS fibonacci_consecutive: 17 tasks, 1053 cycles, 958 blocked
+PASS short_baseline: 40 tasks, 84 cycles, 0 blocked
+PASS short_with_long: 43 tasks, 305 cycles, 257 blocked
+PASS random_01: 64 tasks, 3063 cycles, 2949 blocked
+PASS random_02: 64 tasks, 3058 cycles, 2947 blocked
+PASS random_03: 64 tasks, 3010 cycles, 2894 blocked
+PASS random_04: 64 tasks, 3076 cycles, 2955 blocked
+PASS random_05: 64 tasks, 3057 cycles, 2946 blocked
+PASS random_06: 64 tasks, 3011 cycles, 2898 blocked
+PASS random_07: 64 tasks, 3013 cycles, 2904 blocked
+PASS random_08: 64 tasks, 2996 cycles, 2882 blocked
+PASS random_09: 64 tasks, 3010 cycles, 2888 blocked
+PASS random_10: 64 tasks, 3056 cycles, 2945 blocked
+PASS 19 handshake scenarios and invalid inputs
+<end of output>
+Test time =   1.06 sec
+----------------------------------------------------------
+Test Passed.
+"stage2_handshake" end time: Sep 07 23:54 中国标准时间
+"stage2_handshake" time elapsed: 00:00:01
+----------------------------------------------------------
+
+4/12 Testing: stage3_round_robin_ordering
+4/12 Test: stage3_round_robin_ordering
+Command: "C:/Python314/python.exe" "D:/0_lzh/GPU/MOORE/tests/handshake/verify.py" "D:/0_lzh/GPU/MOORE/build/debug/stage3_gcd.exe" "D:/0_lzh/GPU/MOORE/build/debug/stage3-tests" "2"
+Directory: D:/0_lzh/GPU/MOORE/build/debug
+"stage3_round_robin_ordering" start time: Sep 07 23:54 中国标准时间
+Output:
+----------------------------------------------------------
+PASS single: 1 tasks, 12 cycles, 0 blocked
+PASS empty: 0 tasks, 1 cycles, 0 blocked
+PASS basic: 8 tasks, 57 cycles, 31 blocked
+PASS zero_pipeline: 24 tasks, 52 cycles, 0 blocked
+PASS slow_sink: 40 tasks, 520 cycles, 410 blocked
+PASS extreme_grid: 49 tasks, 526 cycles, 452 blocked
+PASS fibonacci_consecutive: 17 tasks, 560 cycles, 464 blocked
+PASS short_baseline: 40 tasks, 85 cycles, 0 blocked
+PASS short_with_long: 43 tasks, 264 cycles, 215 blocked
+PASS random_01: 64 tasks, 1562 cycles, 1444 blocked
+PASS random_02: 64 tasks, 1567 cycles, 1455 blocked
+PASS random_03: 64 tasks, 1525 cycles, 1402 blocked
+PASS random_04: 64 tasks, 1557 cycles, 1435 blocked
+PASS random_05: 64 tasks, 1571 cycles, 1453 blocked
+PASS random_06: 64 tasks, 1534 cycles, 1420 blocked
+PASS random_07: 64 tasks, 1549 cycles, 1438 blocked
+PASS random_08: 64 tasks, 1517 cycles, 1402 blocked
+PASS random_09: 64 tasks, 1528 cycles, 1404 blocked
+PASS random_10: 64 tasks, 1550 cycles, 1436 blocked
+PASS capacity_before: 48 tasks, 663 cycles, 597 blocked
+PASS capacity_after: 48 tasks, 648 cycles, 584 blocked
+PASS round_robin_skew: 24 tasks, 906 cycles, 803 blocked
+PASS 22 handshake scenarios and invalid inputs
+<end of output>
+Test time =   1.11 sec
+----------------------------------------------------------
+Test Passed.
+"stage3_round_robin_ordering" end time: Sep 07 23:54 中国标准时间
+"stage3_round_robin_ordering" time elapsed: 00:00:01
+----------------------------------------------------------
+
+5/12 Testing: stage3_performance_comparison
+5/12 Test: stage3_performance_comparison
+Command: "C:/Python314/python.exe" "D:/0_lzh/GPU/MOORE/tests/stage3/compare.py" "D:/0_lzh/GPU/MOORE/build/debug/stage2_gcd.exe" "D:/0_lzh/GPU/MOORE/build/debug/stage3_gcd.exe" "D:/0_lzh/GPU/MOORE/build/debug/stage3-comparison"
+Directory: D:/0_lzh/GPU/MOORE/build/debug
+"stage3_performance_comparison" start time: Sep 07 23:54 中国标准时间
+Output:
+----------------------------------------------------------
+PASS basic: 78 -> 57 cycles; 1.3684x
+PASS fibonacci: 1053 -> 560 cycles; 1.8804x
+PASS random: 3063 -> 1561 cycles; 1.9622x
+PASS mixed: 305 -> 264 cycles; 1.1553x
+PASS capacity_pressure: 705 -> 648 cycles; 1.0880x
+PASS round_robin_skew: 928 -> 906 cycles; 1.0243x
+<end of output>
+Test time =   0.28 sec
+----------------------------------------------------------
+Test Passed.
+"stage3_performance_comparison" end time: Sep 07 23:54 中国标准时间
+"stage3_performance_comparison" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/12 Testing: stage3_ready_window
+6/12 Test: stage3_ready_window
+Command: "C:/Python314/python.exe" "D:/0_lzh/GPU/MOORE/tests/handshake/verify.py" "D:/0_lzh/GPU/MOORE/build/debug/stage3_window_gcd.exe" "D:/0_lzh/GPU/MOORE/build/debug/stage3-window-tests" "2" "8"
+Directory: D:/0_lzh/GPU/MOORE/build/debug
+"stage3_ready_window" start time: Sep 07 23:54 中国标准时间
+Output:
+----------------------------------------------------------
+PASS single: 1 tasks, 13 cycles, 0 blocked
+PASS empty: 0 tasks, 1 cycles, 0 blocked
+PASS basic: 8 tasks, 47 cycles, 20 blocked
+PASS zero_pipeline: 24 tasks, 53 cycles, 0 blocked
+PASS slow_sink: 40 tasks, 520 cycles, 352 blocked
+PASS extreme_grid: 49 tasks, 480 cycles, 378 blocked
+PASS fibonacci_consecutive: 17 tasks, 561 cycles, 464 blocked
+PASS short_baseline: 40 tasks, 86 cycles, 0 blocked
+PASS short_with_long: 43 tasks, 257 cycles, 203 blocked
+PASS random_01: 64 tasks, 1541 cycles, 1421 blocked
+PASS random_02: 64 tasks, 1555 cycles, 1442 blocked
+PASS random_03: 64 tasks, 1513 cycles, 1391 blocked
+PASS random_04: 64 tasks, 1552 cycles, 1429 blocked
+PASS random_05: 64 tasks, 1538 cycles, 1419 blocked
+PASS random_06: 64 tasks, 1527 cycles, 1412 blocked
+PASS random_07: 64 tasks, 1532 cycles, 1420 blocked
+PASS random_08: 64 tasks, 1509 cycles, 1393 blocked
+PASS random_09: 64 tasks, 1515 cycles, 1390 blocked
+PASS random_10: 64 tasks, 1533 cycles, 1420 blocked
+PASS zero_burst: 40 tasks, 48 cycles, 0 blocked
+PASS head_w1_s1: 41 tasks, 241 cycles, 193 blocked
+PASS head_w1_s7: 41 tasks, 241 cycles, 193 blocked
+PASS head_w1_s42: 41 tasks, 241 cycles, 193 blocked
+PASS head_w2_s1: 41 tasks, 161 cycles, 113 blocked
+PASS head_w2_s7: 41 tasks, 161 cycles, 113 blocked
+PASS head_w2_s42: 41 tasks, 161 cycles, 113 blocked
+PASS head_w8_s1: 41 tasks, 121 cycles, 69 blocked
+PASS head_w8_s7: 41 tasks, 121 cycles, 69 blocked
+PASS head_w8_s42: 41 tasks, 121 cycles, 69 blocked
+PASS window_slow_sink: 41 tasks, 611 cycles, 528 blocked
+PASS head_repeat: 41 tasks, 121 cycles, 69 blocked
+PASS 31 handshake scenarios and invalid inputs
+<end of output>
+Test time =   1.46 sec
+----------------------------------------------------------
+Test Passed.
+"stage3_ready_window" end time: Sep 07 23:54 中国标准时间
+"stage3_ready_window" time elapsed: 00:00:01
+----------------------------------------------------------
+
+7/12 Testing: contract_helper
+7/12 Test: contract_helper
+Command: "D:/0_lzh/GPU/MOORE/build/debug/contract_checks.exe" "helper"
+Directory: D:/0_lzh/GPU/MOORE/build/debug
+"contract_helper" start time: Sep 07 23:54 中国标准时间
+Output:
+----------------------------------------------------------
+
+        SystemC 3.0.1-Accellera --- Sep  6 2026 15:58:34
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+PASS: helper
+<end of output>
+Test time =   0.28 sec
+----------------------------------------------------------
+Test Passed.
+"contract_helper" end time: Sep 07 23:54 中国标准时间
+"contract_helper" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/12 Testing: contract_period
+8/12 Test: contract_period
+Command: "D:/0_lzh/GPU/MOORE/build/debug/contract_checks.exe" "period"
+Directory: D:/0_lzh/GPU/MOORE/build/debug
+"contract_period" start time: Sep 07 23:54 中国标准时间
+Output:
+----------------------------------------------------------
+
+        SystemC 3.0.1-Accellera --- Sep  6 2026 15:58:34
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+PASS: period
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"contract_period" end time: Sep 07 23:54 中国标准时间
+"contract_period" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/12 Testing: contract_input
+9/12 Test: contract_input
+Command: "D:/0_lzh/GPU/MOORE/build/debug/contract_checks.exe" "input"
+Directory: D:/0_lzh/GPU/MOORE/build/debug
+"contract_input" start time: Sep 07 23:54 中国标准时间
+Output:
+----------------------------------------------------------
+
+        SystemC 3.0.1-Accellera --- Sep  6 2026 15:58:34
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+PASS: input
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"contract_input" end time: Sep 07 23:54 中国标准时间
+"contract_input" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/12 Testing: contract_output
+10/12 Test: contract_output
+Command: "D:/0_lzh/GPU/MOORE/build/debug/contract_checks.exe" "output"
+Directory: D:/0_lzh/GPU/MOORE/build/debug
+"contract_output" start time: Sep 07 23:54 中国标准时间
+Output:
+----------------------------------------------------------
+
+        SystemC 3.0.1-Accellera --- Sep  6 2026 15:58:34
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+PASS: output
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"contract_output" end time: Sep 07 23:54 中国标准时间
+"contract_output" time elapsed: 00:00:00
+----------------------------------------------------------
+
+11/12 Testing: contract_event
+11/12 Test: contract_event
+Command: "D:/0_lzh/GPU/MOORE/build/debug/contract_checks.exe" "event"
+Directory: D:/0_lzh/GPU/MOORE/build/debug
+"contract_event" start time: Sep 07 23:54 中国标准时间
+Output:
+----------------------------------------------------------
+
+        SystemC 3.0.1-Accellera --- Sep  6 2026 15:58:34
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+PASS: event
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"contract_event" end time: Sep 07 23:54 中国标准时间
+"contract_event" time elapsed: 00:00:00
+----------------------------------------------------------
+
+12/12 Testing: contract_statistics
+12/12 Test: contract_statistics
+Command: "D:/0_lzh/GPU/MOORE/build/debug/contract_checks.exe" "statistics"
+Directory: D:/0_lzh/GPU/MOORE/build/debug
+"contract_statistics" start time: Sep 07 23:54 中国标准时间
+Output:
+----------------------------------------------------------
+
+        SystemC 3.0.1-Accellera --- Sep  6 2026 15:58:34
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+PASS: statistics
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"contract_statistics" end time: Sep 07 23:54 中国标准时间
+"contract_statistics" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Sep 07 23:54 中国标准时间

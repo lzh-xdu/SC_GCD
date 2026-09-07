@@ -3,6 +3,7 @@
  * @brief Retire in sequence without denying the oldest task its reserved slot.
  */
 #include "collector.hpp"
+#include "../common/contract.hpp"
 
 #include <stdexcept>
 
@@ -11,15 +12,15 @@ Collector::Collector(sc_core::sc_module_name name, stage1::TestEventLog& testEve
     : sc_module(name)
     , m_testEventLog(testEventLog)
     , m_slots(window) {
-    if (window == 0) {
-        throw std::invalid_argument("window must be nonzero");
-    }
+    requireCondition<std::invalid_argument>(window > 0, "window must be nonzero");
     m_baseOut.initialize(0);
     SC_METHOD(tick);
     sensitive << m_clk.pos();
     dont_initialize();
 }
 void Collector::retire() {
+    requireCondition<std::logic_error>(!m_slots.empty() && m_completed <= m_slots.size(),
+                                       "invalid collector window state");
     auto& head = m_slots[m_nextId % m_slots.size()];
     if (!head) {
         if (m_completed != 0) {
@@ -28,9 +29,7 @@ void Collector::retire() {
         }
         return;
     }
-    if (head->m_id != m_nextId) {
-        throw std::logic_error("window head tag mismatch");
-    }
+    requireCondition<std::logic_error>(head->m_id == m_nextId, "window head tag mismatch");
     if (!m_resultsOut.nb_write(*head)) {
         ++m_outputBlockedCycles;
         m_testEventLog.record(m_nextId, "collector_blocked");
@@ -42,25 +41,27 @@ void Collector::retire() {
     ++m_nextId;
 }
 void Collector::receive() {
+    requireCondition<std::logic_error>(!m_slots.empty() && m_completed <= m_slots.size(),
+                                       "invalid collector window state");
+    requireCondition<std::logic_error>(m_pollTurn < UNIT_COUNT, "collector poll turn out of range");
     const auto other = (m_pollTurn + 1) % UNIT_COUNT;
     const auto selected = m_resultsIn[m_pollTurn].num_available() != 0 ? m_pollTurn : other;
     stage1::Result result;
     if (!m_resultsIn[selected].nb_read(result)) {
         return;
     }
-    if (result.m_id < m_nextId || result.m_id - m_nextId >= m_slots.size()) {
-        throw std::logic_error("result outside reserved window");
-    }
+    requireCondition<std::logic_error>(result.m_id >= m_nextId && result.m_id - m_nextId < m_slots.size(),
+                                       "result outside reserved window");
     auto& slot = m_slots[result.m_id % m_slots.size()];
-    if (slot) {
-        throw std::logic_error("duplicate or colliding window result");
-    }
+    requireCondition<std::logic_error>(!slot, "duplicate or colliding window result");
     slot = result;
     ++m_completed;
     m_pollTurn = (selected + 1) % UNIT_COUNT;
     m_testEventLog.record(result.m_id, "window_store", selected, 0, result.m_gcd);
 }
 void Collector::tick() {
+    requireCondition<std::logic_error>(!m_slots.empty() && m_completed <= m_slots.size(),
+                                       "invalid collector window state");
     retire();
     receive();
     m_baseOut.write(m_nextId);

@@ -7,6 +7,7 @@
  * @brief Connect and observe the stage 3 dual-engine simulation.
  */
 #include "../stage2/compute.hpp"
+#include "../common/contract.hpp"
 #include "dispatcher.hpp"
 #include "collector.hpp"
 #include "../stage2/transform.hpp"
@@ -26,36 +27,36 @@ using stage3::Collector;
 using stage3::Dispatcher;
 using stage3::UNIT_COUNT;
 namespace {
-constexpr int MIN_ARGUMENTS = 4;
-constexpr int MAX_ARGUMENTS = 9;
-constexpr int RESULT_DEPTH_ARGUMENT = 8;
-constexpr int DEFAULT_RESULT_DEPTH = 2;
-constexpr int INPUT_ARGUMENT = 1;
-constexpr int OUTPUT_ARGUMENT = 2;
-constexpr int STATS_ARGUMENT = 3;
-constexpr int DEPTH_ARGUMENT = 4;
-constexpr int TEST_EVENTS_ARGUMENT = 5;
-constexpr int TEST_OUTPUT_PERIOD_ARGUMENT = 6;
-constexpr int MAX_CYCLES_ARGUMENT = 7;
-constexpr int DEFAULT_DEPTH = 2;
-constexpr int MAX_DEPTH = 1000000;
-constexpr std::uint64_t DEFAULT_MAX_CYCLES = 1000000;
-constexpr std::uint64_t MAX_CYCLE_LIMIT = 1000000000;
-constexpr std::uint64_t TEST_DEFAULT_OUTPUT_PERIOD = 1;
-constexpr std::uint64_t TEST_MAX_OUTPUT_PERIOD = 100000000;
-constexpr unsigned QUEUE_COUNT = 4;
-constexpr unsigned TRANSFORM_CAPACITY = 2;
+constexpr int MIN_COMMAND_LINE_ARGUMENT_COUNT = 4;
+constexpr int MAX_COMMAND_LINE_ARGUMENT_COUNT = 9;
+constexpr int COMPUTE_RESULT_FIFO_DEPTH_ARGUMENT_INDEX = 8;
+constexpr int DEFAULT_COMPUTE_RESULT_FIFO_CAPACITY_TASKS = 2;
+constexpr int INPUT_FILE_ARGUMENT_INDEX = 1;
+constexpr int OUTPUT_FILE_ARGUMENT_INDEX = 2;
+constexpr int STATISTICS_FILE_ARGUMENT_INDEX = 3;
+constexpr int FIFO_DEPTH_ARGUMENT_INDEX = 4;
+constexpr int TEST_EVENT_LOG_ARGUMENT_INDEX = 5;
+constexpr int TEST_OUTPUT_PERIOD_ARGUMENT_INDEX = 6;
+constexpr int SIMULATION_CYCLE_LIMIT_ARGUMENT_INDEX = 7;
+constexpr int DEFAULT_FIFO_CAPACITY_TASKS = 2;
+constexpr int MAX_BUFFER_CAPACITY_TASKS = 1000000;
+constexpr std::uint64_t DEFAULT_SIMULATION_CYCLE_LIMIT = 1000000;
+constexpr std::uint64_t MAX_ALLOWED_SIMULATION_CYCLES = 1000000000;
+constexpr std::uint64_t TEST_DEFAULT_OUTPUT_PERIOD_CYCLES = 1;
+constexpr std::uint64_t TEST_MAX_OUTPUT_PERIOD_CYCLES = 100000000;
+constexpr unsigned OBSERVED_FIFO_COUNT = 4;
+constexpr unsigned TRANSFORM_PIPELINE_CAPACITY_TASKS = 2;
 constexpr unsigned TASK_PAYLOAD_BITS = 128;  // 64-bit ID + two 32-bit magnitudes.
 constexpr unsigned RESULT_PAYLOAD_BITS = 96; // 64-bit ID + 32-bit unsigned GCD.
-constexpr int STATS_PRECISION = 12;
-constexpr double CLOCK_DUTY_CYCLE = 0.5;
-constexpr double FINAL_EDGE_MARGIN_NS = 0.5;
+constexpr int STATISTICS_SIGNIFICANT_DIGITS = 12;
+constexpr double CLOCK_HIGH_TIME_FRACTION = 0.5;
+constexpr double SIMULATION_STOP_MARGIN_AFTER_LAST_EDGE_NS = 0.5;
 
 struct Options {
-    int m_resultDepth = DEFAULT_RESULT_DEPTH;
-    int m_depth = DEFAULT_DEPTH;
-    std::uint64_t m_testOutputPeriod = TEST_DEFAULT_OUTPUT_PERIOD;
-    std::uint64_t m_maxCycles = DEFAULT_MAX_CYCLES;
+    int m_resultDepth = DEFAULT_COMPUTE_RESULT_FIFO_CAPACITY_TASKS;
+    int m_depth = DEFAULT_FIFO_CAPACITY_TASKS;
+    std::uint64_t m_testOutputPeriod = TEST_DEFAULT_OUTPUT_PERIOD_CYCLES;
+    std::uint64_t m_maxCycles = DEFAULT_SIMULATION_CYCLE_LIMIT;
     bool m_testTraceEnabled = false;
 };
 
@@ -88,7 +89,7 @@ SC_MODULE(System) {
     Compute m_compute1;
     Collector m_collector;
     Output m_output;
-    std::array<Usage, QUEUE_COUNT> m_queues;
+    std::array<Usage, OBSERVED_FIFO_COUNT> m_queues;
     Usage m_pipeline;
     std::uint64_t m_cycles = 0;
     bool m_finished = false;
@@ -103,7 +104,7 @@ SC_MODULE(System) {
 System::System(sc_core::sc_module_name name, std::istream& input, std::ostream& output, TestEventLog& testEventLog,
                const Options& options)
     : sc_module(name)
-    , m_clk("clk", sc_core::sc_time(CLOCK_PERIOD_NS, sc_core::SC_NS), CLOCK_DUTY_CYCLE,
+    , m_clk("clk", sc_core::sc_time(CLOCK_PERIOD_NS, sc_core::SC_NS), CLOCK_HIGH_TIME_FRACTION,
             sc_core::sc_time(CLOCK_PERIOD_NS, sc_core::SC_NS), true)
     , m_parserToTransform("parser_to_transform", options.m_depth)
     , m_compute0Results("compute0_results", options.m_resultDepth)
@@ -140,18 +141,18 @@ void System::connectModules() {
 }
 
 void System::connectComputes() {
-    const std::array<Compute*, UNIT_COUNT> computes{&m_compute0, &m_compute1};
-    const std::array<sc_core::sc_fifo<Result>*, UNIT_COUNT> results{&m_compute0Results, &m_compute1Results};
+    const std::array<Compute*, UNIT_COUNT> computeUnits{&m_compute0, &m_compute1};
+    const std::array<sc_core::sc_fifo<Result>*, UNIT_COUNT> computeResultFifos{&m_compute0Results, &m_compute1Results};
     for (unsigned unit = 0; unit < UNIT_COUNT; ++unit) {
-        computes[unit]->m_clk(m_clk);
-        computes[unit]->m_dataIn(m_dispatchToComputeData[unit]);
-        computes[unit]->m_validIn(m_dispatchToComputeValid[unit]);
-        computes[unit]->m_readyOut(m_computeToDispatchReady[unit]);
-        computes[unit]->m_resultsOut(*results[unit]);
+        computeUnits[unit]->m_clk(m_clk);
+        computeUnits[unit]->m_dataIn(m_dispatchToComputeData[unit]);
+        computeUnits[unit]->m_validIn(m_dispatchToComputeValid[unit]);
+        computeUnits[unit]->m_readyOut(m_computeToDispatchReady[unit]);
+        computeUnits[unit]->m_resultsOut(*computeResultFifos[unit]);
         m_dispatcher.m_dataOut[unit](m_dispatchToComputeData[unit]);
         m_dispatcher.m_validOut[unit](m_dispatchToComputeValid[unit]);
         m_dispatcher.m_readyIn[unit](m_computeToDispatchReady[unit]);
-        m_collector.m_resultsIn[unit](*results[unit]);
+        m_collector.m_resultsIn[unit](*computeResultFifos[unit]);
     }
 }
 
@@ -181,105 +182,126 @@ void System::observe() {
     }
 }
 
-std::uint64_t positive(const char* text, std::uint64_t limit) {
-    const std::string value(text);
-    if (value.empty() || value.find_first_not_of("0123456789") != std::string::npos) {
-        throw std::runtime_error("expected positive integer option");
-    }
-    const auto number = std::stoull(value);
-    if (number == 0 || number > limit) {
-        throw std::runtime_error("option out of range");
-    }
-    return number;
+std::uint64_t parsePositiveInteger(const char* text, std::uint64_t limit) {
+    requireCondition<std::invalid_argument>(text != nullptr && limit > 0, "invalid option parser arguments");
+    const std::string optionText(text);
+    requireCondition(!optionText.empty() && optionText.find_first_not_of("0123456789") == std::string::npos,
+                     "expected parsePositiveInteger integer option");
+    const auto parsedOptionValue = std::stoull(optionText);
+    requireCondition(parsedOptionValue > 0 && parsedOptionValue <= limit, "option out of range");
+    return parsedOptionValue;
 }
 
 Options parseOptions(int argc, char** argv) {
+    requireCondition<std::invalid_argument>(argc >= MIN_COMMAND_LINE_ARGUMENT_COUNT &&
+                                                argc <= MAX_COMMAND_LINE_ARGUMENT_COUNT && argv != nullptr,
+                                            "invalid command line arguments");
+    for (int argument = 0; argument < argc; ++argument) {
+        requireCondition<std::invalid_argument>(argv[argument] != nullptr, "null command line argument");
+    }
     Options options;
-    if (argc > RESULT_DEPTH_ARGUMENT) {
-        options.m_resultDepth = static_cast<int>(positive(argv[RESULT_DEPTH_ARGUMENT], MAX_DEPTH));
+    if (argc > COMPUTE_RESULT_FIFO_DEPTH_ARGUMENT_INDEX) {
+        options.m_resultDepth = static_cast<int>(
+            parsePositiveInteger(argv[COMPUTE_RESULT_FIFO_DEPTH_ARGUMENT_INDEX], MAX_BUFFER_CAPACITY_TASKS));
     }
-    if (argc > DEPTH_ARGUMENT) {
-        options.m_depth = static_cast<int>(positive(argv[DEPTH_ARGUMENT], MAX_DEPTH));
+    if (argc > FIFO_DEPTH_ARGUMENT_INDEX) {
+        options.m_depth =
+            static_cast<int>(parsePositiveInteger(argv[FIFO_DEPTH_ARGUMENT_INDEX], MAX_BUFFER_CAPACITY_TASKS));
     }
-    if (argc > TEST_OUTPUT_PERIOD_ARGUMENT) {
-        options.m_testOutputPeriod = positive(argv[TEST_OUTPUT_PERIOD_ARGUMENT], TEST_MAX_OUTPUT_PERIOD);
+    if (argc > TEST_OUTPUT_PERIOD_ARGUMENT_INDEX) {
+        options.m_testOutputPeriod =
+            parsePositiveInteger(argv[TEST_OUTPUT_PERIOD_ARGUMENT_INDEX], TEST_MAX_OUTPUT_PERIOD_CYCLES);
     }
-    if (argc > MAX_CYCLES_ARGUMENT) {
-        options.m_maxCycles = positive(argv[MAX_CYCLES_ARGUMENT], MAX_CYCLE_LIMIT);
+    if (argc > SIMULATION_CYCLE_LIMIT_ARGUMENT_INDEX) {
+        options.m_maxCycles =
+            parsePositiveInteger(argv[SIMULATION_CYCLE_LIMIT_ARGUMENT_INDEX], MAX_ALLOWED_SIMULATION_CYCLES);
     }
-    options.m_testTraceEnabled = argc > TEST_EVENTS_ARGUMENT && std::string(argv[TEST_EVENTS_ARGUMENT]) != "-";
+    options.m_testTraceEnabled =
+        argc > TEST_EVENT_LOG_ARGUMENT_INDEX && std::string(argv[TEST_EVENT_LOG_ARGUMENT_INDEX]) != "-";
     return options;
 }
 
 void checkDistinctPaths(char** argv, bool testTraceEnabled) {
+    requireCondition<std::invalid_argument>(argv != nullptr, "null command line arguments");
     // Prevent accidentally truncating an input or using one file for two outputs.
     std::vector<std::filesystem::path> paths;
-    std::vector<int> arguments{INPUT_ARGUMENT, OUTPUT_ARGUMENT, STATS_ARGUMENT};
+    std::vector<int> arguments{INPUT_FILE_ARGUMENT_INDEX, OUTPUT_FILE_ARGUMENT_INDEX, STATISTICS_FILE_ARGUMENT_INDEX};
     if (testTraceEnabled) {
-        arguments.push_back(TEST_EVENTS_ARGUMENT);
+        arguments.push_back(TEST_EVENT_LOG_ARGUMENT_INDEX);
     }
     for (const int argument : arguments) {
         const auto path = std::filesystem::weakly_canonical(argv[argument]);
         for (const auto& previous : paths) {
-            if (path == previous || (std::filesystem::exists(path) && std::filesystem::exists(previous) &&
-                                     std::filesystem::equivalent(path, previous))) {
-                throw std::runtime_error("input, output, stats and events must be distinct files");
-            }
+            requireCondition(
+                !(path == previous || (std::filesystem::exists(path) && std::filesystem::exists(previous) &&
+                                       std::filesystem::equivalent(path, previous))),
+                "input, output, stats and events must be distinct files");
         }
         paths.push_back(path);
     }
 }
 
 void writeQueueStats(std::ostream& stats, const System& system, const Options& options) {
-    const std::array<const char*, QUEUE_COUNT> names{"parser_to_transform", "compute0_results", "compute1_results",
-                                                     "collector_to_output"};
-    const std::array<int, QUEUE_COUNT> capacities{options.m_depth, options.m_resultDepth, options.m_resultDepth,
-                                                  options.m_depth};
-    for (unsigned index = 0; index < QUEUE_COUNT; ++index) {
-        stats << names[index] << "_capacity," << capacities[index] << '\n'
-              << names[index] << "_average," << static_cast<double>(system.m_queues[index].m_sum) / system.m_cycles
-              << '\n'
-              << names[index] << "_peak," << system.m_queues[index].m_peak << '\n';
+    requireCondition(static_cast<bool>(stats), "statistics stream is not writable");
+    requireCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
+    const std::array<const char*, OBSERVED_FIFO_COUNT> fifoMetricNames{"parser_to_transform", "compute0_results",
+                                                                       "compute1_results", "collector_to_output"};
+    const std::array<int, OBSERVED_FIFO_COUNT> fifoCapacitiesTasks{options.m_depth, options.m_resultDepth,
+                                                                   options.m_resultDepth, options.m_depth};
+    for (unsigned index = 0; index < OBSERVED_FIFO_COUNT; ++index) {
+        stats << fifoMetricNames[index] << "_capacity," << fifoCapacitiesTasks[index] << '\n'
+              << fifoMetricNames[index] << "_average,"
+              << static_cast<double>(system.m_queues[index].m_sum) / system.m_cycles << '\n'
+              << fifoMetricNames[index] << "_peak," << system.m_queues[index].m_peak << '\n';
     }
-    stats << "transform_registers_capacity," << TRANSFORM_CAPACITY << "\ntransform_registers_average,"
+    stats << "transform_registers_capacity," << TRANSFORM_PIPELINE_CAPACITY_TASKS << "\ntransform_registers_average,"
           << static_cast<double>(system.m_pipeline.m_sum) / system.m_cycles << "\ntransform_registers_peak,"
           << system.m_pipeline.m_peak << '\n';
 }
 
 void writeHandshakeStats(std::ostream& stats, const System& system, const Options& options) {
-    const auto valid = system.m_transform.m_validCycles;
-    stats << "handshake_valid_cycles," << valid << "\nhandshake_blocked_cycles," << system.m_transform.m_blockedCycles
-          << "\nhandshake_blocked_fraction,"
-          << (valid ? static_cast<double>(system.m_transform.m_blockedCycles) / valid : 0.0) << "\ncompute_units,"
-          << UNIT_COUNT << "\ncompute_task_slots," << UNIT_COUNT << "\ntransform_slots," << TRANSFORM_CAPACITY
-          << "\nfifo_slots," << 2 * options.m_depth + UNIT_COUNT * options.m_resultDepth << "\nbuffer_payload_bits,"
+    requireCondition(static_cast<bool>(stats), "statistics stream is not writable");
+    requireCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
+    const auto handshakeValidCycles = system.m_transform.m_validCycles;
+    stats << "handshake_valid_cycles," << handshakeValidCycles << "\nhandshake_blocked_cycles,"
+          << system.m_transform.m_blockedCycles << "\nhandshake_blocked_fraction,"
+          << (handshakeValidCycles ? static_cast<double>(system.m_transform.m_blockedCycles) / handshakeValidCycles
+                                   : 0.0)
+          << "\ncompute_units," << UNIT_COUNT << "\ncompute_task_slots," << UNIT_COUNT << "\ntransform_slots,"
+          << TRANSFORM_PIPELINE_CAPACITY_TASKS << "\nfifo_slots,"
+          << 2 * options.m_depth + UNIT_COUNT * options.m_resultDepth << "\nbuffer_payload_bits,"
           << options.m_depth * (TASK_PAYLOAD_BITS + RESULT_PAYLOAD_BITS) +
-                 UNIT_COUNT * options.m_resultDepth * RESULT_PAYLOAD_BITS + TRANSFORM_CAPACITY * TASK_PAYLOAD_BITS
+                 UNIT_COUNT * options.m_resultDepth * RESULT_PAYLOAD_BITS +
+                 TRANSFORM_PIPELINE_CAPACITY_TASKS * TASK_PAYLOAD_BITS
           << "\ndispatch_idle_other_blocked_cycles," << system.m_dispatcher.m_idleOtherBlockedCycles
           << "\nreorder_wait_cycles," << system.m_collector.m_orderWaitCycles << "\ncollector_output_blocked_cycles,"
           << system.m_collector.m_outputBlockedCycles << '\n';
 }
 
 void writeComputeStats(std::ostream& stats, const System& system) {
-    const std::array<const Compute*, UNIT_COUNT> computes{&system.m_compute0, &system.m_compute1};
+    requireCondition(static_cast<bool>(stats), "statistics stream is not writable");
+    requireCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
+    const std::array<const Compute*, UNIT_COUNT> computeUnits{&system.m_compute0, &system.m_compute1};
     for (unsigned unit = 0; unit < UNIT_COUNT; ++unit) {
-        stats << "compute" << unit << "_busy_cycles," << computes[unit]->m_busyCycles << '\n'
+        stats << "compute" << unit << "_busy_cycles," << computeUnits[unit]->m_busyCycles << '\n'
               << "compute" << unit << "_utilization,"
-              << static_cast<double>(computes[unit]->m_busyCycles) / system.m_cycles << '\n'
-              << "compute" << unit << "_tasks," << computes[unit]->m_accepted << '\n'
-              << "compute" << unit << "_result_wait_cycles," << computes[unit]->m_resultWaitCycles << '\n';
+              << static_cast<double>(computeUnits[unit]->m_busyCycles) / system.m_cycles << '\n'
+              << "compute" << unit << "_tasks," << computeUnits[unit]->m_accepted << '\n'
+              << "compute" << unit << "_result_wait_cycles," << computeUnits[unit]->m_resultWaitCycles << '\n';
     }
 }
 
 void writeStats(std::ostream& stats, const System& system, const Options& options) {
-    const auto cycles = system.m_cycles;
-    stats << std::setprecision(STATS_PRECISION) << "metric,value\n"
-          << "cycles," << cycles << "\ntasks," << system.m_output.m_received << "\nsimulated_time_ns," << cycles
-          << "\nthroughput_tasks_per_cycle," << static_cast<double>(system.m_output.m_received) / cycles
-          << "\ncompute_busy_cycles," << (system.m_compute0.m_busyCycles + system.m_compute1.m_busyCycles)
-          << "\ncompute_utilization,"
+    requireCondition(static_cast<bool>(stats), "statistics stream is not writable");
+    requireCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
+    const auto elapsedSimulationCycles = system.m_cycles;
+    stats << std::setprecision(STATISTICS_SIGNIFICANT_DIGITS) << "metric,value\n"
+          << "cycles," << elapsedSimulationCycles << "\ntasks," << system.m_output.m_received << "\nsimulated_time_ns,"
+          << elapsedSimulationCycles << "\nthroughput_tasks_per_cycle,"
+          << static_cast<double>(system.m_output.m_received) / elapsedSimulationCycles << "\ncompute_busy_cycles,"
+          << (system.m_compute0.m_busyCycles + system.m_compute1.m_busyCycles) << "\ncompute_utilization,"
           << static_cast<double>((system.m_compute0.m_busyCycles + system.m_compute1.m_busyCycles)) /
-                 (UNIT_COUNT * cycles)
+                 (UNIT_COUNT * elapsedSimulationCycles)
           << "\ncompute_result_wait_cycles,"
           << (system.m_compute0.m_resultWaitCycles + system.m_compute1.m_resultWaitCycles) << "\noutput_period,"
           << options.m_testOutputPeriod << '\n';
@@ -294,19 +316,15 @@ void flushFiles(std::ofstream& output, std::ofstream& stats, std::ofstream& test
     if (testTraceEnabled) {
         testEvents.flush();
     }
-    if (!output || !stats || (testTraceEnabled && !testEvents)) {
-        throw std::runtime_error("file flush failed");
-    }
+    requireCondition(output && stats && (!testTraceEnabled || testEvents), "file flush failed");
 }
 
 void openTestEvents(std::ofstream& testEvents, TestEventLog& testEventLog, char** argv, bool testTraceEnabled) {
     if (!testTraceEnabled) {
         return;
     }
-    testEvents.open(argv[TEST_EVENTS_ARGUMENT]);
-    if (!testEvents) {
-        throw std::runtime_error("cannot open events");
-    }
+    testEvents.open(argv[TEST_EVENT_LOG_ARGUMENT_INDEX]);
+    requireCondition(static_cast<bool>(testEvents), "cannot open events");
     testEvents << "id,event,cycle,a,b,value,latency\n";
     testEventLog.m_testStream = &testEvents;
 }
@@ -314,25 +332,19 @@ void openTestEvents(std::ofstream& testEvents, TestEventLog& testEventLog, char*
 int run(int argc, char** argv) {
     const auto options = parseOptions(argc, argv);
     checkDistinctPaths(argv, options.m_testTraceEnabled);
-    std::ifstream input(argv[INPUT_ARGUMENT]);
-    if (!input) {
-        throw std::runtime_error("cannot open input");
-    }
-    std::ofstream output(argv[OUTPUT_ARGUMENT]);
-    std::ofstream stats(argv[STATS_ARGUMENT]);
+    std::ifstream input(argv[INPUT_FILE_ARGUMENT_INDEX]);
+    requireCondition(static_cast<bool>(input), "cannot open input");
+    std::ofstream output(argv[OUTPUT_FILE_ARGUMENT_INDEX]);
+    std::ofstream stats(argv[STATISTICS_FILE_ARGUMENT_INDEX]);
     std::ofstream testEvents;
-    if (!output || !stats) {
-        throw std::runtime_error("cannot open output or stats");
-    }
+    requireCondition(output && stats, "cannot open output or stats");
     TestEventLog testEventLog;
     openTestEvents(testEvents, testEventLog, argv, options.m_testTraceEnabled);
     System system("system", input, output, testEventLog, options);
     // Include the last allowed rising edge, but no extra rising edge.
-    sc_core::sc_start(
-        sc_core::sc_time(static_cast<double>(options.m_maxCycles) + FINAL_EDGE_MARGIN_NS, sc_core::SC_NS));
-    if (!system.m_finished) {
-        throw std::runtime_error("simulation cycle limit exceeded");
-    }
+    sc_core::sc_start(sc_core::sc_time(
+        static_cast<double>(options.m_maxCycles) + SIMULATION_STOP_MARGIN_AFTER_LAST_EDGE_NS, sc_core::SC_NS));
+    requireCondition(system.m_finished, "simulation cycle limit exceeded");
     writeStats(stats, system, options);
     testEventLog.m_statistics.write(stats);
     stats << "compute0_idle_no_input_cycles," << system.m_compute0.m_idleNoInputCycles << '\n'
@@ -345,11 +357,11 @@ int run(int argc, char** argv) {
 } // namespace
 
 int sc_main(int argc, char** argv) {
-    if (argc < MIN_ARGUMENTS || argc > MAX_ARGUMENTS) {
+    if (argc < MIN_COMMAND_LINE_ARGUMENT_COUNT || argc > MAX_COMMAND_LINE_ARGUMENT_COUNT) {
         std::cerr << "Usage: stage3_gcd INPUT OUTPUT STATS [DEPTH=2] [EVENTS.csv|-]"
                      " [OUTPUT_PERIOD=1] [MAX_CYCLES=1000000] [RESULT_DEPTH=2]\n";
-        constexpr int USAGE_ERROR = 2;
-        return USAGE_ERROR;
+        constexpr int INVALID_ARGUMENT_COUNT_EXIT_CODE = 2;
+        return INVALID_ARGUMENT_COUNT_EXIT_CODE;
     }
     try {
         return run(argc, argv);

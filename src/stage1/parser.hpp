@@ -37,6 +37,7 @@ SC_MODULE(Parser) {
     sc_core::sc_fifo_out<RawTask> m_tasksOut{"tasks_out"};
     std::uint64_t m_sent = 0;
     bool m_eof = false;
+    /// @brief input 须可读且覆盖模块寿命；读取失败/非法整数行抛 runtime_error，正常 EOF 停止发送。
     Parser(sc_core::sc_module_name name, std::istream & input, TestEventLog & testEventLog);
 
 private:

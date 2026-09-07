@@ -23,9 +23,11 @@ SC_MODULE(Transform) {
     sc_core::sc_in<bool> m_readyIn{"ready_in"};
     std::uint64_t m_validCycles = 0;
     std::uint64_t m_blockedCycles = 0;
+    /// @brief 两个内部槽都空；排序槽和输出信号不重复计数。
     bool empty() const {
         return !m_magnitudeStage && !m_orderedStage;
     }
+    /// @brief 当前内部任务数，范围 0..2；不包含外部 FIFO。
     unsigned occupancy() const {
         return static_cast<unsigned>(m_magnitudeStage.has_value()) + static_cast<unsigned>(m_orderedStage.has_value());
     }

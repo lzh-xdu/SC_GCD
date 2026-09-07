@@ -3,6 +3,7 @@
  * @brief Admission-to-output latency and its four additive phases.
  */
 #include "task_statistics.hpp"
+#include "contract.hpp"
 #include <algorithm>
 #include <numeric>
 #include <ostream>
@@ -17,9 +18,9 @@ void TaskStatistics::record(std::uint64_t id, std::string_view event, std::uint6
     }
     const auto index = static_cast<std::size_t>(found - EVENTS.begin());
     auto& timeline = m_pending[id];
-    if (index != timeline.m_next || (index > 0 && cycle < timeline.m_edges[index - 1])) {
-        throw std::logic_error("invalid task statistics event sequence");
-    }
+    requireCondition<std::logic_error>(
+        !(index != timeline.m_next || (index > 0 && cycle < timeline.m_edges[index - 1])),
+        "invalid task statistics event sequence");
     timeline.m_edges[index] = cycle;
     ++timeline.m_next;
     if (timeline.m_next != BOUNDARY_COUNT) {
@@ -33,9 +34,8 @@ void TaskStatistics::record(std::uint64_t id, std::string_view event, std::uint6
 }
 
 void TaskStatistics::write(std::ostream& stream) const {
-    if (!m_pending.empty()) {
-        throw std::logic_error("unfinished task statistics at drain");
-    }
+    requireCondition(static_cast<bool>(stream), "statistics stream is not writable");
+    requireCondition<std::logic_error>(m_pending.empty(), "unfinished task statistics at drain");
     constexpr std::array<std::string_view, BOUNDARY_COUNT> NAMES{"precompute", "compute", "result_wait", "delivery",
                                                                  "end_to_end"};
     stream << "task_latency_count," << m_samples.back().size() << '\n';

@@ -24,6 +24,7 @@ SC_MODULE(Compute) {
     std::uint64_t m_idleNoInputCycles = 0;
     std::uint64_t m_resultWaitCycles = 0;
     std::uint64_t m_accepted = 0;
+    /// @brief 只读内部空闲状态；实际接收仍以该上升沿 valid && ready 为准。
     bool idle() const {
         return m_state == State::IDLE;
     }
@@ -36,8 +37,11 @@ private:
     std::uint64_t m_remaining = 0;
     TestEventLog & m_testEventLog;
     unsigned m_unit;
+    /// @brief 上升沿推进；BUSY 必须有剩余周期，异常状态抛 logic_error。
     void tick();
+    /// @brief 仅在 RESULT_PENDING 尝试交付；FIFO 满是正常背压并保留结果。
     void deliver();
+    /// @brief 仅在 IDLE 且 valid && ready 时调用；输入幅值必须有序。
     void accept();
 };
 } // namespace stage2

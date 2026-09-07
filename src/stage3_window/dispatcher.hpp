@@ -29,6 +29,8 @@ SC_MODULE(Dispatcher) {
     std::uint64_t m_windowBlockedWithReadyCycles = 0;
     std::uint64_t m_engineBlockedCycles = 0;
     std::uint64_t m_randomChoices = 0;
+    /// @brief window 为未退休任务上限，须与 Collector 一致；seed 是可复现仲裁种子。
+    /// @throws std::invalid_argument window 或 seed 为零。端口须在 sc_start 前绑定。
     Dispatcher(sc_core::sc_module_name name, stage1::TestEventLog & testEventLog, unsigned window, std::uint32_t seed);
 
 private:

@@ -21,6 +21,7 @@ SC_MODULE(Collector) {
     std::uint64_t m_nextId = 0;
     std::uint64_t m_orderWaitCycles = 0;
     std::uint64_t m_outputBlockedCycles = 0;
+    /// @brief 输入通道必须遵守 id % UNIT_COUNT 派发映射；读到非预期编号抛 logic_error。
     Collector(sc_core::sc_module_name name, stage1::TestEventLog & testEventLog);
 
 private:

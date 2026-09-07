@@ -3,6 +3,7 @@
  * @brief Edge-based elastic pipeline with stable stalled payload.
  */
 #include "transform.hpp"
+#include "../common/contract.hpp"
 
 #include <algorithm>
 
@@ -20,6 +21,10 @@ Transform::Transform(sc_core::sc_module_name name, TestEventLog& testEventLog)
     dont_initialize();
 }
 void Transform::tick() {
+    requireCondition<std::logic_error>(m_validOut.read() == m_orderedStage.has_value(),
+                                       "transform valid does not match ordered slot");
+    requireCondition<std::logic_error>(!m_orderedStage || m_dataOut.read() == *m_orderedStage,
+                                       "transform signal does not match held payload");
     // Read old signal values; ordinary optional storage is updated immediately.
     if (m_validOut.read()) {
         ++m_validCycles;

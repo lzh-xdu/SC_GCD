@@ -3,6 +3,7 @@
  * @brief Preserve input order while retaining early completions in their own queues.
  */
 #include "collector.hpp"
+#include "../common/contract.hpp"
 
 #include <stdexcept>
 
@@ -30,15 +31,10 @@ void Collector::tick() {
         return;
     }
     stage1::Result result;
-    if (!m_resultsIn[selected].nb_read(result)) {
-        throw std::logic_error("collector lost reserved channel capacity");
-    }
-    if (result.m_id != m_nextId) {
-        throw std::logic_error("collector received unexpected result id");
-    }
-    if (!m_resultsOut.nb_write(result)) {
-        throw std::logic_error("collector lost reserved output capacity");
-    }
+    requireCondition<std::logic_error>(m_resultsIn[selected].nb_read(result),
+                                       "collector lost reserved channel capacity");
+    requireCondition<std::logic_error>(result.m_id == m_nextId, "collector received unexpected result id");
+    requireCondition<std::logic_error>(m_resultsOut.nb_write(result), "collector lost reserved output capacity");
     m_testEventLog.record(result.m_id, "reorder_emit", 0, 0, result.m_gcd);
     ++m_nextId;
 }

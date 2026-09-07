@@ -214,3 +214,10 @@
 - 实读 build/debug/day01_basics.vcd、示例源码及本地 VCD tracing 源码；核对 GTKWave 官方文档，补充 [波形说明](inspect-simulation.md) 和 [L-007b](learning-log.md#l-007bvcd-与实际波形末尾的区别)。
 - 新观察：文件末尾 #25 无信号变化；保留事实，未将代码预期冒充波形记录，未实施末沿记录修复。
 - 文档轮次，未安装查看器、未运行模型测试；本机 PATH 无 gtkwave。未触碰 README 原有改动。
+
+## 2026-09-07：命名、函数校验与头文件注释
+
+- 用户要求改善各阶段 const 命名、增加入口异常校验、优化头文件注释；AI 实施始终生效的 requireCondition，保留异常分类和诊断。
+- 详细范围与取舍见 [命名与运行时契约](code-contracts.md)，规范同步至 [coding-style.md](coding-style.md)。
+- Release/Debug 构建退出 0，CTest 各 12/12：原 6 项回归及新增 6 项异常测试通过。证据链接见详细记录。
+- 未推进作业 4；用户原有 README.md 改动不纳入本轮提交。未做主机执行开销基准。

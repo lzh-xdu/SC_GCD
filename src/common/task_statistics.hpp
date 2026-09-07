@@ -12,7 +12,9 @@
 
 class TaskStatistics {
 public:
+    /// @brief 记录任务边界；非边界事件忽略，边界乱序或周期倒退抛 logic_error。
     void record(std::uint64_t id, std::string_view event, std::uint64_t cycle);
+    /// @brief 排空后写 CSV；未完成任务抛 logic_error，不可写流抛 runtime_error；空任务集合法。
     void write(std::ostream& stream) const;
 
 private:

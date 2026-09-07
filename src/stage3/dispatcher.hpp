@@ -22,6 +22,7 @@ SC_MODULE(Dispatcher) {
     sc_core::sc_vector<sc_core::sc_out<bool>> m_validOut{"valid_out", UNIT_COUNT};
     sc_core::sc_vector<sc_core::sc_in<bool>> m_readyIn{"ready_in", UNIT_COUNT};
     std::uint64_t m_idleOtherBlockedCycles = 0;
+    /// @brief 初始选择 Compute0；所有端口须在 sc_start 前绑定，日志引用须覆盖模块寿命。
     Dispatcher(sc_core::sc_module_name name, stage1::TestEventLog & testEventLog);
 
 private:

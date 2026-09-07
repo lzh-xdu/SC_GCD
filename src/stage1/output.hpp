@@ -35,6 +35,8 @@ SC_MODULE(Output) {
     sc_core::sc_in<bool> m_clk{"clk"};
     sc_core::sc_fifo_in<Result> m_resultsIn{"results_in"};
     std::uint64_t m_received = 0;
+    /// @brief output 须可写且覆盖模块寿命；testOutputPeriod 单位为周期，必须大于零。
+    /// @throws std::invalid_argument 周期为零；写失败抛 runtime_error，结果乱序抛 logic_error。
     Output(sc_core::sc_module_name name, std::ostream & output, TestEventLog & testEventLog,
            std::uint64_t testOutputPeriod);
 

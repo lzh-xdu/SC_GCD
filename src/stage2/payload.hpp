@@ -18,6 +18,7 @@ using stage1::RawTask;
 using stage1::Result;
 using stage1::TestEventLog;
 
+/// @brief 握手任务：id 是原始顺序号，a >= b 为非负幅值；valid 为 false 时数据无业务含义。
 struct Payload {
     std::uint64_t m_id{};
     std::uint64_t m_a{};

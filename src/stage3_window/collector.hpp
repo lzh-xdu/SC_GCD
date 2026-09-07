@@ -28,6 +28,8 @@ SC_MODULE(Collector) {
     unsigned occupancy() const {
         return m_completed;
     }
+    /// @brief window 是预留槽数量，须与 Dispatcher 一致；日志引用须覆盖模块寿命。
+    /// @throws std::invalid_argument window 为零；越窗、重复或错序结果抛 logic_error。
     Collector(sc_core::sc_module_name name, stage1::TestEventLog & testEventLog, unsigned window);
 
 private:
