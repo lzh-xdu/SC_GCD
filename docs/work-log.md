@@ -232,3 +232,8 @@
 - 详细范围与取舍见 [命名与运行时契约](code-contracts.md)，规范同步至 [coding-style.md](coding-style.md)。
 - Release/Debug 构建退出 0，CTest 各 12/12：原 6 项回归及新增 6 项异常测试通过。证据链接见详细记录。
 - 未推进作业 4；用户原有 README.md 改动不纳入本轮提交。未做主机执行开销基准。
+
+## 2026-09-08：明确零边界模型假设
+
+- 按用户要求，在 [阶段 1 设计](stage1-design.md) 和 [最终设计](final-design.md) 显式标注 spec 外的零输入约定，保留原行为并注明本次澄清日期。
+- 核对 Compute 的循环条件及既有边界输入；仅改文档，未重新运行模型测试。协作记录见 [AI 日志](ai-log.md)。
