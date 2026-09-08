@@ -244,3 +244,8 @@
 - 基线 d50bf5e；本轮头文件仅注释变化，未修改功能代码。去注释对比通过，全部头文件具有五项说明；差异空白检查通过。
 - 实际执行 `cmake --build build --parallel 4`、`ctest --test-dir build --output-on-failure`，Release 构建退出 0，CTest 12/12 通过（6.20 秒）；后续仅对齐 ASCII 图框。未重复 Debug 测试。
 - 本条与头文件修改同提交；保留用户已有 README 修改，未推进作业 4。
+
+## 2026-09-09：核查 Instrumentation 开关等价证据
+
+- 用户询问当前开关结果是否一致；核查现有实现与测试，结论见 [统一统计文档](task-statistics.md#2026-09-09instrumentation-开关的实际验证范围)。
+- 已有开关只控制事件 CSV，统计始终执行；作业 1 basic 有逐字节结果/统计对比且上一轮回归通过，作业 2、3 缺同类成对断言。未改代码或新增测试结果。
