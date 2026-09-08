@@ -16,10 +16,10 @@
 #include <string>
 
 namespace stage1 {
-Parser::Parser(sc_core::sc_module_name name, std::istream& input, TestEventLog& testEventLog)
+Parser::Parser(sc_core::sc_module_name name, std::istream& input, EventRecorder& recorder)
     : sc_module(name)
     , m_input(input)
-    , m_testEventLog(testEventLog) {
+    , m_recorder(recorder) {
     requireCondition(static_cast<bool>(input), "input stream is not readable");
     SC_METHOD(tick);
     sensitive << m_clk.pos();
@@ -47,7 +47,7 @@ void Parser::tick() {
     requireCondition<std::logic_error>(
         m_tasksOut.nb_write({m_sent, static_cast<std::int32_t>(a), static_cast<std::int32_t>(b)}),
         "parser lost reserved FIFO space");
-    m_testEventLog.record(m_sent, "parser_send");
+    m_recorder.record(m_sent, "parser_send");
     ++m_sent;
 }
 } // namespace stage1

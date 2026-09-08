@@ -44,20 +44,16 @@ SC_MODULE(Dispatcher) {
     sc_core::sc_vector<sc_core::sc_out<stage2::Payload>> m_dataOut{"data_out", UNIT_COUNT};
     sc_core::sc_vector<sc_core::sc_out<bool>> m_validOut{"valid_out", UNIT_COUNT};
     sc_core::sc_vector<sc_core::sc_in<bool>> m_readyIn{"ready_in", UNIT_COUNT};
-    std::uint64_t m_dispatched = 0;
-    std::uint64_t m_windowBlockedCycles = 0;
-    std::uint64_t m_windowBlockedWithReadyCycles = 0;
-    std::uint64_t m_engineBlockedCycles = 0;
-    std::uint64_t m_randomChoices = 0;
+    model::instrumentation::DispatchStatistics m_statistics;
     /**
      * @brief window 为未退休任务上限，须与 Collector 一致；seed 是可复现仲裁种子。
      * @throws std::invalid_argument window 或 seed 为零。端口须在 sc_start 前绑定。
      */
-    Dispatcher(sc_core::sc_module_name name, stage1::TestEventLog & testEventLog, unsigned window, std::uint32_t seed);
+    Dispatcher(sc_core::sc_module_name name, stage1::EventRecorder & recorder, unsigned window, std::uint32_t seed);
 
 private:
     sc_core::sc_signal<std::uint32_t> m_randomState{"random_state"};
-    stage1::TestEventLog& m_testEventLog;
+    stage1::EventRecorder& m_recorder;
     unsigned m_window;
     bool hasCredit() const;
     unsigned selectedUnit() const;

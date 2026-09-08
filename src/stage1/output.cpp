@@ -13,11 +13,11 @@
 #include <stdexcept>
 
 namespace stage1 {
-Output::Output(sc_core::sc_module_name name, std::ostream& output, TestEventLog& testEventLog,
+Output::Output(sc_core::sc_module_name name, std::ostream& output, EventRecorder& recorder,
                std::uint64_t testOutputPeriod)
     : sc_module(name)
     , m_output(output)
-    , m_testEventLog(testEventLog)
+    , m_recorder(recorder)
     , m_testOutputPeriod(testOutputPeriod) {
     requireCondition<std::invalid_argument>(testOutputPeriod > 0, "output period must be nonzero");
     requireCondition(static_cast<bool>(output), "output stream is not writable");
@@ -38,7 +38,7 @@ void Output::tick() {
     requireCondition<std::logic_error>(result.m_id == m_received, "out-of-order result");
     m_output << result.m_gcd << '\n';
     requireCondition(static_cast<bool>(m_output), "output file write failed");
-    m_testEventLog.record(result.m_id, "output", 0, 0, result.m_gcd);
+    m_recorder.record(result.m_id, "output", 0, 0, result.m_gcd);
     ++m_received;
 }
 } // namespace stage1

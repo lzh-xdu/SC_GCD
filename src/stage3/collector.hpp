@@ -38,15 +38,14 @@ SC_MODULE(Collector) {
     sc_core::sc_vector<sc_core::sc_fifo_in<stage1::Result>> m_resultsIn{"results_in", UNIT_COUNT};
     sc_core::sc_fifo_out<stage1::Result> m_resultsOut{"results_out"};
     std::uint64_t m_nextId = 0;
-    std::uint64_t m_orderWaitCycles = 0;
-    std::uint64_t m_outputBlockedCycles = 0;
+    model::instrumentation::CollectorStatistics m_statistics;
     /**
      * @brief 输入通道必须遵守 id % UNIT_COUNT 派发映射；读到非预期编号抛 logic_error。
      */
-    Collector(sc_core::sc_module_name name, stage1::TestEventLog & testEventLog);
+    Collector(sc_core::sc_module_name name, stage1::EventRecorder & recorder);
 
 private:
-    stage1::TestEventLog& m_testEventLog;
+    stage1::EventRecorder& m_recorder;
     void tick();
 };
 } // namespace stage3

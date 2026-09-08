@@ -10,5 +10,6 @@ BreakConstructorInitializers: BeforeComma
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 PackConstructorInitializers: Never
 SortIncludes: false
+ReflowComments: false
 PointerAlignment: Left
 AccessModifierOffset: -4

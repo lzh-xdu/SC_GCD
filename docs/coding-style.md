@@ -33,3 +33,9 @@
 - 接口图使用真实端口或函数接口；协议、时序和初始化必须与实现一致。无复位端口须明确说明，不照搬示例中的低有效同步复位。
 - 数据类型、无状态工具和被动统计也使用上述结构，注明不适用的硬件时序/复位语义；成员函数的简短契约保留为 Doxygen 块。
 - spec 外的边界约定显式标记 Model Assumption；保留参数寿命、异常、背压和统计职责说明。
+
+## 2026-09-09：Model 分层补充
+
+- 前述 TestEventLog 命名被 EventRecorder 替代：该观察器同时承载正式任务统计，成员引用为 m_recorder；纯测试流仍为 m_testStream。
+- 模块观测计数统一归入 m_statistics，硬件控制状态保留在模块中；共享数值运算和延迟规则见 [Model 分层](model-structure.md)。
+- clang-format 关闭 ReflowComments，避免自动重排破坏头文件 ASCII 接口图。

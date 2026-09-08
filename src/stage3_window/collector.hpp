@@ -44,8 +44,7 @@ SC_MODULE(Collector) {
     sc_core::sc_fifo_out<stage1::Result> m_resultsOut{"results_out"};
     sc_core::sc_out<std::uint64_t> m_baseOut{"base_out"};
     std::uint64_t m_nextId = 0;
-    std::uint64_t m_orderWaitCycles = 0;
-    std::uint64_t m_outputBlockedCycles = 0;
+    model::instrumentation::CollectorStatistics m_statistics;
     unsigned occupancy() const {
         return m_completed;
     }
@@ -53,10 +52,10 @@ SC_MODULE(Collector) {
      * @brief window 是预留槽数量，须与 Dispatcher 一致；日志引用须覆盖模块寿命。
      * @throws std::invalid_argument window 为零；越窗、重复或错序结果抛 logic_error。
      */
-    Collector(sc_core::sc_module_name name, stage1::TestEventLog & testEventLog, unsigned window);
+    Collector(sc_core::sc_module_name name, stage1::EventRecorder & recorder, unsigned window);
 
 private:
-    stage1::TestEventLog& m_testEventLog;
+    stage1::EventRecorder& m_recorder;
     std::vector<std::optional<stage1::Result>> m_slots;
     unsigned m_completed = 0;
     unsigned m_pollTurn = 0;

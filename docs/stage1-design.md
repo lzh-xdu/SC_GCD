@@ -57,7 +57,7 @@ Parser → parser_to_transform（有限 FIFO）→ Transform → transform_to_co
 - 当 `b == 0` 时不执行 modulo operation（不计算 `% 0`），也不套用 modulo latency 公式 `max(1, bits(a)-bits(b)+1)`。此规则也适用于取余迭代中 b 变为零后的终止判断。
 - 若接收时 b 就为零，取余次数为零，计算延迟 `L=0`；在接收沿完成并尝试写出，同沿最多接收这一条。输出阻塞等待及其他模块的延迟仍按各自规则计算，不能将 L=0 理解为整个系统零延迟。
 
-实现依据：[Compute](../src/stage1/compute.cpp) 的 `while (b != 0)` 同时保护取模和延迟累加；既有覆盖见 [边界测试](../tests/stage1/verify.py) 与 [极值输入集](../tests/stage1/cases/extreme_grid.txt)。本次仅明确文档，不产生新的测试运行结果。
+实现依据（2026-09-09 更新路径）：原 Compute 内的 `while (b != 0)` 已抽取到共享 [延迟规划](../src/model/timing/gcd_plan.cpp)，仍同时保护取模和延迟累加；既有覆盖见 [边界测试](../tests/stage1/verify.py) 与 [极值输入集](../tests/stage1/cases/extreme_grid.txt)。2026-09-08 仅明确文档；本次结构重构与验证见 [Model 职责分层](model-structure.md)。
 
 ## Output 与文件规则
 
@@ -87,3 +87,5 @@ Parser → parser_to_transform（有限 FIFO）→ Transform → transform_to_co
 | 12 | Output 接收并写文件，排空后结束 |
 
 此表是待代码测试验证的规格预期，不能在运行前写成实际结果。
+
+2026-09-09 命名补充：开头历史命名中的 TestEventLog 已由 EventRecorder 替代；数值和延迟实现已抽取，模块行为不变，见 [Model 分层](model-structure.md)。

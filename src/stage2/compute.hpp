@@ -41,24 +41,21 @@ SC_MODULE(Compute) {
     sc_core::sc_in<bool> m_validIn{"valid_in"};
     sc_core::sc_out<bool> m_readyOut{"ready_out"};
     sc_core::sc_fifo_out<Result> m_resultsOut{"results_out"};
-    std::uint64_t m_busyCycles = 0;
-    std::uint64_t m_idleNoInputCycles = 0;
-    std::uint64_t m_resultWaitCycles = 0;
-    std::uint64_t m_accepted = 0;
+    model::instrumentation::ComputeStatistics m_statistics;
     /**
      * @brief 只读内部空闲状态；实际接收仍以该上升沿 valid && ready 为准。
      */
     bool idle() const {
         return m_state == State::IDLE;
     }
-    Compute(sc_core::sc_module_name name, TestEventLog & testEventLog, unsigned unit = 0);
+    Compute(sc_core::sc_module_name name, EventRecorder & recorder, unsigned unit = 0);
 
 private:
     enum class State { IDLE, BUSY, RESULT_PENDING };
     State m_state = State::IDLE;
     Result m_result;
     std::uint64_t m_remaining = 0;
-    TestEventLog & m_testEventLog;
+    EventRecorder & m_recorder;
     unsigned m_unit;
     /**
      * @brief 上升沿推进；BUSY 必须有剩余周期，异常状态抛 logic_error。

@@ -30,7 +30,7 @@ namespace stage1 {
  * - Output a >= b >= 0 while preserving the original task id.
  * - Hold the ordered slot if output is blocked; accept into an empty magnitude slot until both slots are full.
  * - Update old output, then old magnitude, then new input; a new task cannot cross both stages on one edge.
- * - TestEventLog is an observer, not hardware storage or a scheduling input, and must outlive the module.
+ * - EventRecorder is an observer, not hardware storage or a scheduling input, and must outlive the module.
  *
  * Timing:
  * - SC_METHOD(tick) runs only on m_clk.pos(), with dont_initialize; T=1 ns, first edge at 1 ns.
@@ -58,12 +58,12 @@ SC_MODULE(Transform) {
     unsigned occupancy() const {
         return static_cast<unsigned>(m_magnitudeStage.has_value()) + static_cast<unsigned>(m_orderedStage.has_value());
     }
-    Transform(sc_core::sc_module_name name, TestEventLog & testEventLog);
+    Transform(sc_core::sc_module_name name, EventRecorder & recorder);
 
 private:
     std::optional<MagnitudeTask> m_magnitudeStage;
     std::optional<OrderedTask> m_orderedStage;
-    TestEventLog & m_testEventLog;
+    EventRecorder & m_recorder;
     void tick();
 };
 } // namespace stage1

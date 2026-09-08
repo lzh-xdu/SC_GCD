@@ -60,14 +60,7 @@ struct Options {
     bool m_testTraceEnabled = false;
 };
 
-struct Usage {
-    std::uint64_t m_sum = 0;
-    unsigned m_peak = 0;
-    void sample(unsigned count) {
-        m_sum += count;
-        m_peak = std::max(m_peak, count);
-    }
-};
+using model::instrumentation::Usage;
 
 // Simulation harness: observes after channel updates, never moves task data.
 SC_MODULE(System) {
@@ -93,7 +86,7 @@ SC_MODULE(System) {
     Usage m_pipeline;
     std::uint64_t m_cycles = 0;
     bool m_finished = false;
-    System(sc_core::sc_module_name name, std::istream & input, std::ostream & output, TestEventLog & testEventLog,
+    System(sc_core::sc_module_name name, std::istream & input, std::ostream & output, EventRecorder & recorder,
            const Options& options);
     void connectModules();
     void connectComputes();
@@ -101,7 +94,7 @@ SC_MODULE(System) {
     bool drained() const;
 };
 
-System::System(sc_core::sc_module_name name, std::istream& input, std::ostream& output, TestEventLog& testEventLog,
+System::System(sc_core::sc_module_name name, std::istream& input, std::ostream& output, EventRecorder& recorder,
                const Options& options)
     : sc_module(name)
     , m_clk("clk", sc_core::sc_time(CLOCK_PERIOD_NS, sc_core::SC_NS), CLOCK_HIGH_TIME_FRACTION,
@@ -110,13 +103,13 @@ System::System(sc_core::sc_module_name name, std::istream& input, std::ostream& 
     , m_compute0Results("compute0_results", options.m_resultDepth)
     , m_compute1Results("compute1_results", options.m_resultDepth)
     , m_collectorToOutput("collector_to_output", options.m_depth)
-    , m_parser("parser", input, testEventLog)
-    , m_transform("transform", testEventLog)
-    , m_dispatcher("dispatcher", testEventLog)
-    , m_compute0("compute0", testEventLog, 0)
-    , m_compute1("compute1", testEventLog, 1)
-    , m_collector("collector", testEventLog)
-    , m_output("output", output, testEventLog, options.m_testOutputPeriod) {
+    , m_parser("parser", input, recorder)
+    , m_transform("transform", recorder)
+    , m_dispatcher("dispatcher", recorder)
+    , m_compute0("compute0", recorder, 0)
+    , m_compute1("compute1", recorder, 1)
+    , m_collector("collector", recorder)
+    , m_output("output", output, recorder, options.m_testOutputPeriod) {
     connectModules();
     SC_THREAD(observe);
 }
@@ -262,20 +255,21 @@ void writeQueueStats(std::ostream& stats, const System& system, const Options& o
 void writeHandshakeStats(std::ostream& stats, const System& system, const Options& options) {
     requireCondition(static_cast<bool>(stats), "statistics stream is not writable");
     requireCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
-    const auto handshakeValidCycles = system.m_transform.m_validCycles;
+    const auto handshakeValidCycles = system.m_transform.m_statistics.m_validCycles;
     stats << "handshake_valid_cycles," << handshakeValidCycles << "\nhandshake_blocked_cycles,"
-          << system.m_transform.m_blockedCycles << "\nhandshake_blocked_fraction,"
-          << (handshakeValidCycles ? static_cast<double>(system.m_transform.m_blockedCycles) / handshakeValidCycles
-                                   : 0.0)
+          << system.m_transform.m_statistics.m_blockedCycles << "\nhandshake_blocked_fraction,"
+          << (handshakeValidCycles
+                  ? static_cast<double>(system.m_transform.m_statistics.m_blockedCycles) / handshakeValidCycles
+                  : 0.0)
           << "\ncompute_units," << UNIT_COUNT << "\ncompute_task_slots," << UNIT_COUNT << "\ntransform_slots,"
           << TRANSFORM_PIPELINE_CAPACITY_TASKS << "\nfifo_slots,"
           << 2 * options.m_depth + UNIT_COUNT * options.m_resultDepth << "\nbuffer_payload_bits,"
           << options.m_depth * (TASK_PAYLOAD_BITS + RESULT_PAYLOAD_BITS) +
                  UNIT_COUNT * options.m_resultDepth * RESULT_PAYLOAD_BITS +
                  TRANSFORM_PIPELINE_CAPACITY_TASKS * TASK_PAYLOAD_BITS
-          << "\ndispatch_idle_other_blocked_cycles," << system.m_dispatcher.m_idleOtherBlockedCycles
-          << "\nreorder_wait_cycles," << system.m_collector.m_orderWaitCycles << "\ncollector_output_blocked_cycles,"
-          << system.m_collector.m_outputBlockedCycles << '\n';
+          << "\ndispatch_idle_other_blocked_cycles," << system.m_dispatcher.m_statistics.m_idleOtherBlockedCycles
+          << "\nreorder_wait_cycles," << system.m_collector.m_statistics.m_orderWaitCycles
+          << "\ncollector_output_blocked_cycles," << system.m_collector.m_statistics.m_outputBlockedCycles << '\n';
 }
 
 void writeComputeStats(std::ostream& stats, const System& system) {
@@ -283,11 +277,12 @@ void writeComputeStats(std::ostream& stats, const System& system) {
     requireCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
     const std::array<const Compute*, UNIT_COUNT> computeUnits{&system.m_compute0, &system.m_compute1};
     for (unsigned unit = 0; unit < UNIT_COUNT; ++unit) {
-        stats << "compute" << unit << "_busy_cycles," << computeUnits[unit]->m_busyCycles << '\n'
+        stats << "compute" << unit << "_busy_cycles," << computeUnits[unit]->m_statistics.m_busyCycles << '\n'
               << "compute" << unit << "_utilization,"
-              << static_cast<double>(computeUnits[unit]->m_busyCycles) / system.m_cycles << '\n'
-              << "compute" << unit << "_tasks," << computeUnits[unit]->m_accepted << '\n'
-              << "compute" << unit << "_result_wait_cycles," << computeUnits[unit]->m_resultWaitCycles << '\n';
+              << static_cast<double>(computeUnits[unit]->m_statistics.m_busyCycles) / system.m_cycles << '\n'
+              << "compute" << unit << "_tasks," << computeUnits[unit]->m_statistics.m_accepted << '\n'
+              << "compute" << unit << "_result_wait_cycles," << computeUnits[unit]->m_statistics.m_resultWaitCycles
+              << '\n';
     }
 }
 
@@ -299,12 +294,14 @@ void writeStats(std::ostream& stats, const System& system, const Options& option
           << "cycles," << elapsedSimulationCycles << "\ntasks," << system.m_output.m_received << "\nsimulated_time_ns,"
           << elapsedSimulationCycles << "\nthroughput_tasks_per_cycle,"
           << static_cast<double>(system.m_output.m_received) / elapsedSimulationCycles << "\ncompute_busy_cycles,"
-          << (system.m_compute0.m_busyCycles + system.m_compute1.m_busyCycles) << "\ncompute_utilization,"
-          << static_cast<double>((system.m_compute0.m_busyCycles + system.m_compute1.m_busyCycles)) /
+          << (system.m_compute0.m_statistics.m_busyCycles + system.m_compute1.m_statistics.m_busyCycles)
+          << "\ncompute_utilization,"
+          << static_cast<double>(
+                 (system.m_compute0.m_statistics.m_busyCycles + system.m_compute1.m_statistics.m_busyCycles)) /
                  (UNIT_COUNT * elapsedSimulationCycles)
           << "\ncompute_result_wait_cycles,"
-          << (system.m_compute0.m_resultWaitCycles + system.m_compute1.m_resultWaitCycles) << "\noutput_period,"
-          << options.m_testOutputPeriod << '\n';
+          << (system.m_compute0.m_statistics.m_resultWaitCycles + system.m_compute1.m_statistics.m_resultWaitCycles)
+          << "\noutput_period," << options.m_testOutputPeriod << '\n';
     writeQueueStats(stats, system, options);
     writeHandshakeStats(stats, system, options);
     writeComputeStats(stats, system);
@@ -319,14 +316,14 @@ void flushFiles(std::ofstream& output, std::ofstream& stats, std::ofstream& test
     requireCondition(output && stats && (!testTraceEnabled || testEvents), "file flush failed");
 }
 
-void openTestEvents(std::ofstream& testEvents, TestEventLog& testEventLog, char** argv, bool testTraceEnabled) {
+void openTestEvents(std::ofstream& testEvents, EventRecorder& recorder, char** argv, bool testTraceEnabled) {
     if (!testTraceEnabled) {
         return;
     }
     testEvents.open(argv[TEST_EVENT_LOG_ARGUMENT_INDEX]);
     requireCondition(static_cast<bool>(testEvents), "cannot open events");
     testEvents << "id,event,cycle,a,b,value,latency\n";
-    testEventLog.m_testStream = &testEvents;
+    recorder.m_testStream = &testEvents;
 }
 
 int run(int argc, char** argv) {
@@ -338,17 +335,17 @@ int run(int argc, char** argv) {
     std::ofstream stats(argv[STATISTICS_FILE_ARGUMENT_INDEX]);
     std::ofstream testEvents;
     requireCondition(output && stats, "cannot open output or stats");
-    TestEventLog testEventLog;
-    openTestEvents(testEvents, testEventLog, argv, options.m_testTraceEnabled);
-    System system("system", input, output, testEventLog, options);
+    EventRecorder recorder;
+    openTestEvents(testEvents, recorder, argv, options.m_testTraceEnabled);
+    System system("system", input, output, recorder, options);
     // Include the last allowed rising edge, but no extra rising edge.
     sc_core::sc_start(sc_core::sc_time(
         static_cast<double>(options.m_maxCycles) + SIMULATION_STOP_MARGIN_AFTER_LAST_EDGE_NS, sc_core::SC_NS));
     requireCondition(system.m_finished, "simulation cycle limit exceeded");
     writeStats(stats, system, options);
-    testEventLog.m_statistics.write(stats);
-    stats << "compute0_idle_no_input_cycles," << system.m_compute0.m_idleNoInputCycles << '\n'
-          << "compute1_idle_no_input_cycles," << system.m_compute1.m_idleNoInputCycles << '\n';
+    recorder.m_statistics.write(stats);
+    stats << "compute0_idle_no_input_cycles," << system.m_compute0.m_statistics.m_idleNoInputCycles << '\n'
+          << "compute1_idle_no_input_cycles," << system.m_compute1.m_statistics.m_idleNoInputCycles << '\n';
     flushFiles(output, stats, testEvents, options.m_testTraceEnabled);
     // Diagnostics belong to the console; OUTPUT contains only final GCD values.
     std::cerr << "PASS: " << system.m_output.m_received << " tasks, " << system.m_cycles << " cycles\n";

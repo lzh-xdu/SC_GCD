@@ -8,9 +8,9 @@
 #include <stdexcept>
 
 namespace stage3_window {
-Collector::Collector(sc_core::sc_module_name name, stage1::TestEventLog& testEventLog, unsigned window)
+Collector::Collector(sc_core::sc_module_name name, stage1::EventRecorder& recorder, unsigned window)
     : sc_module(name)
-    , m_testEventLog(testEventLog)
+    , m_recorder(recorder)
     , m_slots(window) {
     requireCondition<std::invalid_argument>(window > 0, "window must be nonzero");
     m_baseOut.initialize(0);
@@ -24,18 +24,18 @@ void Collector::retire() {
     auto& head = m_slots[m_nextId % m_slots.size()];
     if (!head) {
         if (m_completed != 0) {
-            ++m_orderWaitCycles;
-            m_testEventLog.record(m_nextId, "reorder_wait");
+            ++m_statistics.m_orderWaitCycles;
+            m_recorder.record(m_nextId, "reorder_wait");
         }
         return;
     }
     requireCondition<std::logic_error>(head->m_id == m_nextId, "window head tag mismatch");
     if (!m_resultsOut.nb_write(*head)) {
-        ++m_outputBlockedCycles;
-        m_testEventLog.record(m_nextId, "collector_blocked");
+        ++m_statistics.m_outputBlockedCycles;
+        m_recorder.record(m_nextId, "collector_blocked");
         return;
     }
-    m_testEventLog.record(m_nextId, "reorder_emit", 0, 0, head->m_gcd);
+    m_recorder.record(m_nextId, "reorder_emit", 0, 0, head->m_gcd);
     head.reset();
     --m_completed;
     ++m_nextId;
@@ -57,7 +57,7 @@ void Collector::receive() {
     slot = result;
     ++m_completed;
     m_pollTurn = (selected + 1) % UNIT_COUNT;
-    m_testEventLog.record(result.m_id, "window_store", selected, 0, result.m_gcd);
+    m_recorder.record(result.m_id, "window_store", selected, 0, result.m_gcd);
 }
 void Collector::tick() {
     requireCondition<std::logic_error>(!m_slots.empty() && m_completed <= m_slots.size(),

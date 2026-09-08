@@ -18,10 +18,10 @@ static std::uint32_t nextRandom(std::uint32_t state) {
     state ^= state << LEFT_SHIFT_LAST;
     return state;
 }
-Dispatcher::Dispatcher(sc_core::sc_module_name name, stage1::TestEventLog& testEventLog, unsigned window,
+Dispatcher::Dispatcher(sc_core::sc_module_name name, stage1::EventRecorder& recorder, unsigned window,
                        std::uint32_t seed)
     : sc_module(name)
-    , m_testEventLog(testEventLog)
+    , m_recorder(recorder)
     , m_window(window) {
     requireCondition<std::invalid_argument>(window > 0 && seed > 0, "window and seed must be nonzero");
     m_randomState.write(seed);
@@ -61,19 +61,19 @@ void Dispatcher::tick() {
     }
     const auto id = m_dataIn.read().m_id;
     if (!hasCredit()) {
-        ++m_windowBlockedCycles;
+        ++m_statistics.m_windowBlockedCycles;
         if (m_readyIn[0].read() || m_readyIn[1].read()) {
-            ++m_windowBlockedWithReadyCycles;
+            ++m_statistics.m_windowBlockedWithReadyCycles;
         }
-        m_testEventLog.record(id, "window_blocked");
+        m_recorder.record(id, "window_blocked");
     } else if (!m_readyIn[selectedUnit()].read()) {
-        ++m_engineBlockedCycles;
-        m_testEventLog.record(id, "engines_blocked");
+        ++m_statistics.m_engineBlockedCycles;
+        m_recorder.record(id, "engines_blocked");
     } else {
-        ++m_dispatched;
+        ++m_statistics.m_dispatched;
         if (m_readyIn[0].read() && m_readyIn[1].read()) {
-            ++m_randomChoices;
-            m_testEventLog.record(id, "random_choice", selectedUnit(), m_randomState.read());
+            ++m_statistics.m_randomChoices;
+            m_recorder.record(id, "random_choice", selectedUnit(), m_randomState.read());
             m_randomState.write(nextRandom(m_randomState.read()));
         }
     }

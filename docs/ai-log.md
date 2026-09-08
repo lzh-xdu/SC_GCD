@@ -182,3 +182,10 @@
 - 按实现填写 FIFO、握手、轮转和窗口协议；无复位端口写明构造初始化，辅助类型/工具写明时序和复位不适用；没有照搬示例中不存在的 req/valid/reset 接口。
 - 保留零输入 Model Assumption、背压、参数寿命和异常约束；规范见 [coding-style.md](coding-style.md)。用户已有 README 修改未纳入。
 - 验证：去除注释和空白后，14 个头文件与基线 d50bf5e 一致；五个必需说明项齐全。Release 构建退出 0，CTest 12/12 通过，无新失败。
+
+## 2026-09-09：按 Model 职责分层重构
+
+- 用户提出 Functional Behavior / Timing Behavior / Instrumentation（Trace、Statistics、Profiling、Debug）结构以提升可读性；AI 按职责抽取共享实现，保留各阶段模块边界，不新增硬件模块。
+- 已实施：纯数值函数、共享延迟/周期工具、EventRecorder、模块统计结构、主机 Profiling 脚本；正式观察器不再使用 TestEventLog 命名。Debug 必需契约仍始终生效；全量 Instrumentation 开关未实现。
+- 新增所有有效场景的 Trace 开关成对检查，填补上一轮识别的作业 2/3 证据缺口。Release/Debug 各 12/12，各 96 个成对场景；372 份重构前文件哈希一致。
+- AI 曾漏改统计指针访问导致构建失败，已修正并保留原始诊断；详见 [分层验证](evidence/model-structure-validation.md)。用户提出结构方向，不记为用户亲自编写代码或已完成理解验收。

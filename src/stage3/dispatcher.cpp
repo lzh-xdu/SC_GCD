@@ -6,9 +6,9 @@
 #include "../common/contract.hpp"
 
 namespace stage3 {
-Dispatcher::Dispatcher(sc_core::sc_module_name name, stage1::TestEventLog& testEventLog)
+Dispatcher::Dispatcher(sc_core::sc_module_name name, stage1::EventRecorder& recorder)
     : sc_module(name)
-    , m_testEventLog(testEventLog) {
+    , m_recorder(recorder) {
     SC_METHOD(route);
     sensitive << m_turn << m_dataIn << m_validIn;
     for (unsigned unit = 0; unit < UNIT_COUNT; ++unit) {
@@ -37,8 +37,8 @@ void Dispatcher::tick() {
     if (m_readyIn[selected].read()) {
         m_turn.write(next);
     } else if (m_readyIn[next].read()) {
-        ++m_idleOtherBlockedCycles;
-        m_testEventLog.record(m_dataIn.read().m_id, "dispatch_idle_other", selected);
+        ++m_statistics.m_idleOtherBlockedCycles;
+        m_recorder.record(m_dataIn.read().m_id, "dispatch_idle_other", selected);
     }
 }
 } // namespace stage3

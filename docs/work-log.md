@@ -249,3 +249,10 @@
 
 - 用户询问当前开关结果是否一致；核查现有实现与测试，结论见 [统一统计文档](task-statistics.md#2026-09-09instrumentation-开关的实际验证范围)。
 - 已有开关只控制事件 CSV，统计始终执行；作业 1 basic 有逐字节结果/统计对比且上一轮回归通过，作业 2、3 缺同类成对断言。未改代码或新增测试结果。
+
+## 2026-09-09：Model 职责分层与 Trace 等价回归
+
+- 用户提出三层结构；已抽取共享数值/延迟实现和 Instrumentation，保留原 SystemC 模块协议、时序与阶段范围。阅读入口与取舍见 [Model 分层](model-structure.md)，协作与讲解见 [AI 日志](ai-log.md)、[学习日志](learning-log.md)。
+- 重构前基线 0df1381 的 Release 12/12；重构后 Release/Debug 各 12/12，分别含 96 个 Trace 开/关成对场景；372 份基线文件哈希相同。主机 Profiling 3 次烟雾运行结果/统计一致。
+- 原始构建错误、修复与验证命令见 [证据](evidence/model-structure-validation.md)；最终只调整注释与文档。全量 Instrumentation 总开关仍未实施。
+- 源码、测试和记录一起本地提交；保留用户已有 README 修改，未推进作业 4。

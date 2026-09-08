@@ -24,16 +24,29 @@ else()
 endif()
 
 enable_testing()
+
+add_library(model_support STATIC
+    src/model/functional/operands.cpp
+    src/model/timing/gcd_plan.cpp
+    src/model/timing/clock.cpp
+    src/model/instrumentation/event_recorder.cpp
+    src/model/instrumentation/statistics.cpp
+    src/common/task_statistics.cpp)
+target_link_libraries(model_support PUBLIC SystemC::systemc)
+if(MSVC)
+    target_compile_options(model_support PRIVATE /W4)
+else()
+    target_compile_options(model_support PRIVATE -Wall -Wextra -Wpedantic)
+endif()
 add_executable(stage1_gcd
     src/stage1/main.cpp
-    src/common/task_statistics.cpp
     src/stage1/types.cpp
     src/stage1/parser.cpp
     src/stage1/transform.cpp
     src/stage1/compute.cpp
     src/stage1/output.cpp
 )
-target_link_libraries(stage1_gcd PRIVATE SystemC::systemc)
+target_link_libraries(stage1_gcd PRIVATE model_support)
 target_compile_definitions(stage1_gcd PRIVATE SC_ENABLE_ASSERTIONS)
 if(MSVC)
     target_compile_options(stage1_gcd PRIVATE /W4)
@@ -49,10 +62,9 @@ add_test(NAME day01_signal_timing COMMAND day01_basics)
 set_tests_properties(day01_signal_timing PROPERTIES TIMEOUT 10)
 
 add_library(handshake_modules STATIC
-    src/common/task_statistics.cpp
     src/stage1/types.cpp src/stage1/parser.cpp src/stage1/output.cpp
     src/stage2/payload.cpp src/stage2/transform.cpp src/stage2/compute.cpp)
-target_link_libraries(handshake_modules PUBLIC SystemC::systemc)
+target_link_libraries(handshake_modules PUBLIC model_support)
 target_compile_definitions(handshake_modules PUBLIC SC_ENABLE_ASSERTIONS)
 add_executable(stage2_gcd src/stage2/main.cpp)
 target_link_libraries(stage2_gcd PRIVATE handshake_modules)

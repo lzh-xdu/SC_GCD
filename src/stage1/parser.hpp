@@ -26,7 +26,7 @@ namespace stage1 {
  * - Read at most one line and send at most one task per rising edge.
  * - Do not read the file while the output FIFO is full; stop sending after normal EOF.
  * - No internal task buffer; m_sent counts sent tasks and m_eof records EOF.
- * - The input stream and TestEventLog reference must outlive the module.
+ * - The input stream and EventRecorder reference must outlive the module.
  * - Invalid rows or input failures throw runtime_error; the observer does not control hardware.
  *
  * Timing:
@@ -47,11 +47,11 @@ SC_MODULE(Parser) {
     /**
      * @brief input 须可读且覆盖模块寿命；读取失败/非法整数行抛 runtime_error，正常 EOF 停止发送。
      */
-    Parser(sc_core::sc_module_name name, std::istream & input, TestEventLog & testEventLog);
+    Parser(sc_core::sc_module_name name, std::istream & input, EventRecorder & recorder);
 
 private:
     std::istream& m_input;
-    TestEventLog & m_testEventLog;
+    EventRecorder & m_recorder;
     void tick();
 };
 } // namespace stage1

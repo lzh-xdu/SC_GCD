@@ -8,6 +8,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from task_statistics import check_statistics
+from instrumentation_equivalence import check_trace_equivalence
 
 TEST_EXE = str(Path(sys.argv[1]).resolve())
 TEST_ROOT = Path(sys.argv[2]).resolve()
@@ -226,6 +227,7 @@ def run_case(test_name, test_tasks, test_depth=2, test_period=1, test_result_dep
         require(test_metrics["handshake_blocked_cycles"] ==
                 test_metrics["window_blocked_cycles"] + test_metrics["engines_blocked_cycles"], "blocked split")
     check_statistics(test_rows, test_metrics, TEST_UNITS)
+    check_trace_equivalence(test_command, test_folder)
     test_summary.append({"case": test_folder.name, **test_metrics})
     print(f"PASS {test_folder.name}: {len(test_tasks)} tasks, {int(test_metrics['cycles'])} cycles, "
           f"{int(test_metrics['handshake_blocked_cycles'])} blocked")

@@ -26,8 +26,8 @@ namespace stage1 {
  * - Accept at most one task while IDLE; require a >= b >= 0.
  * - Keep one task/result and a remaining-cycle counter, with no internal task queue.
  * - If the output FIFO is full, retain the result in RESULT_PENDING.
- * - m_busyCycles counts computation; m_resultWaitCycles counts blocked result delivery.
- * - TestEventLog observes events only and must outlive the module; external FIFOs default to depth 2.
+ * - m_statistics counts computation and blocked result delivery separately.
+ * - EventRecorder observes events only and must outlive the module; external FIFOs default to depth 2.
  *
  * Timing:
  * - SC_METHOD(tick) runs only on m_clk.pos(), with dont_initialize; T=1 ns, first edge at 1 ns.
@@ -46,23 +46,21 @@ SC_MODULE(Compute) {
     sc_core::sc_in<bool> m_clk{"clk"};
     sc_core::sc_fifo_in<OrderedTask> m_tasksIn{"tasks_in"};
     sc_core::sc_fifo_out<Result> m_resultsOut{"results_out"};
-    std::uint64_t m_busyCycles = 0;
-    std::uint64_t m_idleNoInputCycles = 0;
-    std::uint64_t m_resultWaitCycles = 0;
+    model::instrumentation::ComputeStatistics m_statistics;
     /**
      * @brief 是否可在后续上升沿接收任务；待交付结果也算非空闲。
      */
     bool idle() const {
         return m_state == State::IDLE;
     }
-    Compute(sc_core::sc_module_name name, TestEventLog & testEventLog);
+    Compute(sc_core::sc_module_name name, EventRecorder & recorder);
 
 private:
     enum class State { IDLE, BUSY, RESULT_PENDING };
     State m_state = State::IDLE;
     Result m_result;
     std::uint64_t m_remaining = 0;
-    TestEventLog & m_testEventLog;
+    EventRecorder & m_recorder;
     /**
      * @brief 上升沿推进；BUSY 必须有剩余周期，异常状态抛 logic_error。
      */

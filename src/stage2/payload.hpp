@@ -5,11 +5,11 @@
  *
  * Interface:
  *
- *                  +------------------------+
+ *                  +-------------------------+
  * data (Payload) ->| receiver samples at edge|
- * valid          ->|     valid && ready     |
- * ready          <-|                        |
- *                  +------------------------+
+ * valid          ->|     valid && ready      |
+ * ready          <-|                         |
+ *                  +-------------------------+
  *
  * Protocol:
  * - Payload contains the original id and ordered nonnegative magnitudes a >= b.
@@ -35,12 +35,12 @@
 namespace stage2 {
 using stage1::CLOCK_PERIOD_NS;
 using stage1::currentCycle;
+using stage1::EventRecorder;
 using stage1::MagnitudeTask;
 using stage1::Output;
 using stage1::Parser;
 using stage1::RawTask;
 using stage1::Result;
-using stage1::TestEventLog;
 
 /**
  * @brief 握手任务：id 是原始顺序号，a >= b 为非负幅值；valid 为 false 时数据无业务含义。

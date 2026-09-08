@@ -43,7 +43,7 @@ void checkStatistics() {
 }
 
 void checkModule(const std::string& testCase) {
-    stage1::TestEventLog testLog;
+    stage1::EventRecorder testLog;
     std::ostringstream testOutput;
     if (testCase == "period") {
         expectException<std::invalid_argument>(

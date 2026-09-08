@@ -42,8 +42,7 @@ SC_MODULE(Transform) {
     sc_core::sc_out<Payload> m_dataOut{"data_out"};
     sc_core::sc_out<bool> m_validOut{"valid_out"};
     sc_core::sc_in<bool> m_readyIn{"ready_in"};
-    std::uint64_t m_validCycles = 0;
-    std::uint64_t m_blockedCycles = 0;
+    model::instrumentation::LinkStatistics m_statistics;
     /**
      * @brief 两个内部槽都空；排序槽和输出信号不重复计数。
      */
@@ -56,12 +55,12 @@ SC_MODULE(Transform) {
     unsigned occupancy() const {
         return static_cast<unsigned>(m_magnitudeStage.has_value()) + static_cast<unsigned>(m_orderedStage.has_value());
     }
-    Transform(sc_core::sc_module_name name, TestEventLog & testEventLog);
+    Transform(sc_core::sc_module_name name, EventRecorder & recorder);
 
 private:
     std::optional<MagnitudeTask> m_magnitudeStage;
     std::optional<Payload> m_orderedStage;
-    TestEventLog & m_testEventLog;
+    EventRecorder & m_recorder;
     void tick();
 };
 } // namespace stage2

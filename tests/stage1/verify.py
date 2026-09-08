@@ -9,6 +9,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from task_statistics import check_statistics
+from instrumentation_equivalence import check_trace_equivalence
 
 test_exe = str(Path(sys.argv[1]).resolve())
 test_root = Path(sys.argv[2]).resolve()
@@ -101,6 +102,7 @@ def run_case(test_name, test_tasks, test_depth=2, test_period=1):
         require(abs(test_metrics[test_prefix + "_average"] - test_area/test_cycles) < 1e-9, "average metric mismatch")
     print(f"PASS {test_name}: {len(test_tasks)} tasks, {test_cycles} cycles")
     check_statistics(test_rows, test_metrics, 1)
+    check_trace_equivalence(test_command, test_folder)
     test_summary.append({"case": test_name, **test_metrics})
     return test_by_event, test_metrics
 

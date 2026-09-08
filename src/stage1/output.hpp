@@ -24,7 +24,7 @@ namespace stage1 {
  *
  * Protocol:
  * - Read at most one result on an eligible rising edge; require id == m_received.
- * - The functional stream contains GCD values only; TestEventLog records the output event separately.
+ * - The functional stream contains GCD values only; EventRecorder records the output event separately.
  * - No internal task/result buffer; the top level owns the input FIFO (default depth 2).
  * - The output stream and observer must outlive the module.
  * - A zero testOutputPeriod throws invalid_argument; write failure throws runtime_error.
@@ -48,12 +48,12 @@ SC_MODULE(Output) {
      * @brief output 须可写且覆盖模块寿命；testOutputPeriod 单位为周期，必须大于零。
      * @throws std::invalid_argument 周期为零；写失败抛 runtime_error，结果乱序抛 logic_error。
      */
-    Output(sc_core::sc_module_name name, std::ostream & output, TestEventLog & testEventLog,
+    Output(sc_core::sc_module_name name, std::ostream & output, EventRecorder & recorder,
            std::uint64_t testOutputPeriod);
 
 private:
     std::ostream& m_output;
-    TestEventLog & m_testEventLog;
+    EventRecorder & m_recorder;
     std::uint64_t m_testOutputPeriod;
     void tick();
 };
