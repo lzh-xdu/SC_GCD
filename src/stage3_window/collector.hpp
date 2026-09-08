@@ -10,12 +10,33 @@
 
 namespace stage3_window {
 /**
- * Compute result FIFOs -> [ W slots: id%W, optional<Result> ] -> Output FIFO
- *                         [ base=m_nextId; reserved at issue ] -> Dispatcher base
- * 仅clk.pos()推进。每沿最多收一个、发一个；先发旧槽再收，禁止同沿穿透。
- * 只发base对应结果；派发时保留[base,base+W)槽，最早任务总能写入预留槽。
- * 完成结果数与已预留但未完成的任务数分开统计；窗口满阻止新派发。
- * 基址信号在delta更新，释放的credit最早下一沿可用；无无限重排表。
+ * @brief Stores completed results in a finite reserved window and retires them in order.
+ *
+ * Interface:
+ *
+ * m_resultsIn[0/1] --> +---------------------------+ --> m_resultsOut
+ * m_clk           -->  | W slots, indexed by id%W  | --> m_baseOut (to Dispatcher)
+ *                      |        Collector          |
+ *                      +---------------------------+
+ *
+ * Protocol:
+ * - Dispatch reserves ids in [base, base+W); accept completed results into their reserved slots.
+ * - Emit only the result tagged m_nextId; advance base after successful output.
+ * - The oldest task always has a reserved slot; no unbounded reorder table is used.
+ * - Completed-result occupancy is distinct from reserved but unfinished tasks.
+ *   A full reservation window blocks dispatch.
+ * - window must be nonzero and match Dispatcher; zero throws invalid_argument.
+ * - Out-of-window, duplicate/colliding or wrong-head tags throw logic_error; the observer must outlive the module.
+ *
+ * Timing:
+ * - SC_METHOD(tick) runs only on m_clk.pos(), with dont_initialize.
+ * - Retire an old slot before receiving a result: at most one emission and one reception per edge.
+ * - A newly received result cannot retire on the same edge.
+ * - m_baseOut updates in a delta cycle; freed dispatch capacity is usable at the next edge at earliest.
+ *
+ * Reset:
+ * - No reset port or runtime reset protocol.
+ * - Construction creates W empty slots, initializes m_baseOut/m_nextId=0, and zeroes occupancy, poll turn and counters.
  */
 SC_MODULE(Collector) {
     sc_core::sc_in<bool> m_clk{"clk"};
@@ -28,8 +49,10 @@ SC_MODULE(Collector) {
     unsigned occupancy() const {
         return m_completed;
     }
-    /// @brief window 是预留槽数量，须与 Dispatcher 一致；日志引用须覆盖模块寿命。
-    /// @throws std::invalid_argument window 为零；越窗、重复或错序结果抛 logic_error。
+    /**
+     * @brief window 是预留槽数量，须与 Dispatcher 一致；日志引用须覆盖模块寿命。
+     * @throws std::invalid_argument window 为零；越窗、重复或错序结果抛 logic_error。
+     */
     Collector(sc_core::sc_module_name name, stage1::TestEventLog & testEventLog, unsigned window);
 
 private:

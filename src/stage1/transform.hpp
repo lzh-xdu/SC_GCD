@@ -15,34 +15,46 @@
 // stage1 names the assignment version, not a pipeline register or a hardware module.
 namespace stage1 {
 /**
- * @brief 变换模块：两级弹性流水完成绝对值和比较交换。
+ * @brief Computes magnitudes and orders operands in a two-stage elastic pipeline.
  *
- *                  +---------------------------------------------+
- * FIFO --RawTask-->| stage1: abs(a), abs(b) --> stage2: max, min | --> FIFO
- *  D     m_tasksIn |       one task                  one task    | m_tasksOut
- *                  +--------------------^------------------------+ OrderedTask
- *                                       | m_clk.pos()                D
+ * Interface:
  *
- * 触发：SC_METHOD(tick)，仅共同时钟上升沿；不在初始化阶段执行。
- * 时钟：T=1 ns，首沿 1 ns；无阻塞时每周期最多接收/写出一条任务。
- * 缓存：m_magnitudeStage 与 m_orderedStage 各保存一条，optional 表示是否有效；两侧 FIFO 在模块外。
- * 周期：k 沿接收并取绝对值 -> k+1 沿比较交换 -> k+2 沿写出，基础延迟严格为 2T。
- *        输出 FIFO 的下游最早 k+3 沿读取。D 是外部 FIFO 容量，默认 2。
- * 背压：排序级写不出则保持；绝对值级空时还能接收一条，两级满后停止接收。
+ * m_tasksIn --> +-----------------------------------+ --> m_tasksOut
+ * (RawTask)     | magnitude slot --> ordered slot   |     (OrderedTask)
+ * m_clk ----->  |            Transform              |
+ *               +-----------------------------------+
  *
- * 更新：先输出旧排序级，再移动旧绝对值级，最后接收新任务，禁止新数据同沿穿两级。
- * 旁路观察：m_testEventLog
- * 不作为硬件资源或调度输入。
+ * Protocol:
+ * - Each optional slot stores one task; external FIFOs are separate (default depth 2).
+ * - Widen signed input before taking its absolute value to support INT32_MIN.
+ * - Output a >= b >= 0 while preserving the original task id.
+ * - Hold the ordered slot if output is blocked; accept into an empty magnitude slot until both slots are full.
+ * - Update old output, then old magnitude, then new input; a new task cannot cross both stages on one edge.
+ * - TestEventLog is an observer, not hardware storage or a scheduling input, and must outlive the module.
+ *
+ * Timing:
+ * - SC_METHOD(tick) runs only on m_clk.pos(), with dont_initialize; T=1 ns, first edge at 1 ns.
+ * - Accept and take magnitudes at k, compare/swap at k+1, and write the FIFO at k+2 when unblocked.
+ * - The downstream FIFO reader sees that task at k+3 or later; backpressure adds waiting.
+ * - At most one task is accepted and one emitted per edge; the base module latency is exactly 2T.
+ *
+ * Reset:
+ * - No reset port or runtime reset protocol.
+ * - Both optional pipeline slots are empty after construction.
  */
 SC_MODULE(Transform) {
     sc_core::sc_in<bool> m_clk{"clk"};
     sc_core::sc_fifo_in<RawTask> m_tasksIn{"tasks_in"};
     sc_core::sc_fifo_out<OrderedTask> m_tasksOut{"tasks_out"};
-    /// @brief 两个内部槽都空；不包含顶层输入/输出 FIFO。
+    /**
+     * @brief 两个内部槽都空；不包含顶层输入/输出 FIFO。
+     */
     bool empty() const {
         return !m_magnitudeStage && !m_orderedStage;
     }
-    /// @brief 当前内部任务数，范围 0..2；不包含外部 FIFO。
+    /**
+     * @brief 当前内部任务数，范围 0..2；不包含外部 FIFO。
+     */
     unsigned occupancy() const {
         return static_cast<unsigned>(m_magnitudeStage.has_value()) + static_cast<unsigned>(m_orderedStage.has_value());
     }

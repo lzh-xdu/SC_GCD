@@ -237,3 +237,10 @@
 
 - 按用户要求，在 [阶段 1 设计](stage1-design.md) 和 [最终设计](final-design.md) 显式标注 spec 外的零输入约定，保留原行为并注明本次澄清日期。
 - 核对 Compute 的循环条件及既有边界输入；仅改文档，未重新运行模型测试。协作记录见 [AI 日志](ai-log.md)。
+
+## 2026-09-09：头文件接口注释统一
+
+- 修改全部 14 个项目头文件，按用户格式说明真实接口、协议、时序与复位/初始化；规范与取舍见 [coding-style.md](coding-style.md) 和 [AI 日志](ai-log.md)。
+- 基线 d50bf5e；本轮头文件仅注释变化，未修改功能代码。去注释对比通过，全部头文件具有五项说明；差异空白检查通过。
+- 实际执行 `cmake --build build --parallel 4`、`ctest --test-dir build --output-on-failure`，Release 构建退出 0，CTest 12/12 通过（6.20 秒）；后续仅对齐 ASCII 图框。未重复 Debug 测试。
+- 本条与头文件修改同提交；保留用户已有 README 修改，未推进作业 4。

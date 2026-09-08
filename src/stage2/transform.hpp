@@ -9,11 +9,32 @@
 
 namespace stage2 {
 /**
- * FIFO(D) -> [ magnitude slot -> ordered slot ] -> m_dataOut/m_validOut
- *                      clk.pos()              <- m_readyIn
- * 两槽各一项；k 沿接收，最早 k+2 沿握手，每沿至多一项。
- * SC_METHOD 仅上升沿执行；未握手保持排序槽和 data/valid，上游满则停止读。
- * 排序槽与输出信号是同一份架构存储的模型表示，不重复计为缓存。
+ * @brief Transforms operands through two elastic stages with a valid/ready output.
+ *
+ * Interface:
+ *
+ * m_tasksIn --> +---------------------------+ --> m_dataOut / m_validOut
+ * (RawTask)     |        Transform          | <-- m_readyIn
+ * m_clk ----->  | magnitude -> ordered slot |
+ *               +---------------------------+
+ *
+ * Protocol:
+ * - The two slots each hold one task; signed operands are widened before taking magnitudes.
+ * - Output payload keeps the task id and ordered nonnegative magnitudes a >= b.
+ * - Transfer only when m_validOut && m_readyIn at the rising edge.
+ * - While stalled, hold the ordered slot and output data/valid; stop upstream reads when both slots are full.
+ * - The ordered slot and output signals represent the same architectural storage, not duplicate buffers.
+ * - The observer must outlive the module; m_validCycles and m_blockedCycles track link use and stalls.
+ *
+ * Timing:
+ * - SC_METHOD(tick) runs only on m_clk.pos(), with dont_initialize.
+ * - At shared T=1 ns, accept at k, compare/swap at k+1, and handshake at k+2 at earliest.
+ * - At most one input and one output transfer per edge; blocking extends the two-cycle base latency.
+ *
+ * Reset:
+ * - No reset port or runtime reset protocol.
+ * - Construction leaves both slots empty, initializes m_validOut=false and zeroes counters.
+ * - Output data has no transaction meaning while valid is false.
  */
 SC_MODULE(Transform) {
     sc_core::sc_in<bool> m_clk{"clk"};
@@ -23,11 +44,15 @@ SC_MODULE(Transform) {
     sc_core::sc_in<bool> m_readyIn{"ready_in"};
     std::uint64_t m_validCycles = 0;
     std::uint64_t m_blockedCycles = 0;
-    /// @brief 两个内部槽都空；排序槽和输出信号不重复计数。
+    /**
+     * @brief 两个内部槽都空；排序槽和输出信号不重复计数。
+     */
     bool empty() const {
         return !m_magnitudeStage && !m_orderedStage;
     }
-    /// @brief 当前内部任务数，范围 0..2；不包含外部 FIFO。
+    /**
+     * @brief 当前内部任务数，范围 0..2；不包含外部 FIFO。
+     */
     unsigned occupancy() const {
         return static_cast<unsigned>(m_magnitudeStage.has_value()) + static_cast<unsigned>(m_orderedStage.has_value());
     }

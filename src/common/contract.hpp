@@ -1,6 +1,26 @@
 /* Copyright (c) 2026 SC_GCD contributors. All rights reserved. */
-/** @file contract.hpp
- * @brief 始终生效的运行时契约：入口参数、内部不变量和操作结果检查。
+/**
+ * @file contract.hpp
+ * @brief Checks runtime contracts consistently in Debug and Release.
+ *
+ * Interface:
+ *
+ * condition / message --> +------------------+ --> normal return (true)
+ *                         | requireCondition | --> Exception(message) (false)
+ *                         +------------------+
+ *
+ * Protocol:
+ * - Evaluate the condition argument once; throw the selected Exception if false (default runtime_error).
+ * - message must construct Exception; a pointer message must be non-null.
+ * - Internal invariants may select logic_error; this function does not replace the standard assert macro.
+ * - Checks with I/O side effects remain active in Release; the function throws rather than terminating the process.
+ *
+ * Timing:
+ * - An ordinary synchronous C++ call; no clock, handshake or simulated latency.
+ * - The check does not advance simulation time.
+ *
+ * Reset:
+ * - Not applicable: this stateless function has no reset or retained state.
  */
 #pragma once
 

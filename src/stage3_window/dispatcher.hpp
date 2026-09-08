@@ -8,12 +8,32 @@
 namespace stage3_window {
 inline constexpr unsigned UNIT_COUNT = 2;
 /**
- * data/valid -> [ window credit + ready selection ] -> Compute[0/1]
- * ready     <- [ both ready: seeded random choice ] <- ready[0/1]
- * base      <- Collector (next result to retire)
- * route为组合接线；仅成功握手的上升沿推进随机状态/计数，无任务缓存。
- * id-base<W才能派发，提前预留结果槽；无ready或窗口满则上游保持。
- * 只有接收端ready时才向它给valid，避免已声明但未接收的传输换目的地。
+ * @brief Selects ready compute engines while reserving finite result-window capacity.
+ *
+ * Interface:
+ *
+ * m_dataIn / m_validIn --> +----------------------+ --> m_dataOut[0/1] / m_validOut[0/1]
+ * m_readyOut          <--  |      Dispatcher      | <-- m_readyIn[0/1]
+ * m_baseIn / m_clk    -->  | window + arbitration |
+ *                          +----------------------+
+ *
+ * Protocol:
+ * - Dispatch only if id >= base and id-base < W, reserving a result slot before computation.
+ * - Select a ready engine; when both are ready, use a seeded reproducible random choice.
+ * - Assert downstream valid only for a ready selected receiver, avoiding an unaccepted transfer changing destination.
+ * - If no engine is ready or the window is full, upstream must retain its valid/data.
+ * - No internal task buffer; window must match Collector and window/seed must be nonzero.
+ * - Invalid window or seed throws invalid_argument; bind ports before sc_start and keep the observer alive.
+ *
+ * Timing:
+ * - route is combinational; tick samples transfers and updates counters on m_clk.pos(), with dont_initialize.
+ * - Random state advances only on an accepted transfer where both engines are ready.
+ * - At most one task transfers per edge; no added routing cycle.
+ * - Collector base changes take effect through signal delta updates, so released capacity is usable next edge.
+ *
+ * Reset:
+ * - No reset port or runtime reset protocol.
+ * - Construction initializes the random state from seed and zeroes counters.
  */
 SC_MODULE(Dispatcher) {
     sc_core::sc_in<bool> m_clk{"clk"};
@@ -29,8 +49,10 @@ SC_MODULE(Dispatcher) {
     std::uint64_t m_windowBlockedWithReadyCycles = 0;
     std::uint64_t m_engineBlockedCycles = 0;
     std::uint64_t m_randomChoices = 0;
-    /// @brief window 为未退休任务上限，须与 Collector 一致；seed 是可复现仲裁种子。
-    /// @throws std::invalid_argument window 或 seed 为零。端口须在 sc_start 前绑定。
+    /**
+     * @brief window 为未退休任务上限，须与 Collector 一致；seed 是可复现仲裁种子。
+     * @throws std::invalid_argument window 或 seed 为零。端口须在 sc_start 前绑定。
+     */
     Dispatcher(sc_core::sc_module_name name, stage1::TestEventLog & testEventLog, unsigned window, std::uint32_t seed);
 
 private:

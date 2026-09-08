@@ -13,31 +13,40 @@
 
 namespace stage1 {
 /**
- * @brief 解析模块：把文件中的整数对转换为逐拍任务流。
+ * @brief Parses signed 32-bit integer pairs into a clocked task stream.
  *
- *   input file (m_input)
- *          |
- *          v
- *   +----------------------+  m_tasksOut: RawTask
- *   | Parser               |----------------------> FIFO --> Transform
- *   | m_sent / m_eof       |                        depth = D (default 2)
- *   | no task buffer       |
- *   +----------^-----------+
- *              | m_clk.pos()
+ * Interface:
  *
- * 触发：SC_METHOD(tick)，仅时钟上升沿；dont_initialize 禁止初始化时额外执行。
- * 时钟：与其他模块共用 T=1 ns，首沿 1 ns；每沿最多一次 getline 和一次 nb_write。
- * 缓存：模块内无跨周期任务缓存；文件流是仿真环境资源，输出 FIFO 由顶层创建。
- * 周期：第 k 沿读取并写入一条任务，下游最早 k+1 沿读取；不增加额外解析延迟。
- * 背压：输出 FIFO 满时不读文件；EOF 后不再发送。m_sent 是发送计数，不是缓存。
- * 旁路观察：m_testEventLog 只记录事件，不参与任务传递或改变时序。
+ * m_input -----> +------------------+
+ *                |      Parser      |-----> m_tasksOut (RawTask FIFO)
+ * m_clk -------->|                  |
+ *                +------------------+
+ *
+ * Protocol:
+ * - Read at most one line and send at most one task per rising edge.
+ * - Do not read the file while the output FIFO is full; stop sending after normal EOF.
+ * - No internal task buffer; m_sent counts sent tasks and m_eof records EOF.
+ * - The input stream and TestEventLog reference must outlive the module.
+ * - Invalid rows or input failures throw runtime_error; the observer does not control hardware.
+ *
+ * Timing:
+ * - SC_METHOD(tick) runs only on m_clk.pos(); dont_initialize prevents an initial call.
+ * - The shared clock has T=1 ns and its first edge at 1 ns.
+ * - A task written at edge k is visible to the downstream FIFO reader at k+1 or later.
+ * - The external FIFO is owned by the top level (default depth 2); no extra parser delay.
+ *
+ * Reset:
+ * - No reset port or runtime reset protocol.
+ * - Construction initializes m_sent=0 and m_eof=false.
  */
 SC_MODULE(Parser) {
     sc_core::sc_in<bool> m_clk{"clk"};
     sc_core::sc_fifo_out<RawTask> m_tasksOut{"tasks_out"};
     std::uint64_t m_sent = 0;
     bool m_eof = false;
-    /// @brief input 须可读且覆盖模块寿命；读取失败/非法整数行抛 runtime_error，正常 EOF 停止发送。
+    /**
+     * @brief input 须可读且覆盖模块寿命；读取失败/非法整数行抛 runtime_error，正常 EOF 停止发送。
+     */
     Parser(sc_core::sc_module_name name, std::istream & input, TestEventLog & testEventLog);
 
 private:

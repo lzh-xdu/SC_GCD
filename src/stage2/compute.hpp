@@ -7,12 +7,33 @@
 
 namespace stage2 {
 /**
- * data/valid -> [ IDLE -> BUSY -> RESULT_PENDING ] -> Result FIFO(D)
- * ready     <- [ one task/result + countdown    ]
- *                          clk.pos()
- * 接收只在上升沿 valid&&ready；k 接收、k+L 完成，完成沿不接下一项。
- * 结果满时保持一份结果、ready=false；成功写出后下一沿可接收。
- * L=0 在接收沿完成该项；初始 ready=true；内部无额外队列。
+ * @brief Computes one GCD at a time using an explicit valid/ready acceptance interface.
+ *
+ * Interface:
+ *
+ * m_dataIn / m_validIn --> +-----------------------+ --> m_resultsOut (Result FIFO)
+ * m_readyOut          <--  |       Compute         |
+ * m_clk               -->  | IDLE / BUSY / PENDING |
+ *                          +-----------------------+
+ *
+ * Protocol:
+ * - Accept only at a rising edge with m_validIn && m_readyOut; require ordered nonnegative magnitudes.
+ * - Keep one task/result and a countdown, with no extra task queue.
+ * - While computing or holding a blocked result, ready is false and the result is retained.
+ * - The observer must outlive the module; unit labels the engine in diagnostic events.
+ * - Busy cycles and result-wait cycles are counted separately.
+ *
+ * Timing:
+ * - SC_METHOD(tick) runs only on m_clk.pos(), with dont_initialize.
+ * - Accept at k and complete at k+L; L sums max(1, bits(a)-bits(b)+1) over modulo steps.
+ * - Model Assumption (outside spec): b==0 skips modulo and its latency formula; zero steps give L=0.
+ * - For nonnegative magnitudes, gcd(a,0)=a, gcd(0,b)=b and gcd(0,0)=0.
+ * - L=0 completes and attempts delivery at acceptance; completion/delivery edges accept no other task.
+ * - After successful result delivery, the next edge is the earliest new acceptance.
+ *
+ * Reset:
+ * - No reset port or runtime reset protocol.
+ * - Construction initializes IDLE, m_readyOut=true, a zero result/countdown and zero counters.
  */
 SC_MODULE(Compute) {
     sc_core::sc_in<bool> m_clk{"clk"};
@@ -24,7 +45,9 @@ SC_MODULE(Compute) {
     std::uint64_t m_idleNoInputCycles = 0;
     std::uint64_t m_resultWaitCycles = 0;
     std::uint64_t m_accepted = 0;
-    /// @brief 只读内部空闲状态；实际接收仍以该上升沿 valid && ready 为准。
+    /**
+     * @brief 只读内部空闲状态；实际接收仍以该上升沿 valid && ready 为准。
+     */
     bool idle() const {
         return m_state == State::IDLE;
     }
@@ -37,11 +60,17 @@ private:
     std::uint64_t m_remaining = 0;
     TestEventLog & m_testEventLog;
     unsigned m_unit;
-    /// @brief 上升沿推进；BUSY 必须有剩余周期，异常状态抛 logic_error。
+    /**
+     * @brief 上升沿推进；BUSY 必须有剩余周期，异常状态抛 logic_error。
+     */
     void tick();
-    /// @brief 仅在 RESULT_PENDING 尝试交付；FIFO 满是正常背压并保留结果。
+    /**
+     * @brief 仅在 RESULT_PENDING 尝试交付；FIFO 满是正常背压并保留结果。
+     */
     void deliver();
-    /// @brief 仅在 IDLE 且 valid && ready 时调用；输入幅值必须有序。
+    /**
+     * @brief 仅在 IDLE 且 valid && ready 时调用；输入幅值必须有序。
+     */
     void accept();
 };
 } // namespace stage2

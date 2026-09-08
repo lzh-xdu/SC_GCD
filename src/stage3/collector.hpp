@@ -7,12 +7,31 @@
 
 namespace stage3 {
 /**
- * Compute0 -> FIFO(R) --\
- *                       [ next_id, select next_id%2 ] -> FIFO(D) -> Output
- * Compute1 -> FIFO(R) --/            clk.pos()
- * 每上升沿最多读写一个结果；只有对应输入有数据且输出有空位才移动。
- * 自身无结果缓存，只保存下一个编号；FIFO间传递不能同沿旁路。
- * 后编号先完成时留在所属FIFO；先编号通道可独立写入，避免共享队列头阻塞。
+ * @brief Merges two bounded result queues in original task order.
+ *
+ * Interface:
+ *
+ * m_resultsIn[0] --> +----------------------+ --> m_resultsOut (Result FIFO)
+ * m_resultsIn[1] --> |      Collector       |
+ * m_clk          --> | next id selects FIFO |
+ *                    +----------------------+
+ *
+ * Protocol:
+ * - Read from the engine selected by m_nextId % UNIT_COUNT only when output has space.
+ * - Require the returned id to equal m_nextId; a mismatch throws logic_error.
+ * - Hold later results in their independent input FIFOs until their turn.
+ * - Separate input queues allow the older task's engine to write without a shared FIFO head blocking it.
+ * - No internal result buffer; track the next id and order/output wait counters.
+ * - The input mapping must match the round-robin Dispatcher; the observer must outlive the module.
+ *
+ * Timing:
+ * - SC_METHOD(tick) runs only on m_clk.pos(), with dont_initialize.
+ * - Move at most one result per rising edge; no same-edge bypass across external FIFOs.
+ * - Input result FIFO capacity R and output FIFO capacity D are configured outside this module.
+ *
+ * Reset:
+ * - No reset port or runtime reset protocol.
+ * - Construction initializes m_nextId=0 and zero wait counters.
  */
 SC_MODULE(Collector) {
     sc_core::sc_in<bool> m_clk{"clk"};
@@ -21,7 +40,9 @@ SC_MODULE(Collector) {
     std::uint64_t m_nextId = 0;
     std::uint64_t m_orderWaitCycles = 0;
     std::uint64_t m_outputBlockedCycles = 0;
-    /// @brief 输入通道必须遵守 id % UNIT_COUNT 派发映射；读到非预期编号抛 logic_error。
+    /**
+     * @brief 输入通道必须遵守 id % UNIT_COUNT 派发映射；读到非预期编号抛 logic_error。
+     */
     Collector(sc_core::sc_module_name name, stage1::TestEventLog & testEventLog);
 
 private:

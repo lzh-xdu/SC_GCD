@@ -8,10 +8,30 @@
 namespace stage3 {
 inline constexpr unsigned UNIT_COUNT = 2;
 /**
- * Transform data/valid -> [ turn=0/1, no data buffer ] -> Compute[0/1] data/valid
- *           ready     <- [ combinational routing   ] <- Compute[0/1] ready
- * route 对数据/选择/ready敏感，仅组合接线；tick只在clk.pos()更新轮次。
- * 成功握手才0/1交替，被选单元忙时等待；无额外延迟、无内部任务缓存。
+ * @brief Routes tasks to two compute engines in strict round-robin order.
+ *
+ * Interface:
+ *
+ * m_dataIn / m_validIn --> +----------------------+ --> m_dataOut[0/1] / m_validOut[0/1]
+ * m_readyOut          <--  |      Dispatcher      | <-- m_readyIn[0/1]
+ * m_clk               -->  |       turn=0/1       |
+ *                          +----------------------+
+ *
+ * Protocol:
+ * - Route data/valid to the selected engine and propagate its ready upstream.
+ * - Switch turns only after a rising-edge valid/ready transfer; wait if the selected engine is busy.
+ * - This enforces id % UNIT_COUNT mapping for sequential input ids starting at zero.
+ * - No internal task buffer; m_idleOtherBlockedCycles counts waiting while the other engine is ready.
+ * - Bind all ports before sc_start; the observer reference must outlive the module.
+ *
+ * Timing:
+ * - route is combinational and reacts to data, valid, selection and ready changes.
+ * - tick updates the turn on m_clk.pos(), with dont_initialize; routing adds no clock-cycle latency.
+ * - At most one task transfers per rising edge.
+ *
+ * Reset:
+ * - No reset port or runtime reset protocol.
+ * - Construction selects Compute0 (m_turn=0) and initializes the counter to zero.
  */
 SC_MODULE(Dispatcher) {
     sc_core::sc_in<bool> m_clk{"clk"};
@@ -22,7 +42,9 @@ SC_MODULE(Dispatcher) {
     sc_core::sc_vector<sc_core::sc_out<bool>> m_validOut{"valid_out", UNIT_COUNT};
     sc_core::sc_vector<sc_core::sc_in<bool>> m_readyIn{"ready_in", UNIT_COUNT};
     std::uint64_t m_idleOtherBlockedCycles = 0;
-    /// @brief 初始选择 Compute0；所有端口须在 sc_start 前绑定，日志引用须覆盖模块寿命。
+    /**
+     * @brief 初始选择 Compute0；所有端口须在 sc_start 前绑定，日志引用须覆盖模块寿命。
+     */
     Dispatcher(sc_core::sc_module_name name, stage1::TestEventLog & testEventLog);
 
 private:
