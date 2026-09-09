@@ -16,15 +16,20 @@
 #include <string>
 
 namespace stage4 {
-Parser::Parser(sc_core::sc_module_name name, std::istream& input, EventRecorder& recorder)
+Parser::Parser(sc_core::sc_module_name name, std::istream& input, EventRecorder& recorder, bool scheduledBySystem)
     : sc_module(name)
     , m_input(input)
     , m_recorder(recorder) {
     requireCondition(static_cast<bool>(input), "input stream is not readable");
-    SC_THREAD(run);
+    if (!scheduledBySystem) {
+        SC_THREAD(run);
+    }
+}
+bool Parser::canRead() const {
+    return !m_eof && m_tasksOut.num_free() > 0;
 }
 void Parser::waitForInputBoundary() {
-    const auto period = sc_core::sc_time(CLOCK_PERIOD_NS, sc_core::SC_NS).value();
+    const auto period = sc_core::sc_time(CYCLE_DURATION_NS, sc_core::SC_NS).value();
     const auto offset = sc_core::sc_time_stamp().value() % period;
     wait(sc_core::sc_time::from_value(period - offset));
     // Match the old edge evaluation phase: a FIFO write becomes visible after this phase,

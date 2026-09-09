@@ -30,12 +30,13 @@ namespace stage4 {
  * - Invalid rows or input failures throw runtime_error; the observer does not control hardware.
  *
  * Timing:
- * - SC_THREAD(run) first waits until 1 ns; subsequent input boundaries are integer multiples of 1 ns.
- * - A full FIFO suspends the thread on data_read_event, without periodic polling.
+ * - Production System schedules readAndSend(); canRead() advertises the next input opportunity.
+ * - Standalone mode uses SC_THREAD(run), first input at 1 ns; both modes keep integer-ns boundaries.
+ * - A full FIFO removes the production input deadline; the standalone thread waits on data_read_event.
  * - Space released at time t permits input only at the next strictly later input boundary.
- * - One delta wait at each boundary preserves the old edge evaluation phase; it adds no time.
- * - The FIFO updates after the send phase; the remaining clocked reader consumes at k+1 or later.
- * - Normal EOF terminates the thread; the timer represents input pacing, not a global clock.
+ * - Standalone mode waits one delta at each boundary; production System commits all channels together.
+ * - The FIFO updates after the send phase; the downstream reader consumes at k+1 or later.
+ * - EOF terminates the standalone thread or removes the production input deadline.
  * - The external FIFO is owned by the top level (default depth 2); no extra parser delay.
  *
  * Reset:
@@ -48,14 +49,18 @@ SC_MODULE(Parser) {
     bool m_eof = false;
     /**
      * @brief input 须可读且覆盖模块寿命；读取失败/非法整数行抛 runtime_error，正常 EOF 停止发送。
+     * @param scheduledBySystem true 时不注册独立线程，由 System 在输入边界调用 readAndSend。
      */
-    Parser(sc_core::sc_module_name name, std::istream & input, EventRecorder & recorder);
+    Parser(sc_core::sc_module_name name, std::istream & input, EventRecorder & recorder,
+           bool scheduledBySystem = false);
+
+    bool canRead() const;
+    void readAndSend();
 
 private:
     std::istream& m_input;
     EventRecorder & m_recorder;
     void run();
     void waitForInputBoundary();
-    void readAndSend();
 };
 } // namespace stage4

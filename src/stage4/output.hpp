@@ -19,11 +19,11 @@ namespace stage4 {
  *
  * m_resultsIn --> +------------------+
  * (Result FIFO)   |      Output      |-----> m_output (one GCD per line)
- * m_clk --------->|                  |
+ * deadline ----->|                  |
  *                 +------------------+
  *
  * Protocol:
- * - Read at most one result on an eligible rising edge; require id == m_received.
+ * - Read at most one result on an eligible scheduled boundary; require id == m_received.
  * - The functional stream contains GCD values only; EventRecorder records the output event separately.
  * - No internal task/result buffer; the top level owns the input FIFO (default depth 2).
  * - The output stream and observer must outlive the module.
@@ -31,17 +31,16 @@ namespace stage4 {
  * - An unexpected result id throws logic_error.
  *
  * Timing:
- * - SC_METHOD(tick) runs only on m_clk.pos(), with dont_initialize; T=1 ns, first edge at 1 ns.
- * - Default testOutputPeriod=1 allows one result per edge without extra processing latency.
+ * - System schedules advance() only at an actionable timestamp; one comparison cycle is 1 ns.
+ * - Default testOutputPeriod=1 allows one result per scheduled boundary without extra processing latency.
  * - For period N, attempt a read only when cycle % N == 0; skipped edges propagate backpressure.
- * - A result written into the FIFO at edge k can be read at k+1 or later.
+ * - A result written into the FIFO at boundary k can be read at k+1 or later.
  *
  * Reset:
  * - No reset port or runtime reset protocol.
  * - Construction initializes m_received=0.
  */
 SC_MODULE(Output) {
-    sc_core::sc_in<bool> m_clk{"clk"};
     sc_core::sc_fifo_in<Result> m_resultsIn{"results_in"};
     std::uint64_t m_received = 0;
     /**
@@ -51,10 +50,13 @@ SC_MODULE(Output) {
     Output(sc_core::sc_module_name name, std::ostream & output, EventRecorder & recorder,
            std::uint64_t testOutputPeriod);
 
+    void advance();
+    std::uint64_t nextDelay() const;
+    void accountSkipped(std::uint64_t first, std::uint64_t count);
+
 private:
     std::ostream& m_output;
     EventRecorder & m_recorder;
     std::uint64_t m_testOutputPeriod;
-    void tick();
 };
 } // namespace stage4

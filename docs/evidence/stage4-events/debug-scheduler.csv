@@ -1,0 +1,5 @@
+case,stage3_cycles,stage4_cycles,activations,max_jump_cycles
+long_sink,1000000,1000000,8,999988
+zero_capacity_one,312,312,100,12
+simultaneous_results,150,150,134,3
+head_long,364,364,171,57

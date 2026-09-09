@@ -15,7 +15,7 @@ namespace stage4 {
  * Interface:
  *
  * m_resultsIn[0/1] --> +---------------------------+ --> m_resultsOut
- * m_clk           -->  | W slots, indexed by id%W  | --> m_baseOut (to Dispatcher)
+ * deadline        -->  | W slots, indexed by id%W  | --> m_baseOut (to Dispatcher)
  *                      |        Collector          |
  *                      +---------------------------+
  *
@@ -29,17 +29,16 @@ namespace stage4 {
  * - Out-of-window, duplicate/colliding or wrong-head tags throw logic_error; the observer must outlive the module.
  *
  * Timing:
- * - SC_METHOD(tick) runs only on m_clk.pos(), with dont_initialize.
- * - Retire an old slot before receiving a result: at most one emission and one reception per edge.
- * - A newly received result cannot retire on the same edge.
- * - m_baseOut updates in a delta cycle; freed dispatch capacity is usable at the next edge at earliest.
+ * - System schedules advance() at the next actionable timestamp; unchanged intervals are skipped.
+ * - Retire an old slot before receiving a result: at most one emission and one reception per scheduled boundary.
+ * - A newly received result cannot retire on the same boundary.
+ * - m_baseOut updates in a delta cycle; freed dispatch capacity is usable at the next boundary at earliest.
  *
  * Reset:
  * - No reset port or runtime reset protocol.
  * - Construction creates W empty slots, initializes m_baseOut/m_nextId=0, and zeroes occupancy, poll turn and counters.
  */
 SC_MODULE(Collector) {
-    sc_core::sc_in<bool> m_clk{"clk"};
     sc_core::sc_vector<sc_core::sc_fifo_in<stage4::Result>> m_resultsIn{"results_in", UNIT_COUNT};
     sc_core::sc_fifo_out<stage4::Result> m_resultsOut{"results_out"};
     sc_core::sc_out<std::uint64_t> m_baseOut{"base_out"};
@@ -54,6 +53,10 @@ SC_MODULE(Collector) {
      */
     Collector(sc_core::sc_module_name name, stage4::EventRecorder & recorder, unsigned window);
 
+    void advance();
+    std::uint64_t nextDelay() const;
+    void accountSkipped(std::uint64_t first, std::uint64_t count);
+
 private:
     stage4::EventRecorder& m_recorder;
     std::vector<std::optional<stage4::Result>> m_slots;
@@ -61,6 +64,5 @@ private:
     unsigned m_pollTurn = 0;
     void retire();
     void receive();
-    void tick();
 };
 } // namespace stage4

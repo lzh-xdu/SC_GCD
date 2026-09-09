@@ -4,7 +4,7 @@
 
 /**
  * @file output.cpp
- * @brief Output clock-edge implementation.
+ * @brief Output service deadlines without periodic polling.
  */
 #include "output.hpp"
 #include "common/contract.hpp"
@@ -21,11 +21,8 @@ Output::Output(sc_core::sc_module_name name, std::ostream& output, EventRecorder
     , m_testOutputPeriod(testOutputPeriod) {
     requireCondition<std::invalid_argument>(testOutputPeriod > 0, "output period must be nonzero");
     requireCondition(static_cast<bool>(output), "output stream is not writable");
-    SC_METHOD(tick);
-    sensitive << m_clk.pos();
-    dont_initialize();
 }
-void Output::tick() {
+void Output::advance() {
     requireCondition<std::logic_error>(m_testOutputPeriod > 0, "output period must be nonzero");
     requireCondition(static_cast<bool>(m_output), "output file write failed");
     if (currentCycle() % m_testOutputPeriod != 0) {
@@ -40,5 +37,13 @@ void Output::tick() {
     requireCondition(static_cast<bool>(m_output), "output file write failed");
     m_recorder.record(result.m_id, "output", 0, 0, result.m_gcd);
     ++m_received;
+}
+
+std::uint64_t Output::nextDelay() const {
+    return m_resultsIn.num_available() > 0 ? m_testOutputPeriod - currentCycle() % m_testOutputPeriod
+                                           : model::timing::NO_DEADLINE;
+}
+void Output::accountSkipped(std::uint64_t, std::uint64_t) {
+    // No output-side per-cycle counters; no result is consumed between eligible events.
 }
 } // namespace stage4

@@ -2,6 +2,8 @@
 
 2026-09-10；用户澄清采用原输入节拍，不采用每个 delta cycle 输入一对。当前是渐进迁移：Parser 已使用定时与 FIFO 事件，其他模块及统计观察仍使用原时钟。
 
+后续状态：本页保留提交 d78a477 的局部迁移记录；同日后续已完成 [全系统去时钟](stage4-events.md)。生产路径的 Parser 输入期限现由 System 管理，独立 Parser 测试继续覆盖原定时/FIFO 事件模式。
+
 ## System 与 Parser
 
 - `System::connectModules()` 删除 Parser 时钟绑定；Parser 删除 `m_clk` 端口。

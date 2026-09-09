@@ -14,7 +14,7 @@ inline constexpr unsigned UNIT_COUNT = 2;
  *
  * m_dataIn / m_validIn --> +----------------------+ --> m_dataOut[0/1] / m_validOut[0/1]
  * m_readyOut          <--  |      Dispatcher      | <-- m_readyIn[0/1]
- * m_baseIn / m_clk    -->  | window + arbitration |
+ * m_baseIn           -->  | window + arbitration |
  *                          +----------------------+
  *
  * Protocol:
@@ -26,17 +26,16 @@ inline constexpr unsigned UNIT_COUNT = 2;
  * - Invalid window or seed throws invalid_argument; bind ports before sc_start and keep the observer alive.
  *
  * Timing:
- * - route is combinational; tick samples transfers and updates counters on m_clk.pos(), with dont_initialize.
+ * - route is combinational; advance() samples transfers at scheduled timestamps, after prior updates settle.
  * - Random state advances only on an accepted transfer where both engines are ready.
- * - At most one task transfers per edge; no added routing cycle.
- * - Collector base changes take effect through signal delta updates, so released capacity is usable next edge.
+ * - At most one task transfers per scheduled boundary; no added routing cycle.
+ * - Collector base changes take effect through signal delta updates, so released capacity is usable next boundary.
  *
  * Reset:
  * - No reset port or runtime reset protocol.
  * - Construction initializes the random state from seed and zeroes counters.
  */
 SC_MODULE(Dispatcher) {
-    sc_core::sc_in<bool> m_clk{"clk"};
     sc_core::sc_in<stage4::Payload> m_dataIn{"data_in"};
     sc_core::sc_in<bool> m_validIn{"valid_in"};
     sc_core::sc_out<bool> m_readyOut{"ready_out"};
@@ -51,6 +50,10 @@ SC_MODULE(Dispatcher) {
      */
     Dispatcher(sc_core::sc_module_name name, stage4::EventRecorder & recorder, unsigned window, std::uint32_t seed);
 
+    void advance();
+    std::uint64_t nextDelay() const;
+    void accountSkipped(std::uint64_t first, std::uint64_t count);
+
 private:
     sc_core::sc_signal<std::uint32_t> m_randomState{"random_state"};
     stage4::EventRecorder& m_recorder;
@@ -58,6 +61,5 @@ private:
     bool hasCredit() const;
     unsigned selectedUnit() const;
     void route();
-    void tick();
 };
 } // namespace stage4

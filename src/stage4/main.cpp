@@ -4,7 +4,7 @@
 
 /**
  * @file main.cpp
- * @brief Connect the event-paced Parser and the remaining cycle-based window modules.
+ * @brief Connect the window model and schedule only actionable event timestamps.
  */
 #include "compute.hpp"
 #include "common/contract.hpp"
@@ -54,7 +54,6 @@ constexpr unsigned TRANSFORM_PIPELINE_CAPACITY_TASKS = 2;
 constexpr unsigned TASK_PAYLOAD_BITS = 128;  // 64-bit ID + two 32-bit magnitudes.
 constexpr unsigned RESULT_PAYLOAD_BITS = 96; // 64-bit ID + 32-bit unsigned GCD.
 constexpr int STATISTICS_SIGNIFICANT_DIGITS = 12;
-constexpr double CLOCK_HIGH_TIME_FRACTION = 0.5;
 constexpr double SIMULATION_STOP_MARGIN_AFTER_LAST_EDGE_NS = 0.5;
 
 struct Options {
@@ -69,10 +68,8 @@ struct Options {
 
 using model::instrumentation::Usage;
 
-// Simulation harness: observes after channel updates, never moves task data.
+// Sparse event scheduler: modules own transitions; observations integrate unchanged intervals.
 SC_MODULE(System) {
-    // Transitional clock for modules not yet migrated; Parser owns its timed input events.
-    sc_core::sc_clock m_clk;
     sc_core::sc_fifo<RawTask> m_parserToTransform;
     sc_core::sc_signal<Payload> m_transformToComputeData{"transform_to_compute_data"};
     sc_core::sc_signal<bool> m_transformToComputeValid{"transform_to_compute_valid"};
@@ -101,20 +98,23 @@ SC_MODULE(System) {
            const Options& options);
     void connectModules();
     void connectComputes();
-    void observe();
+    void runEvents();
+    void sampleUsage();
+    void accountSkipped(std::uint64_t count);
+    std::uint64_t nextDelay() const;
+    std::uint64_t m_activations = 0;
+    std::uint64_t m_maxJump = 0;
     bool drained() const;
 };
 
 System::System(sc_core::sc_module_name name, std::istream& input, std::ostream& output, EventRecorder& recorder,
                const Options& options)
     : sc_module(name)
-    , m_clk("clk", sc_core::sc_time(CLOCK_PERIOD_NS, sc_core::SC_NS), CLOCK_HIGH_TIME_FRACTION,
-            sc_core::sc_time(CLOCK_PERIOD_NS, sc_core::SC_NS), true)
     , m_parserToTransform("parser_to_transform", options.m_depth)
     , m_compute0Results("compute0_results", options.m_resultDepth)
     , m_compute1Results("compute1_results", options.m_resultDepth)
     , m_collectorToOutput("collector_to_output", options.m_depth)
-    , m_parser("parser", input, recorder)
+    , m_parser("parser", input, recorder, true)
     , m_transform("transform", recorder)
     , m_dispatcher("dispatcher", recorder, options.m_window, options.m_seed)
     , m_compute0("compute0", recorder, 0)
@@ -122,14 +122,10 @@ System::System(sc_core::sc_module_name name, std::istream& input, std::ostream& 
     , m_collector("collector", recorder, options.m_window)
     , m_output("output", output, recorder, options.m_testOutputPeriod) {
     connectModules();
-    SC_THREAD(observe);
+    SC_THREAD(runEvents);
 }
 
 void System::connectModules() {
-    m_transform.m_clk(m_clk);
-    m_dispatcher.m_clk(m_clk);
-    m_collector.m_clk(m_clk);
-    m_output.m_clk(m_clk);
     m_parser.m_tasksOut(m_parserToTransform);
     m_transform.m_tasksIn(m_parserToTransform);
     m_transform.m_dataOut(m_transformToComputeData);
@@ -149,7 +145,6 @@ void System::connectComputes() {
     const std::array<Compute*, UNIT_COUNT> computeUnits{&m_compute0, &m_compute1};
     const std::array<sc_core::sc_fifo<Result>*, UNIT_COUNT> computeResultFifos{&m_compute0Results, &m_compute1Results};
     for (unsigned unit = 0; unit < UNIT_COUNT; ++unit) {
-        computeUnits[unit]->m_clk(m_clk);
         computeUnits[unit]->m_dataIn(m_dispatchToComputeData[unit]);
         computeUnits[unit]->m_validIn(m_dispatchToComputeValid[unit]);
         computeUnits[unit]->m_readyOut(m_computeToDispatchReady[unit]);
@@ -168,24 +163,68 @@ bool System::drained() const {
            m_collectorToOutput.num_available() == 0 && m_collector.occupancy() == 0;
 }
 
-void System::observe() {
+std::uint64_t System::nextDelay() const {
+    return std::min({m_parser.canRead() ? 1 : model::timing::NO_DEADLINE, m_transform.nextDelay(),
+                     m_dispatcher.nextDelay(), m_compute0.nextDelay(), m_compute1.nextDelay(), m_collector.nextDelay(),
+                     m_output.nextDelay()});
+}
+void System::accountSkipped(std::uint64_t count) {
+    if (count == 0) {
+        return;
+    }
+    const auto first = m_cycles + 1;
+    m_transform.accountSkipped(first, count);
+    m_dispatcher.accountSkipped(first, count);
+    m_compute0.accountSkipped(first, count);
+    m_compute1.accountSkipped(first, count);
+    m_collector.accountSkipped(first, count);
+    for (auto& usage : m_queues) {
+        usage.hold(count);
+    }
+    m_pipeline.hold(count);
+    m_windowResults.hold(count);
+    m_windowReserved.hold(count);
+}
+void System::sampleUsage() {
+    auto usage = m_queues.begin();
+    (usage++)->sample(static_cast<unsigned>(m_parserToTransform.num_available()));
+    (usage++)->sample(static_cast<unsigned>(m_compute0Results.num_available()));
+    (usage++)->sample(static_cast<unsigned>(m_compute1Results.num_available()));
+    usage->sample(static_cast<unsigned>(m_collectorToOutput.num_available()));
+    m_pipeline.sample(m_transform.occupancy());
+    m_windowResults.sample(m_collector.occupancy());
+    m_windowReserved.sample(static_cast<unsigned>(m_dispatcher.m_statistics.m_dispatched - m_collector.m_nextId));
+}
+void System::runEvents() {
+    // Channel update -> combinational route -> route output update. No simulated time passes.
+    constexpr unsigned SETTLE_DELTA_COUNT = 3;
     while (true) {
-        wait(m_clk.posedge_event());
-        wait(sc_core::SC_ZERO_TIME);
-        m_cycles = currentCycle();
-        auto usage = m_queues.begin();
-        (usage++)->sample(static_cast<unsigned>(m_parserToTransform.num_available()));
-        (usage++)->sample(static_cast<unsigned>(m_compute0Results.num_available()));
-        (usage++)->sample(static_cast<unsigned>(m_compute1Results.num_available()));
-        usage->sample(static_cast<unsigned>(m_collectorToOutput.num_available()));
-        m_pipeline.sample(m_transform.occupancy());
-        m_windowResults.sample(m_collector.occupancy());
-        m_windowReserved.sample(static_cast<unsigned>(m_dispatcher.m_statistics.m_dispatched - m_collector.m_nextId));
-        if (drained()) {
-            m_finished = true;
-            sc_core::sc_stop();
-            return;
+        for (unsigned phase = 0; phase < SETTLE_DELTA_COUNT; ++phase) {
+            wait(sc_core::SC_ZERO_TIME);
         }
+        if (m_cycles != 0) {
+            sampleUsage();
+            if (drained()) {
+                m_finished = true;
+                sc_core::sc_stop();
+                return;
+            }
+        }
+        const auto delay = nextDelay();
+        requireCondition(delay != model::timing::NO_DEADLINE, "event model deadlock: no pending state transition");
+        accountSkipped(delay - 1);
+        wait(sc_core::sc_time(static_cast<double>(delay) * CYCLE_DURATION_NS, sc_core::SC_NS));
+        m_cycles = currentCycle();
+        ++m_activations;
+        m_maxJump = std::max(m_maxJump, delay);
+        // All handlers see old channels; sc_fifo/sc_signal commit in the following delta.
+        m_parser.readAndSend();
+        m_transform.advance();
+        m_dispatcher.advance();
+        m_compute0.advance();
+        m_compute1.advance();
+        m_collector.advance();
+        m_output.advance();
     }
 }
 
@@ -383,9 +422,12 @@ int run(int argc, char** argv) {
           << '\n';
     stats << "compute0_idle_no_input_cycles," << system.m_compute0.m_statistics.m_idleNoInputCycles << '\n'
           << "compute1_idle_no_input_cycles," << system.m_compute1.m_statistics.m_idleNoInputCycles << '\n';
+    recorder.flushTrace();
     flushFiles(output, stats, testEvents, options.m_testTraceEnabled);
     // Diagnostics belong to the console; OUTPUT contains only final GCD values.
     std::cerr << "PASS: " << system.m_output.m_received << " tasks, " << system.m_cycles << " cycles\n";
+    std::cerr << "EVENT_SCHEDULER activations=" << system.m_activations << " max_jump_cycles=" << system.m_maxJump
+              << '\n';
     return 0;
 }
 } // namespace

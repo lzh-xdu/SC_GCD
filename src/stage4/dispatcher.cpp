@@ -30,9 +30,6 @@ Dispatcher::Dispatcher(sc_core::sc_module_name name, stage4::EventRecorder& reco
     for (unsigned unit = 0; unit < UNIT_COUNT; ++unit) {
         sensitive << m_readyIn[unit];
     }
-    SC_METHOD(tick);
-    sensitive << m_clk.pos();
-    dont_initialize();
 }
 bool Dispatcher::hasCredit() const {
     requireCondition<std::logic_error>(m_window > 0, "window must be nonzero");
@@ -55,7 +52,7 @@ void Dispatcher::route() {
         m_validOut[unit].write(m_validIn.read() && ready && unit == selected);
     }
 }
-void Dispatcher::tick() {
+void Dispatcher::advance() {
     if (!m_validIn.read()) {
         return;
     }
@@ -76,6 +73,27 @@ void Dispatcher::tick() {
             m_recorder.record(id, "random_choice", selectedUnit(), m_randomState.read());
             m_randomState.write(nextRandom(m_randomState.read()));
         }
+    }
+}
+
+std::uint64_t Dispatcher::nextDelay() const {
+    return m_validIn.read() && hasCredit() && m_readyIn[selectedUnit()].read() ? 1 : model::timing::NO_DEADLINE;
+}
+void Dispatcher::accountSkipped(std::uint64_t first, std::uint64_t count) {
+    if (!m_validIn.read()) {
+        return;
+    }
+    const auto id = m_dataIn.read().m_id;
+    if (!hasCredit()) {
+        m_statistics.m_windowBlockedCycles += count;
+        if (m_readyIn[0].read() || m_readyIn[1].read()) {
+            m_statistics.m_windowBlockedWithReadyCycles += count;
+        }
+        m_recorder.repeat(first, count, id, "window_blocked");
+    } else {
+        requireCondition(!m_readyIn[selectedUnit()].read(), "skipped a ready dispatch");
+        m_statistics.m_engineBlockedCycles += count;
+        m_recorder.repeat(first, count, id, "engines_blocked");
     }
 }
 } // namespace stage4

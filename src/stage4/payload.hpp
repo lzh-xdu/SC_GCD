@@ -6,7 +6,7 @@
  * Interface:
  *
  *                  +-------------------------+
- * data (Payload) ->| receiver samples at edge|
+ * data (Payload) ->| receiver samples payload|
  * valid          ->|     valid && ready      |
  * ready          <-|                         |
  *                  +-------------------------+
@@ -16,11 +16,11 @@
  * - When valid is false, data has no transaction meaning.
  * - The sender holds data/valid while stalled; connected modules implement the handshake.
  * - Equality compares id and both operands; stream output and sc_trace support inspection.
- * - Parser, Output, raw/result types, the observer and clock helpers are reused from stage4.
+ * - Parser, Output, raw/result types, the observer and simulation-time helpers are reused from stage4.
  *
  * Timing:
  * - Payload is a plain value, with no clock process or latency of its own.
- * - Connected modules transfer it at rising edges where valid && ready is true.
+ * - Connected modules transfer it at scheduled boundaries where valid && ready is true.
  *
  * Reset:
  * - No reset protocol in Payload; default construction initializes all fields to zero.

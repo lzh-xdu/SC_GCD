@@ -14,9 +14,6 @@ Collector::Collector(sc_core::sc_module_name name, stage4::EventRecorder& record
     , m_slots(window) {
     requireCondition<std::invalid_argument>(window > 0, "window must be nonzero");
     m_baseOut.initialize(0);
-    SC_METHOD(tick);
-    sensitive << m_clk.pos();
-    dont_initialize();
 }
 void Collector::retire() {
     requireCondition<std::logic_error>(!m_slots.empty() && m_completed <= m_slots.size(),
@@ -59,11 +56,27 @@ void Collector::receive() {
     m_pollTurn = (selected + 1) % UNIT_COUNT;
     m_recorder.record(result.m_id, "window_store", selected, 0, result.m_gcd);
 }
-void Collector::tick() {
+void Collector::advance() {
     requireCondition<std::logic_error>(!m_slots.empty() && m_completed <= m_slots.size(),
                                        "invalid collector window state");
     retire();
     receive();
     m_baseOut.write(m_nextId);
+}
+
+std::uint64_t Collector::nextDelay() const {
+    const bool canRetire = m_slots[m_nextId % m_slots.size()] && m_resultsOut.num_free() > 0;
+    const bool canReceive = m_resultsIn[0].num_available() > 0 || m_resultsIn[1].num_available() > 0;
+    return canRetire || canReceive ? 1 : model::timing::NO_DEADLINE;
+}
+void Collector::accountSkipped(std::uint64_t first, std::uint64_t count) {
+    if (m_slots[m_nextId % m_slots.size()]) {
+        requireCondition(m_resultsOut.num_free() == 0, "skipped a collector retirement");
+        m_statistics.m_outputBlockedCycles += count;
+        m_recorder.repeat(first, count, m_nextId, "collector_blocked");
+    } else if (m_completed != 0) {
+        m_statistics.m_orderWaitCycles += count;
+        m_recorder.repeat(first, count, m_nextId, "reorder_wait");
+    }
 }
 } // namespace stage4

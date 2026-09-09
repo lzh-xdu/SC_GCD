@@ -13,11 +13,8 @@ Transform::Transform(sc_core::sc_module_name name, EventRecorder& recorder)
     : sc_module(name)
     , m_recorder(recorder) {
     m_validOut.initialize(false);
-    SC_METHOD(tick);
-    sensitive << m_clk.pos();
-    dont_initialize();
 }
-void Transform::tick() {
+void Transform::advance() {
     requireCondition<std::logic_error>(m_validOut.read() == m_orderedStage.has_value(),
                                        "transform valid does not match ordered slot");
     requireCondition<std::logic_error>(!m_orderedStage || m_dataOut.read() == *m_orderedStage,
@@ -48,6 +45,21 @@ void Transform::tick() {
     m_validOut.write(m_orderedStage.has_value());
     if (m_orderedStage) {
         m_dataOut.write(*m_orderedStage);
+    }
+}
+
+std::uint64_t Transform::nextDelay() const {
+    const bool canEmit = m_orderedStage && m_readyIn.read();
+    const bool canOrder = !m_orderedStage && m_magnitudeStage;
+    const bool canAccept = !m_magnitudeStage && m_tasksIn.num_available() > 0;
+    return canEmit || canOrder || canAccept ? 1 : model::timing::NO_DEADLINE;
+}
+void Transform::accountSkipped(std::uint64_t first, std::uint64_t count) {
+    if (m_orderedStage) {
+        requireCondition(!m_readyIn.read(), "skipped a ready transform transfer");
+        m_statistics.m_validCycles += count;
+        m_statistics.m_blockedCycles += count;
+        m_recorder.repeat(first, count, m_orderedStage->m_id, "link", m_orderedStage->m_a, m_orderedStage->m_b, 0);
     }
 }
 } // namespace stage4

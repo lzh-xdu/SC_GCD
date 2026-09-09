@@ -51,5 +51,7 @@ struct Usage {
     std::uint64_t m_sum = 0;
     unsigned m_peak = 0;
     void sample(unsigned count);
+    void hold(std::uint64_t cycles);
+    unsigned m_last = 0;
 };
 } // namespace stage4::model::instrumentation

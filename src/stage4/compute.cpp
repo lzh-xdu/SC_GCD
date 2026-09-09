@@ -15,9 +15,6 @@ Compute::Compute(sc_core::sc_module_name name, EventRecorder& recorder, unsigned
     , m_recorder(recorder)
     , m_unit(unit) {
     m_readyOut.initialize(true);
-    SC_METHOD(tick);
-    sensitive << m_clk.pos();
-    dont_initialize();
 }
 void Compute::deliver() {
     requireCondition<std::logic_error>(m_state == State::RESULT_PENDING, "compute result is not ready");
@@ -34,7 +31,7 @@ void Compute::accept() {
     const auto task = m_dataIn.read();
     const auto [value, latency] = model::timing::planGcd(task.m_a, task.m_b);
     m_result = {task.m_id, value};
-    m_remaining = latency;
+    m_completeCycle = currentCycle() + latency;
     ++m_statistics.m_accepted;
     m_recorder.record(task.m_id, "compute_unit", m_unit);
     m_recorder.record(task.m_id, "compute_accept", task.m_a, task.m_b, value, latency);
@@ -45,12 +42,12 @@ void Compute::accept() {
         deliver();
     }
 }
-void Compute::tick() {
-    requireCondition<std::logic_error>(m_state != State::BUSY || m_remaining > 0,
-                                       "busy compute has no remaining cycles");
+void Compute::advance() {
+    requireCondition<std::logic_error>(m_state != State::BUSY || currentCycle() <= m_completeCycle,
+                                       "missed compute completion deadline");
     if (m_state == State::BUSY) {
         ++m_statistics.m_busyCycles;
-        if (--m_remaining == 0) {
+        if (currentCycle() == m_completeCycle) {
             m_recorder.record(m_result.m_id, "compute_complete", 0, 0, m_result.m_gcd);
             m_state = State::RESULT_PENDING;
             deliver();
@@ -64,5 +61,25 @@ void Compute::tick() {
     }
     // else-if prevents completion falling through into acceptance on this edge.
     m_readyOut.write(m_state == State::IDLE);
+}
+
+std::uint64_t Compute::nextDelay() const {
+    if (m_state == State::BUSY) {
+        return m_completeCycle - currentCycle();
+    }
+    if (m_state == State::RESULT_PENDING) {
+        return m_resultsOut.num_free() > 0 ? 1 : model::timing::NO_DEADLINE;
+    }
+    return m_validIn.read() && m_readyOut.read() ? 1 : model::timing::NO_DEADLINE;
+}
+void Compute::accountSkipped(std::uint64_t, std::uint64_t count) {
+    if (m_state == State::BUSY) {
+        requireCondition(m_completeCycle > currentCycle() + count, "skipped compute completion deadline");
+        m_statistics.m_busyCycles += count;
+    } else if (m_state == State::RESULT_PENDING) {
+        m_statistics.m_resultWaitCycles += count;
+    } else {
+        m_statistics.m_idleNoInputCycles += count;
+    }
 }
 } // namespace stage4

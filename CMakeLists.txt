@@ -85,7 +85,7 @@ add_executable(stage4_gcd
     src/stage4/dispatcher.cpp src/stage4/collector.cpp
     src/stage4/common/task_statistics.cpp
     src/stage4/model/functional/operands.cpp
-    src/stage4/model/timing/gcd_plan.cpp src/stage4/model/timing/clock.cpp
+    src/stage4/model/timing/gcd_plan.cpp src/stage4/model/timing/simulation_time.cpp
     src/stage4/model/instrumentation/event_recorder.cpp
     src/stage4/model/instrumentation/statistics.cpp)
 target_link_libraries(stage4_gcd PRIVATE SystemC::systemc)
@@ -103,8 +103,9 @@ set_tests_properties(stage4_initial_equivalence PROPERTIES TIMEOUT 120)
 add_executable(stage4_parser_checks
     tests/stage4/parser_timing.cpp src/stage4/parser.cpp src/stage4/types.cpp
     src/stage4/common/task_statistics.cpp
-    src/stage4/model/timing/clock.cpp src/stage4/model/instrumentation/event_recorder.cpp)
+    src/stage4/model/timing/simulation_time.cpp src/stage4/model/instrumentation/event_recorder.cpp)
 target_link_libraries(stage4_parser_checks PRIVATE SystemC::systemc)
+target_compile_definitions(stage4_parser_checks PRIVATE SC_ENABLE_ASSERTIONS)
 if(MSVC)
     target_compile_options(stage4_parser_checks PRIVATE /W4)
 else()
@@ -112,6 +113,11 @@ else()
 endif()
 add_test(NAME stage4_parser_timing COMMAND stage4_parser_checks)
 set_tests_properties(stage4_parser_timing PROPERTIES TIMEOUT 10)
+add_test(NAME stage4_event_scheduler
+    COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/stage4/event_scheduler.py"
+            "$<TARGET_FILE:stage3_window_gcd>" "$<TARGET_FILE:stage4_gcd>"
+            "${CMAKE_CURRENT_BINARY_DIR}/stage4-scheduler-tests")
+set_tests_properties(stage4_event_scheduler PROPERTIES TIMEOUT 120)
 add_test(NAME stage2_handshake
     COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/handshake/verify.py"
             "$<TARGET_FILE:stage2_gcd>" "${CMAKE_CURRENT_BINARY_DIR}/stage2-tests" "1")

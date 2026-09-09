@@ -36,12 +36,20 @@ def compare_initial(test_baseline, test_candidate, test_root):
     if test_files != test_candidate_files:
         raise AssertionError("baseline/candidate artifact sets differ")
     for test_relative in sorted(test_files):
+        if test_relative.suffix == ".log":
+            test_original = (test_baseline_root / test_relative).read_text().splitlines()
+            test_candidate_lines = (test_candidate_root / test_relative).read_text().splitlines()
+            test_candidate_lines = [test_line for test_line in test_candidate_lines
+                                    if not test_line.startswith("EVENT_SCHEDULER ")]
+            if test_original != test_candidate_lines:
+                raise AssertionError(f"diagnostic differs: {test_relative}")
+            continue
         if test_relative.name == "events.csv":
             compare_events(test_baseline_root / test_relative, test_candidate_root / test_relative)
             continue
         if (test_baseline_root / test_relative).read_bytes() != (test_candidate_root / test_relative).read_bytes():
             raise AssertionError(f"artifact differs: {test_relative}")
-    print(f"PASS equivalence: {len(test_files)} artifacts; event streams match, other files identical")
+    print(f"PASS equivalence: {len(test_files)} artifacts; events/results/statistics match; scheduler diagnostics separate")
 
 
 if __name__ == "__main__":

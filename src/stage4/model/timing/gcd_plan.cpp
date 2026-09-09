@@ -1,7 +1,7 @@
 /* Copyright (c) 2026 SC_GCD contributors. All rights reserved. */
 /**
  * @file gcd_plan.cpp
- * @brief Shared modulo latency policy for all clocked Compute variants.
+ * @brief Shared modulo latency policy for the event-scheduled Compute model.
  */
 #include "gcd_plan.hpp"
 #include "../functional/operands.hpp"

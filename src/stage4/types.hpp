@@ -25,7 +25,7 @@
  *
  * Timing:
  * - Payloads themselves impose no transfer protocol or latency; their connected modules define both.
- * - CLOCK_PERIOD_NS=1 ns; currentCycle floors current simulation time in that unit and returns zero at time zero.
+ * - CYCLE_DURATION_NS=1 ns; currentCycle floors current simulation time in that unit and returns zero at time zero.
  * - Observation and cycle queries do not advance simulation time.
  *
  * Reset:
@@ -35,15 +35,15 @@
 #pragma once
 
 #include "model/instrumentation/event_recorder.hpp"
-#include "model/timing/clock.hpp"
+#include "model/timing/simulation_time.hpp"
 
 #include <cstdint>
 #include <iosfwd>
 
 namespace stage4 {
 using model::instrumentation::EventRecorder;
-using model::timing::CLOCK_PERIOD_NS;
 using model::timing::currentCycle;
+using model::timing::CYCLE_DURATION_NS;
 /**
  * @brief 文件输入任务：从零递增的 id 和两个有符号 32 位整数。
  */
