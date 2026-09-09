@@ -112,3 +112,15 @@
 - 触发：d78a477 加本轮全系统事件迁移后，Release 执行 `ctest --test-dir build -R stage4 --output-on-failure`。basic 默认配置结果/统计/事件均一致，原测试仍报告 basic/run.log 差异并退出 8。
 - 实际额外内容为 `EVENT_SCHEDULER activations=33 max_jump_cycles=7`；该诊断描述实现开销，不属于硬件输出或时序语义。期望应为正式结果及原诊断一致，并单独核查新诊断。
 - 修正只过滤新增诊断行参与旧日志比较，新边界测试明确解析并断言批次与跳跃；没有忽略正式结果、统计、事件时间或错误诊断。原始失败及最终双配置 15/15 证据见 [验证记录](evidence/stage4-events/validation.md)。
+
+## B-011：详细 Trace 使事件模型更慢且内存增长
+
+- 2026-09-10，作业 4 真实性能/内存设计问题，已复现、未修复；不是算术或时序错误，也不是日志断言适配问题。
+- 触发思路：事件数减少未必意味着总仿真更快，主动用同一混合输入开关 Trace，同时测量耗时和峰值内存。
+- 版本/配置：正式模型 cd03b91；本条提交的独立 profiling 包装入口。Release、GCC 13.2、SystemC 3.0.1、i5-12400F。输入为 Python Random(20260910) 在 int32 范围生成的前 1,000 对；FIFO/结果深度 2、窗口 8、仲裁种子 7、输出周期 1。
+- 复现：构建 stage3_window_profile/stage4_profile 后，运行 `python scripts/compare_model_performance.py --cases mixed_small_off mixed_trace --report tmp/reproduce-b011`。预热各 1 次、串行交替各 7 次正式测量。
+- 预期与实际：功能/系统时间/统计要求一致且实际满足。AI 性能假设为减少内核推进可能节省耗时；实际 Trace on 时事件入口耗时中位数 32.317 ms，高于时钟模型 25.518 ms（约慢 26.6%）；工作集 11.86 对 5.65 MiB。Trace off 同输入则为 5.388 对 12.276 ms（事件快 2.28×）。同样的 2.01 MiB 日志逐字节一致；delta 轮次 15,531 对 95,307，不能解释为更多模拟工作。
+- 定位：stage4 EventRecorder::append 为行构造字符串并缓存在 vector，repeat 展开区间，flushTrace 使用 stable_sort 后写出；stage3 直接写流。这是与实测相符的设计解释，尚未分离各函数、分配和 I/O 的耗时贡献。
+- 原始证据：[主实验样本](evidence/model-comparison/samples.jsonl)、[同输入控制样本](evidence/model-comparison/trace-controls/samples.jsonl)、[完整报告](model-comparison.md)；七次结果/统计哈希稳定。未制造功能失败或修改数据挑选最好一次。
+- 修正建议（未实施）：改为按事件批次增量输出，或用区间表示长阻塞，在测试端归一化。需保留正确时间点、次数和顺序。
+- 回归状态：本轮只测量并验证包装入口等价，原模型未改；Release CTest 15/15。未声称优化已完成，内存/耗时限制仍存在。

@@ -159,3 +159,19 @@ foreach(test_case helper period input output event statistics)
     add_test(NAME contract_${test_case} COMMAND contract_checks ${test_case})
     set_tests_properties(contract_${test_case} PROPERTIES TIMEOUT 10)
 endforeach()
+
+# Optional Windows profiling wrappers: measure unchanged model entry points.
+# EXCLUDE_FROM_ALL keeps these out of ordinary builds and acceptance tests.
+if(WIN32)
+    add_executable(stage3_window_profile EXCLUDE_FROM_ALL
+        tests/profiling/entry.cpp src/stage3_window/dispatcher.cpp src/stage3_window/collector.cpp)
+    target_compile_definitions(stage3_window_profile PRIVATE
+        PROFILE_MODEL_SOURCE="../../src/stage3_window/main.cpp")
+    target_link_libraries(stage3_window_profile PRIVATE handshake_modules psapi)
+    get_target_property(stage4_profile_sources stage4_gcd SOURCES)
+    list(REMOVE_ITEM stage4_profile_sources src/stage4/main.cpp)
+    add_executable(stage4_profile EXCLUDE_FROM_ALL tests/profiling/entry.cpp ${stage4_profile_sources})
+    target_compile_definitions(stage4_profile PRIVATE SC_ENABLE_ASSERTIONS
+        PROFILE_MODEL_SOURCE="../../src/stage4/main.cpp")
+    target_link_libraries(stage4_profile PRIVATE SystemC::systemc psapi)
+endif()

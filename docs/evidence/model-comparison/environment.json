@@ -1,0 +1,25 @@
+{
+  "baseline": "cd03b913dc051b86c2d38b7fad7bc7474ba3fd32",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel",
+  "logical_processors": 12,
+  "python": "3.14.4",
+  "compiler": "g++ (MinGW-W64 x86_64-ucrt-posix-seh, built by Brecht Sanders, r8) 13.2.0",
+  "systemc_revision": "11ad094d282fd5330b27ab57f90f9d231a763da1",
+  "repeat": 7,
+  "warmups_per_case_model": 1,
+  "order": "serial; alternating clock/event and event/clock per repetition",
+  "measurement_scope": "Release; model call includes construction, simulation, statistics and file IO; process includes startup",
+  "executables": {
+    "clock": {
+      "normal": "4c0dda8ae771804ff4e710597a9551d27bf2be18c8c105216a0a6043ce9cd7e8",
+      "profile": "5f5c8adefee4667786dcf215fd038489b002c917589da4cc4df0c20b1a492102"
+    },
+    "event": {
+      "normal": "34ebb219a394289a028e238add984b7ffc9928b8b0dd310dcfc7ac4857b61b20",
+      "profile": "592f135271774e07d2b184dec689ab24e63daa70ff2124e3bad0c24c26cf9772"
+    }
+  },
+  "processor_name": "12th Gen Intel(R) Core(TM) i5-12400F",
+  "measurement_date": "2026-09-10"
+}

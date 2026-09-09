@@ -1,0 +1,2 @@
+PASS dense_small_off: cycles=2006; model median ms clock=4.732, event=4.528, speedup=1.05x
+PASS mixed_small_off: cycles=23827; model median ms clock=12.276, event=5.388, speedup=2.28x

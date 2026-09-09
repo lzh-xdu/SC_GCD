@@ -1,0 +1,8 @@
+PASS dense_zero: cycles=30006; model median ms clock=41.892, event=43.666, speedup=0.96x
+PASS long_compute: cycles=375007; model median ms clock=161.879, event=27.992, speedup=5.78x
+PASS mixed: cycles=238115; model median ms clock=104.543, event=36.733, speedup=2.85x
+PASS slow_sink: cycles=2000000; model median ms clock=761.556, event=10.714, speedup=71.08x
+PASS sparse_wait: cycles=2000000; model median ms clock=616.571, event=1.875, speedup=328.82x
+PASS narrow_window: cycles=68504; model median ms clock=40.450, event=29.355, speedup=1.38x
+PASS dense_trace: cycles=2006; model median ms clock=10.436, event=16.193, speedup=0.64x
+PASS mixed_trace: cycles=23827; model median ms clock=25.518, event=32.317, speedup=0.79x
