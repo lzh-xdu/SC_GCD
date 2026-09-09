@@ -4,7 +4,7 @@
 
 /**
  * @file parser.cpp
- * @brief Parser clock-edge implementation.
+ * @brief Input-paced Parser with event-based backpressure waiting.
  */
 #include "parser.hpp"
 #include "common/contract.hpp"
@@ -21,11 +21,32 @@ Parser::Parser(sc_core::sc_module_name name, std::istream& input, EventRecorder&
     , m_input(input)
     , m_recorder(recorder) {
     requireCondition(static_cast<bool>(input), "input stream is not readable");
-    SC_METHOD(tick);
-    sensitive << m_clk.pos();
-    dont_initialize();
+    SC_THREAD(run);
 }
-void Parser::tick() {
+void Parser::waitForInputBoundary() {
+    const auto period = sc_core::sc_time(CLOCK_PERIOD_NS, sc_core::SC_NS).value();
+    const auto offset = sc_core::sc_time_stamp().value() % period;
+    wait(sc_core::sc_time::from_value(period - offset));
+    // Match the old edge evaluation phase: a FIFO write becomes visible after this phase,
+    // so a downstream reader at this boundary cannot consume the new task immediately.
+    wait(sc_core::SC_ZERO_TIME);
+}
+void Parser::run() {
+    waitForInputBoundary();
+    while (!m_eof) {
+        if (m_tasksOut.num_free() == 0) {
+            // No timed polling while blocked; a read releases space in the FIFO update phase.
+            wait(m_tasksOut.data_read_event());
+            waitForInputBoundary();
+            continue;
+        }
+        readAndSend();
+        if (!m_eof) {
+            waitForInputBoundary();
+        }
+    }
+}
+void Parser::readAndSend() {
     requireCondition(!m_input.bad() && (m_eof || !m_input.fail()), "input file read failed");
     if (m_eof || m_tasksOut.num_free() == 0) {
         return;

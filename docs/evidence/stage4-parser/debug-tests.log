@@ -1,0 +1,34 @@
+Internal ctest changing into directory: D:/0_lzh/GPU/MOORE/build/debug
+Test project D:/0_lzh/GPU/MOORE/build/debug
+      Start  1: stage1_function_timing_backpressure
+ 1/14 Test  #1: stage1_function_timing_backpressure ...   Passed    1.76 sec
+      Start  2: day01_signal_timing
+ 2/14 Test  #2: day01_signal_timing ...................   Passed    0.05 sec
+      Start  3: stage4_initial_equivalence
+ 3/14 Test  #3: stage4_initial_equivalence ............   Passed    4.78 sec
+      Start  4: stage4_parser_timing
+ 4/14 Test  #4: stage4_parser_timing ..................   Passed    0.28 sec
+      Start  5: stage2_handshake
+ 5/14 Test  #5: stage2_handshake ......................   Passed    1.61 sec
+      Start  6: stage3_round_robin_ordering
+ 6/14 Test  #6: stage3_round_robin_ordering ...........   Passed    1.69 sec
+      Start  7: stage3_performance_comparison
+ 7/14 Test  #7: stage3_performance_comparison .........   Passed    0.31 sec
+      Start  8: stage3_ready_window
+ 8/14 Test  #8: stage3_ready_window ...................   Passed    2.15 sec
+      Start  9: contract_helper
+ 9/14 Test  #9: contract_helper .......................   Passed    0.09 sec
+      Start 10: contract_period
+10/14 Test #10: contract_period .......................   Passed    0.02 sec
+      Start 11: contract_input
+11/14 Test #11: contract_input ........................   Passed    0.02 sec
+      Start 12: contract_output
+12/14 Test #12: contract_output .......................   Passed    0.03 sec
+      Start 13: contract_event
+13/14 Test #13: contract_event ........................   Passed    0.02 sec
+      Start 14: contract_statistics
+14/14 Test #14: contract_statistics ...................   Passed    0.02 sec
+
+100% tests passed, 0 tests failed out of 14
+
+Total Test time (real) =  12.85 sec

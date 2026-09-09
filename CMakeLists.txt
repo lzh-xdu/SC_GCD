@@ -100,6 +100,18 @@ add_test(NAME stage4_initial_equivalence
             "$<TARGET_FILE:stage3_window_gcd>" "$<TARGET_FILE:stage4_gcd>"
             "${CMAKE_CURRENT_BINARY_DIR}/stage4-initial-tests")
 set_tests_properties(stage4_initial_equivalence PROPERTIES TIMEOUT 120)
+add_executable(stage4_parser_checks
+    tests/stage4/parser_timing.cpp src/stage4/parser.cpp src/stage4/types.cpp
+    src/stage4/common/task_statistics.cpp
+    src/stage4/model/timing/clock.cpp src/stage4/model/instrumentation/event_recorder.cpp)
+target_link_libraries(stage4_parser_checks PRIVATE SystemC::systemc)
+if(MSVC)
+    target_compile_options(stage4_parser_checks PRIVATE /W4)
+else()
+    target_compile_options(stage4_parser_checks PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+add_test(NAME stage4_parser_timing COMMAND stage4_parser_checks)
+set_tests_properties(stage4_parser_timing PROPERTIES TIMEOUT 10)
 add_test(NAME stage2_handshake
     COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/handshake/verify.py"
             "$<TARGET_FILE:stage2_gcd>" "${CMAKE_CURRENT_BINARY_DIR}/stage2-tests" "1")

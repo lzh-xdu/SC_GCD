@@ -4,7 +4,7 @@
 
 /**
  * @file main.cpp
- * @brief Connect and observe the stage 4 initial cycle-based window simulation.
+ * @brief Connect the event-paced Parser and the remaining cycle-based window modules.
  */
 #include "compute.hpp"
 #include "common/contract.hpp"
@@ -71,6 +71,7 @@ using model::instrumentation::Usage;
 
 // Simulation harness: observes after channel updates, never moves task data.
 SC_MODULE(System) {
+    // Transitional clock for modules not yet migrated; Parser owns its timed input events.
     sc_core::sc_clock m_clk;
     sc_core::sc_fifo<RawTask> m_parserToTransform;
     sc_core::sc_signal<Payload> m_transformToComputeData{"transform_to_compute_data"};
@@ -125,7 +126,6 @@ System::System(sc_core::sc_module_name name, std::istream& input, std::ostream& 
 }
 
 void System::connectModules() {
-    m_parser.m_clk(m_clk);
     m_transform.m_clk(m_clk);
     m_dispatcher.m_clk(m_clk);
     m_collector.m_clk(m_clk);

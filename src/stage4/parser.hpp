@@ -4,7 +4,7 @@
 
 /**
  * @file parser.hpp
- * @brief Parser module interface and cycle contract.
+ * @brief Parser module interface and input pacing contract.
  */
 #pragma once
 #include "types.hpp"
@@ -13,26 +13,29 @@
 
 namespace stage4 {
 /**
- * @brief Parses signed 32-bit integer pairs into a clocked task stream.
+ * @brief Parses signed 32-bit integer pairs at timed input boundaries without a clock port.
  *
  * Interface:
  *
  * m_input -----> +------------------+
  *                |      Parser      |-----> m_tasksOut (RawTask FIFO)
- * m_clk -------->|                  |
+ *                |  timer / space   |
  *                +------------------+
  *
  * Protocol:
- * - Read at most one line and send at most one task per rising edge.
+ * - Read at most one line and send at most one task per 1 ns input boundary.
  * - Do not read the file while the output FIFO is full; stop sending after normal EOF.
  * - No internal task buffer; m_sent counts sent tasks and m_eof records EOF.
  * - The input stream and EventRecorder reference must outlive the module.
  * - Invalid rows or input failures throw runtime_error; the observer does not control hardware.
  *
  * Timing:
- * - SC_METHOD(tick) runs only on m_clk.pos(); dont_initialize prevents an initial call.
- * - The shared clock has T=1 ns and its first edge at 1 ns.
- * - A task written at edge k is visible to the downstream FIFO reader at k+1 or later.
+ * - SC_THREAD(run) first waits until 1 ns; subsequent input boundaries are integer multiples of 1 ns.
+ * - A full FIFO suspends the thread on data_read_event, without periodic polling.
+ * - Space released at time t permits input only at the next strictly later input boundary.
+ * - One delta wait at each boundary preserves the old edge evaluation phase; it adds no time.
+ * - The FIFO updates after the send phase; the remaining clocked reader consumes at k+1 or later.
+ * - Normal EOF terminates the thread; the timer represents input pacing, not a global clock.
  * - The external FIFO is owned by the top level (default depth 2); no extra parser delay.
  *
  * Reset:
@@ -40,7 +43,6 @@ namespace stage4 {
  * - Construction initializes m_sent=0 and m_eof=false.
  */
 SC_MODULE(Parser) {
-    sc_core::sc_in<bool> m_clk{"clk"};
     sc_core::sc_fifo_out<RawTask> m_tasksOut{"tasks_out"};
     std::uint64_t m_sent = 0;
     bool m_eof = false;
@@ -52,6 +54,8 @@ SC_MODULE(Parser) {
 private:
     std::istream& m_input;
     EventRecorder & m_recorder;
-    void tick();
+    void run();
+    void waitForInputBoundary();
+    void readAndSend();
 };
 } // namespace stage4

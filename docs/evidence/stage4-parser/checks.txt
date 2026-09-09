@@ -1,0 +1,4 @@
+D:\0_lzh\GPU\MOORE\build\Testing\Temporary\LastTest.log: PASS equivalence: 276 artifacts; event streams match, other files identical
+D:\0_lzh\GPU\MOORE\build\Testing\Temporary\LastTest.log: PASS clockless parser: first=1 ns, release=5.5 ns, resume=6 ns, EOF=8 ns, no blocked/EOF polling
+D:\0_lzh\GPU\MOORE\build\debug\Testing\Temporary\LastTest.log: PASS equivalence: 276 artifacts; event streams match, other files identical
+D:\0_lzh\GPU\MOORE\build\debug\Testing\Temporary\LastTest.log: PASS clockless parser: first=1 ns, release=5.5 ns, resume=6 ns, EOF=8 ns, no blocked/EOF polling
