@@ -1,0 +1,2 @@
+D:\0_lzh\GPU\MOORE\build\Testing\Temporary\LastTest.log: PASS initial equivalence: 276 artifacts identical
+D:\0_lzh\GPU\MOORE\build\debug\Testing\Temporary\LastTest.log: PASS initial equivalence: 276 artifacts identical

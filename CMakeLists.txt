@@ -75,6 +75,31 @@ foreach(target handshake_modules stage2_gcd)
         target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic)
     endif()
 endforeach()
+
+# Stage 4 starts as an independent copy of the verified cycle-based window model.
+# Keep all project sources local so later event-model changes cannot alter stages 1-3.
+add_executable(stage4_gcd
+    src/stage4/main.cpp
+    src/stage4/types.cpp src/stage4/parser.cpp src/stage4/output.cpp
+    src/stage4/payload.cpp src/stage4/transform.cpp src/stage4/compute.cpp
+    src/stage4/dispatcher.cpp src/stage4/collector.cpp
+    src/stage4/common/task_statistics.cpp
+    src/stage4/model/functional/operands.cpp
+    src/stage4/model/timing/gcd_plan.cpp src/stage4/model/timing/clock.cpp
+    src/stage4/model/instrumentation/event_recorder.cpp
+    src/stage4/model/instrumentation/statistics.cpp)
+target_link_libraries(stage4_gcd PRIVATE SystemC::systemc)
+target_compile_definitions(stage4_gcd PRIVATE SC_ENABLE_ASSERTIONS)
+if(MSVC)
+    target_compile_options(stage4_gcd PRIVATE /W4)
+else()
+    target_compile_options(stage4_gcd PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+add_test(NAME stage4_initial_equivalence
+    COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/stage4/compare_initial.py"
+            "$<TARGET_FILE:stage3_window_gcd>" "$<TARGET_FILE:stage4_gcd>"
+            "${CMAKE_CURRENT_BINARY_DIR}/stage4-initial-tests")
+set_tests_properties(stage4_initial_equivalence PROPERTIES TIMEOUT 120)
 add_test(NAME stage2_handshake
     COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tests/handshake/verify.py"
             "$<TARGET_FILE:stage2_gcd>" "${CMAKE_CURRENT_BINARY_DIR}/stage2-tests" "1")
