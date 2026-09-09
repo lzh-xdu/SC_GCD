@@ -189,3 +189,9 @@
 - 已实施：纯数值函数、共享延迟/周期工具、EventRecorder、模块统计结构、主机 Profiling 脚本；正式观察器不再使用 TestEventLog 命名。Debug 必需契约仍始终生效；全量 Instrumentation 开关未实现。
 - 新增所有有效场景的 Trace 开关成对检查，填补上一轮识别的作业 2/3 证据缺口。Release/Debug 各 12/12，各 96 个成对场景；372 份重构前文件哈希一致。
 - AI 曾漏改统计指针访问导致构建失败，已修正并保留原始诊断；详见 [分层验证](evidence/model-structure-validation.md)。用户提出结构方向，不记为用户亲自编写代码或已完成理解验收。
+
+## 2026-09-09：作业 1 Transform 正向阅读
+
+- 用户指出倒序更新不利于阅读；AI 改为当前/下一状态分离，正向执行取绝对值、排序、输出，末尾提交寄存器；方案细节属于 AI 选择。
+- 保留 ready 反向传播与同拍补位，并维持原事件记录顺序。原写法未发现功能错误，本轮属于可读性重构。
+- Release/Debug 阶段 1 回归各 1/1，重构前后 102 份文件哈希一致；见 [D-018](decisions.md#d-018作业-1-transform-正向计算下一拍状态) 与 [验证证据](evidence/stage1-forward-validation.md)。

@@ -256,3 +256,9 @@
 - 重构前基线 0df1381 的 Release 12/12；重构后 Release/Debug 各 12/12，分别含 96 个 Trace 开/关成对场景；372 份基线文件哈希相同。主机 Profiling 3 次烟雾运行结果/统计一致。
 - 原始构建错误、修复与验证命令见 [证据](evidence/model-structure-validation.md)；最终只调整注释与文档。全量 Instrumentation 总开关仍未实施。
 - 源码、测试和记录一起本地提交；保留用户已有 README 修改，未推进作业 4。
+
+## 2026-09-09：Transform 从输入到输出正向计算
+
+- 根据用户可读性反馈，修改作业 1 Transform 实现与接口说明；采用下一状态统一提交，保留原时序、容量和同拍补位。决策见 [D-018](decisions.md#d-018作业-1-transform-正向计算下一拍状态)，讲解见 [学习日志](learning-log.md)，协作见 [AI 日志](ai-log.md)。
+- Release/Debug 构建退出 0，阶段 1 回归各 1/1（每种 24 场景/1434 任务）；102 份基线结果、事件与统计文件哈希全部一致。clang-format 检查 cpp 与 Git 差异空白检查通过；[详细证据](evidence/stage1-forward-validation.md)。
+- 未推进其他阶段；用户已有 README 暂存修改不纳入本轮提交。用户理解审阅仍待完成。
