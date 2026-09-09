@@ -35,7 +35,20 @@ Profiling 示例（先准备输出目录）：
 python scripts/profile_model.py --report tmp/profile.json --repeat 5 -- build/stage1_gcd.exe tests/stage1/basic.txt tmp/output.txt tmp/stats.csv 2 -
 ```
 
-## 验证
+## 阅读示例：同一任务的三个视角
+
+2026-09-09 讲解补充。该树表示职责，不是任务依次流经三个新模块；实际数据路径仍为 Parser、Transform、Compute、Output（及作业 3 派发/收集）。
+
+- 数值视角：48%18=12、18%12=6、12%6=0，最终 GCD=6。
+- 时序视角：三步位宽公式分别为 2、2、2，共 L=6。作业 1 默认单任务接收沿为 5，完成/交付沿为 11，Output 读取沿为 12。
+- C++ 可在沿 5 的 planGcd 调用中算出值和 L，但不推进 SystemC 时间；m_remaining 与状态机仍约束结果在沿 11 才能交付。
+- Trace 记录接收、完成、交付各事件；Statistics 可汇总 12 个总周期、6 个计算忙周期及 50% 利用率。Profiling 另测主机进程实际耗时，与模拟的 12 ns 不等价。
+- Debug 检查 BUSY 时剩余周期必须大于零等不变量；必要契约不是可随 Trace 关闭的观察功能。
+
+区分状态与统计时，检查它是否参与下一步控制：m_remaining、m_state、m_nextId 属于模型状态；m_busyCycles、m_orderWaitCycles 属于观测统计。两者都可能是整数或计数器，不能按变量外形分类。
+当前是职责分离而非“功能算法和延迟必须完全独立执行”：planGcd 在同一次 Euclidean 遍历中调用功能层取余并累计延迟，避免重复运算。
+
+## 验证结果入口
 
 基线 `0df1381`；变更与本说明同提交。重构前先运行 Release 12/12 回归并保存 372 份结果/统计/事件文件的 SHA-256。
 新增 [Trace 开关等价检查](../tests/instrumentation_equivalence.py)，在作业 1、2、3 轮转版与窗口版的每个有效场景中使用完全相同配置关闭 Trace，再逐字节比较功能输出和全部统计。
