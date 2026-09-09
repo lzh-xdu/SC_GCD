@@ -29,8 +29,8 @@ namespace stage1 {
  * - Widen signed input before taking its absolute value to support INT32_MIN.
  * - Output a >= b >= 0 while preserving the original task id.
  * - Hold the ordered slot if output is blocked; accept into an empty magnitude slot until both slots are full.
- * - Compute next slots from current slots in input-to-output order, then commit both slots together.
- * - Readiness propagates upstream so draining slots can refill on the same edge; new input advances only one stage.
+ * - Update output, then magnitude, then input: freed slots propagate upstream for same-edge refill.
+ * - Optional updates are immediate; downstream-first execution prevents new input from crossing both stages.
  * - EventRecorder is an observer, not hardware storage or a scheduling input, and must outlive the module.
  *
  * Timing:
