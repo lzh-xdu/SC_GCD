@@ -1,68 +1,39 @@
-# SystemC 流式处理器面试作业
+# SystemC 架构与仿真实践
 
-当前进度：第 1 天环境与仿真语义实验。尚未实现作业 1 的 GCD 流式处理器。
+以 GCD 流式处理器为载体，学习 SystemC 建模、架构设计与仿真优化。通过逐步演进模型、验证时序、比较性能，记录设计取舍、调试过程与理解的成长。
 
-## 编译、测试和运行
+## 探索方向
 
-已验证的工具组合：Windows x64、MinGW GCC 13.2.0、CMake 3.29.2、Ninja、C++17、SystemC 3.0.1。
-编译工具需在 PATH 中；本机 GCC/CMake/Ninja 来自 `C:/Strawberry/c/bin`。
-不需要 GPU，也不需要安装系统级 SystemC 库。
+- **流式架构**：从单实例流水线到显式握手、背压控制，再到双实例调度与保序输出。
+- **模型分层**：分离功能行为、时序行为和观测统计，让模型更易理解、验证与演进。
+- **仿真优化**：以逐周期模型为基线，探索事件驱动建模，通过等价验证与实测评估收益。
+- **问题复盘**：保留真实缺陷、复现输入、修正过程和回归证据，让每次改进有据可查。
+
+当前已建立流水线、握手及双实例保序模型；事件驱动模型与仿真提速验证仍在探索中。详见[项目状态](docs/status.md)。
+
+## 快速开始
+
+已验证环境：Windows x64、MinGW GCC 13.2.0、CMake 3.29.2、Ninja、C++17、SystemC 3.0.1。需将 Git、编译工具和 Python 3 加入 PATH；无需 GPU。
 
 在项目目录的 PowerShell 中运行：
 
 ```powershell
-# 首次获取依赖；当前工作目录已经准备好，换机器时需联网执行。
+# 首次下载固定版本的 SystemC，需要联网
 ./scripts/setup.ps1
 
-# 编译、自动测试，并显示示例输出。
-./scripts/build-test.ps1 -Run
-
-# 只重新运行测试。
-ctest --test-dir build --output-on-failure
+# 编译并运行自动测试
+./scripts/build-test.ps1
 ```
 
-若 PowerShell 提示脚本执行策略阻止运行，可仅对本次进程使用：
+SystemC 与模型使用同一编译器构建，无需预装系统级库。模型运行示例见[流水线](docs/stage1-run.md)、[握手](docs/stage2-run.md)和[双实例保序](docs/stage3-run.md)。
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build-test.ps1 -Run
-```
+## 文档
 
-跨平台 CMake 工程也可直接构建（自行选择已安装的编译器）：
+- **理解模型**：[SystemC 入门](docs/day01.md) · [架构设计](docs/final-design.md) · [职责分层](docs/model-structure.md)
+- **观察与优化**：[Trace 可视化](docs/trace-viewer.md) · [任务统计](docs/task-statistics.md) · [架构优化分析](docs/stages1-3-optimization-review.md)
+- **学习与复盘**：[学习记录](docs/learning-log.md) · [设计决策](docs/decisions.md) · [缺陷记录](docs/defects.md)
+- **持续演进**：[工作日志](docs/work-log.md) · [AI 协作记录](docs/ai-log.md) · [记录方式](docs/process.md)
 
-```text
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
-cmake --build build --parallel 4
-ctest --test-dir build --output-on-failure
-```
+## 依赖
 
-首次构建会编译 SystemC，后续只重编译修改部分。不要在同一个 build 目录切换编译器。
-Windows 下单独启动 exe 时，需保留所用 MinGW 编译器的 bin 目录在 PATH 中，以加载其运行库。
-
-## 第一个实验
-
-阅读 `src/day01_basics.cpp`，然后阅读 `docs/day01.md`。
-程序检查三个上升沿前后的信号值，失败时返回非零退出码，CTest 将报告失败。
-运行生成 `build/day01_basics.vcd`，可供后续波形查看；当前无需安装波形工具。
-
-## 目录
-
-- `src/`：学习示例，之后添加各阶段模型。
-- `scripts/`：依赖准备与构建测试入口。
-- `docs/`：学习约定和真实工作记录。
-- `third_party/systemc/`：官方依赖源码，忽略于项目版本控制。
-- `build/`：构建产物、测试日志和波形，忽略于版本控制。
-
-## 依赖来源
-
-官方仓库：https://github.com/accellera-official/systemc
-
-固定版本：3.0.1，提交 `11ad094d282fd5330b27ab57f90f9d231a763da1`。
-依赖以 Apache-2.0 授权，详见其 LICENSE 与 NOTICE。
-使用同一编译器及 C++17 同时构建库和示例，避免混用二进制 ABI。
-
-## 后续完成标准
-
-过程记录入口：[记录方式](docs/process.md)、[阶段状态](docs/status.md)。后续协作按根目录 AGENTS.md 及时沉淀设计、验证、AI 协作与缺陷证据。
-
-依次完成单实例流水、显式握手、双实例保序，再尝试事件驱动等价模型。
-每天记录设计、AI 协作、修改、调试与验证。公开仓库发布尚未进行。
+[Accellera SystemC](https://github.com/accellera-official/systemc) 固定为 3.0.1，采用 Apache-2.0 许可；详见依赖源码中的 LICENSE 与 NOTICE。
