@@ -1,4 +1,5 @@
 /build/
+/build-linux/
 /third_party/
 /tmp/
 *.vcd
