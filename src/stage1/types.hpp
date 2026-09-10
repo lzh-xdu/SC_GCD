@@ -41,6 +41,7 @@
 #include <iosfwd>
 
 namespace stage1 {
+// Deliberate re-export: stage-local modules name these without model:: qualification.
 using model::instrumentation::EventRecorder;
 using model::timing::CLOCK_PERIOD_NS;
 using model::timing::currentCycle;

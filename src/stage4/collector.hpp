@@ -46,7 +46,7 @@ SC_MODULE(Collector) {
     sc_core::sc_out<std::uint64_t> m_baseOut{"base_out"};
     std::uint64_t m_nextId = 0;
     model::instrumentation::CollectorStatistics m_statistics;
-    unsigned occupancy() const {
+    [[nodiscard]] unsigned occupancy() const {
         return m_completed;
     }
     /**
@@ -56,7 +56,7 @@ SC_MODULE(Collector) {
     Collector(sc_core::sc_module_name name, EventRecorder & recorder, unsigned window);
 
     void advance();
-    std::uint64_t nextDelay() const;
+    [[nodiscard]] std::uint64_t nextDelay() const;
     void accountSkipped(std::uint64_t first, std::uint64_t count);
 
 private:

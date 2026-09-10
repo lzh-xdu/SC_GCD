@@ -47,3 +47,22 @@
 行为保持：用法字符串、统计数值、模拟周期与输出逐字节不变（第 10 项仅改文本生成方式，内容相同）。本轮无运行时缺陷，未新增缺陷案例；其中“compute.hpp 文件级两个 @brief 重复”经复核为 @file 与 @class 各自摘要的 Doxygen 惯例，不属重复，未改。
 
 验证在 WSL g++ 11.4 环境完成：Debug/Release 各 25/25（[Debug](evidence/review-fixes/style-round-debug-tests.log)、[Release](evidence/review-fixes/style-round-release-tests.log)），-Wall -Wextra -Wpedantic 零警告。同日补测 Windows 环境（Strawberry MinGW g++ + Ninja，经 WSL interop 调用）：`build`（Release）与 `build\debug` 均 87/87 目标零警告重建，ctest 各 25/25（[Windows Release](evidence/review-fixes/style-round-windows-release-tests.log)、[Windows Debug](evidence/review-fixes/style-round-windows-debug-tests.log)）；stage4_gcd.exe 用法字符串与 WSL 一致、非法参数退出码 2，同输入模拟输出与统计与 WSL 逐字节一致（仅文本模式 CRLF 差异）。提交时工作区另有用户未提交的 constexpr 学习记录，随日志文件一并保留。
+
+## 同日第三轮：开源审美扫描的 A 类实施（1～8 项）
+
+用户要求按 GitHub 优秀开源 C++ 项目审美再审；AI 区分 A 类（与自身规范兼容）与 B 类（与文档化决策相悖，未改），用户确认实施 A 类 1～8 项，覆盖全部阶段与共享层。
+
+| 项目 | 修改 |
+|---|---|
+| 查询函数补 `[[nodiscard]]` | 各阶段 canRead/idle/empty/occupancy/nextDelay/hasCredit/selectedUnit/drained 及 parsePositiveInteger、nextRandom、bits |
+| `operator==` 改自由函数并补 `!=` | stage2/stage4 payload，定义移入 payload.cpp，两侧对称 |
+| 文件局部函数 `static` → 匿名命名空间 | 两份 gcd_plan.cpp 的 bits、两份 dispatcher.cpp 的 nextRandom，与 main.cpp 既有写法一致 |
+| write*Stats 前置断言去重 | 入口 writeStats 保留检查，五个阶段 14 处辅助函数重复断言删除（均仅由 writeStats 调用） |
+| 错误消息改写 | "expected parsePositiveInteger integer option" → "expected a decimal integer option"（五入口）；去重后 "statistics stream is not writable" 仅余入口与 TaskStatistics 各一处，不再提取常量 |
+| 事件名参数统一 `std::string_view` | 两份 EventRecorder 的 record/repeat/append；非空断言随参数类型移除，头文件契约同步 |
+| include 组内字母序 | 五个 main.cpp 及 gcd_plan/transform/event_recorder 等自身头文件组按完整路径字符串重排 |
+| 头文件 using 声明标注知情例外 | stage1/stage4 types.hpp 的 model:: 再导出注释说明 |
+
+[[nodiscard]] 立即抓到真实案例：model_entry.cpp 测试故意丢弃 parsePositiveInteger 返回值，MinGW GCC 13 报 -Wunused-result，改用 static_cast<void> 显式声明意图。verify.cpp 的 event 契约用例随参数类型更新：原 nullptr 非空检查已随 string_view 契约移除（构造自 nullptr 为 UB，首次构建即段错误暴露），改为测试仍存在的"事件流不可写抛 runtime_error"契约。
+
+行为影响仅限非法参数消息文本；正常路径输出与统计逐字节不变（人工比对 + CLI 冒烟）。验证：Linux g++ 11.4 与 Windows PowerShell（MinGW GCC 13.2）各 Debug/Release 25/25、零警告（[Linux Release](evidence/review-fixes/style-a-round-linux-release-tests.log)、[Linux Debug](evidence/review-fixes/style-a-round-linux-debug-tests.log)、[Windows Release](evidence/review-fixes/style-a-round-windows-release-tests.log)、[Windows Debug](evidence/review-fixes/style-a-round-windows-debug-tests.log)）。

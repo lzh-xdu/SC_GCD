@@ -8,7 +8,8 @@
 #include <stdexcept>
 
 namespace stage3_window {
-static std::uint32_t nextRandom(std::uint32_t state) {
+namespace {
+[[nodiscard]] std::uint32_t nextRandom(std::uint32_t state) {
     assertCondition<std::logic_error>(state != 0, "random state must be nonzero");
     constexpr unsigned LEFT_SHIFT_FIRST = 13;
     constexpr unsigned RIGHT_SHIFT = 17;
@@ -18,6 +19,7 @@ static std::uint32_t nextRandom(std::uint32_t state) {
     state ^= state << LEFT_SHIFT_LAST;
     return state;
 }
+} // namespace
 Dispatcher::Dispatcher(sc_core::sc_module_name name, stage1::EventRecorder& recorder, unsigned window,
                        std::uint32_t seed)
     : sc_module(name)

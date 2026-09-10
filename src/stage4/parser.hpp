@@ -54,7 +54,7 @@ SC_MODULE(Parser) {
     Parser(sc_core::sc_module_name name, std::istream & input, EventRecorder & recorder,
            bool scheduledBySystem = false);
 
-    bool canRead() const;
+    [[nodiscard]] bool canRead() const;
     void readAndSend();
 
 private:

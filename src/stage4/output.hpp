@@ -51,7 +51,7 @@ SC_MODULE(Output) {
            std::uint64_t testOutputPeriod);
 
     void advance();
-    std::uint64_t nextDelay() const;
+    [[nodiscard]] std::uint64_t nextDelay() const;
     void accountSkipped(std::uint64_t first, std::uint64_t count);
 
 private:

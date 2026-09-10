@@ -5,6 +5,12 @@
 #include "payload.hpp"
 
 namespace stage4 {
+bool operator==(const Payload& left, const Payload& right) {
+    return left.m_id == right.m_id && left.m_a == right.m_a && left.m_b == right.m_b;
+}
+bool operator!=(const Payload& left, const Payload& right) {
+    return !(left == right);
+}
 std::ostream& operator<<(std::ostream& stream, const Payload& task) {
     return stream << task.m_id << ':' << task.m_a << ',' << task.m_b;
 }

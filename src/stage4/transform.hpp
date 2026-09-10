@@ -47,19 +47,19 @@ SC_MODULE(Transform) {
     /**
      * @brief 两个内部槽都空；排序槽和输出信号不重复计数。
      */
-    bool empty() const {
+    [[nodiscard]] bool empty() const {
         return !m_magnitudeStage && !m_orderedStage;
     }
     /**
      * @brief 当前内部任务数，范围 0..2；不包含外部 FIFO。
      */
-    unsigned occupancy() const {
+    [[nodiscard]] unsigned occupancy() const {
         return static_cast<unsigned>(m_magnitudeStage.has_value()) + static_cast<unsigned>(m_orderedStage.has_value());
     }
     Transform(sc_core::sc_module_name name, EventRecorder & recorder);
 
     void advance();
-    std::uint64_t nextDelay() const;
+    [[nodiscard]] std::uint64_t nextDelay() const;
     void accountSkipped(std::uint64_t first, std::uint64_t count);
 
 private:

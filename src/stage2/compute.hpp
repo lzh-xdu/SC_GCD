@@ -45,7 +45,7 @@ SC_MODULE(Compute) {
     /**
      * @brief 只读内部空闲状态；实际接收仍以该上升沿 valid && ready 为准。
      */
-    bool idle() const {
+    [[nodiscard]] bool idle() const {
         return m_state == State::IDLE;
     }
     Compute(sc_core::sc_module_name name, EventRecorder & recorder, unsigned unit = 0);

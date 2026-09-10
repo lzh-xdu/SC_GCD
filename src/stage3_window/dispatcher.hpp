@@ -55,8 +55,8 @@ private:
     sc_core::sc_signal<std::uint32_t> m_randomState{"random_state"};
     stage1::EventRecorder& m_recorder;
     unsigned m_window;
-    bool hasCredit() const;
-    unsigned selectedUnit() const;
+    [[nodiscard]] bool hasCredit() const;
+    [[nodiscard]] unsigned selectedUnit() const;
     void route();
     void tick();
 };

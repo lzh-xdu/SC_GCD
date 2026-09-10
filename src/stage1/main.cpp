@@ -6,8 +6,8 @@
  * @file main.cpp
  * @brief Connect and observe the stage 1 simulation.
  */
-#include "compute.hpp"
 #include "../common/contract.hpp"
+#include "compute.hpp"
 #include "output.hpp"
 #include "parser.hpp"
 #include "transform.hpp"
@@ -72,7 +72,7 @@ SC_MODULE(System) {
            const Options& options);
     void connectModules();
     void observe();
-    bool drained() const;
+    [[nodiscard]] bool drained() const;
 };
 
 System::System(sc_core::sc_module_name name, std::istream& input, std::ostream& output, EventRecorder& recorder,
@@ -128,11 +128,11 @@ void System::observe() {
     }
 }
 
-std::uint64_t parsePositiveInteger(const char* text, std::uint64_t limit) {
+[[nodiscard]] std::uint64_t parsePositiveInteger(const char* text, std::uint64_t limit) {
     assertCondition<std::invalid_argument>(text != nullptr && limit > 0, "invalid option parser arguments");
     const std::string optionText(text);
     assertCondition(!optionText.empty() && optionText.find_first_not_of("0123456789") == std::string::npos,
-                    "expected parsePositiveInteger integer option");
+                    "expected a decimal integer option");
     constexpr std::uint64_t DECIMAL_RADIX = 10;
     std::uint64_t parsedOptionValue = 0;
     for (const char character : optionText) {
@@ -192,8 +192,6 @@ void checkDistinctPaths(char** argv, bool testTraceEnabled) {
 }
 
 void writeQueueStats(std::ostream& stats, const System& system, int depth) {
-    assertCondition(static_cast<bool>(stats), "statistics stream is not writable");
-    assertCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
     const std::array<const char*, OBSERVED_FIFO_COUNT> fifoMetricNames{"parser_to_transform", "transform_to_compute",
                                                                        "compute_to_output"};
     for (unsigned index = 0; index < OBSERVED_FIFO_COUNT; ++index) {

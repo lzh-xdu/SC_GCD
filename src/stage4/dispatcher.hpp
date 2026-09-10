@@ -53,15 +53,15 @@ SC_MODULE(Dispatcher) {
     Dispatcher(sc_core::sc_module_name name, EventRecorder & recorder, unsigned window, std::uint32_t seed);
 
     void advance();
-    std::uint64_t nextDelay() const;
+    [[nodiscard]] std::uint64_t nextDelay() const;
     void accountSkipped(std::uint64_t first, std::uint64_t count);
 
 private:
     sc_core::sc_signal<std::uint32_t> m_randomState{"random_state"};
     EventRecorder& m_recorder;
     unsigned m_window;
-    bool hasCredit() const;
-    unsigned selectedUnit() const;
+    [[nodiscard]] bool hasCredit() const;
+    [[nodiscard]] unsigned selectedUnit() const;
     void route();
 };
 } // namespace stage4

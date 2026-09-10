@@ -49,10 +49,9 @@ struct Payload {
     std::uint64_t m_id{};
     std::uint64_t m_a{};
     std::uint64_t m_b{};
-    bool operator==(const Payload& other) const {
-        return m_id == other.m_id && m_a == other.m_a && m_b == other.m_b;
-    }
 };
+bool operator==(const Payload& left, const Payload& right);
+bool operator!=(const Payload& left, const Payload& right);
 std::ostream& operator<<(std::ostream& stream, const Payload& task);
 void sc_trace(sc_core::sc_trace_file* trace, const Payload& task, const std::string& name);
 } // namespace stage2

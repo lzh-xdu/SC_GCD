@@ -9,7 +9,7 @@
  *                                           --> TaskStatistics
  *
  * Protocol:
- * - record requires a non-null event name; a configured stream must remain alive and writable.
+ * - record accepts any event name view; a configured stream must remain alive and writable.
  * - Statistics remain enabled when the trace stream is null; trace-off is not a total instrumentation switch.
  * - This observer owns no model state and must outlive modules borrowing it.
  *
@@ -25,12 +25,13 @@
 
 #include <cstdint>
 #include <iosfwd>
+#include <string_view>
 
 namespace model::instrumentation {
 struct EventRecorder {
     std::ostream* m_testStream = nullptr;
     mutable TaskStatistics m_statistics;
-    void record(std::uint64_t id, const char* event, std::uint64_t a = 0, std::uint64_t b = 0, std::uint64_t value = 0,
-                std::uint64_t latency = 0) const;
+    void record(std::uint64_t id, std::string_view event, std::uint64_t a = 0, std::uint64_t b = 0,
+                std::uint64_t value = 0, std::uint64_t latency = 0) const;
 };
 } // namespace model::instrumentation

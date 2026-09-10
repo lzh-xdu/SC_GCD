@@ -3,8 +3,8 @@
  * @brief Edge-based elastic pipeline with stable stalled payload.
  */
 #include "transform.hpp"
-#include "../model/functional/operands.hpp"
 #include "../common/contract.hpp"
+#include "../model/functional/operands.hpp"
 
 #include <algorithm>
 

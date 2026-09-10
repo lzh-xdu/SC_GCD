@@ -50,7 +50,7 @@ SC_MODULE(Compute) {
     /**
      * @brief 是否可在后续上升沿接收任务；待交付结果也算非空闲。
      */
-    bool idle() const {
+    [[nodiscard]] bool idle() const {
         return m_state == State::IDLE;
     }
     Compute(sc_core::sc_module_name name, EventRecorder & recorder);

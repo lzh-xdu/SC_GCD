@@ -6,13 +6,13 @@
  * @file main.cpp
  * @brief Connect the window model and schedule only actionable event timestamps.
  */
-#include "compute.hpp"
-#include "common/contract.hpp"
-#include "dispatcher.hpp"
 #include "collector.hpp"
-#include "transform.hpp"
-#include "parser.hpp"
+#include "common/contract.hpp"
+#include "compute.hpp"
+#include "dispatcher.hpp"
 #include "output.hpp"
+#include "parser.hpp"
+#include "transform.hpp"
 
 #include <algorithm>
 #include <array>
@@ -101,10 +101,10 @@ SC_MODULE(System) {
     void runEvents();
     void sampleUsage();
     void accountSkipped(std::uint64_t count);
-    std::uint64_t nextDelay() const;
+    [[nodiscard]] std::uint64_t nextDelay() const;
     std::uint64_t m_activations = 0;
     std::uint64_t m_maxJump = 0;
-    bool drained() const;
+    [[nodiscard]] bool drained() const;
 };
 
 System::System(sc_core::sc_module_name name, std::istream& input, std::ostream& output, EventRecorder& recorder,
@@ -229,11 +229,11 @@ void System::runEvents() {
     }
 }
 
-std::uint64_t parsePositiveInteger(const char* text, std::uint64_t limit) {
+[[nodiscard]] std::uint64_t parsePositiveInteger(const char* text, std::uint64_t limit) {
     assertCondition<std::invalid_argument>(text != nullptr && limit > 0, "invalid option parser arguments");
     const std::string optionText(text);
     assertCondition(!optionText.empty() && optionText.find_first_not_of("0123456789") == std::string::npos,
-                    "expected parsePositiveInteger integer option");
+                    "expected a decimal integer option");
     constexpr std::uint64_t DECIMAL_RADIX = 10;
     std::uint64_t parsedOptionValue = 0;
     for (const char character : optionText) {
@@ -305,8 +305,6 @@ void checkDistinctPaths(char** argv, bool testTraceEnabled) {
 }
 
 void writeQueueStats(std::ostream& stats, const System& system, const Options& options) {
-    assertCondition(static_cast<bool>(stats), "statistics stream is not writable");
-    assertCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
     const std::array<const char*, OBSERVED_FIFO_COUNT> fifoMetricNames{"parser_to_transform", "compute0_results",
                                                                        "compute1_results", "collector_to_output"};
     const std::array<unsigned, OBSERVED_FIFO_COUNT> fifoCapacitiesTasks{options.m_depth, options.m_resultDepth,
@@ -323,8 +321,6 @@ void writeQueueStats(std::ostream& stats, const System& system, const Options& o
 }
 
 void writeHandshakeStats(std::ostream& stats, const System& system, const Options& options) {
-    assertCondition(static_cast<bool>(stats), "statistics stream is not writable");
-    assertCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
     const auto handshakeValidCycles = system.m_transform.m_statistics.m_validCycles;
     stats << "handshake_valid_cycles," << handshakeValidCycles << "\nhandshake_blocked_cycles,"
           << system.m_transform.m_statistics.m_blockedCycles << "\nhandshake_blocked_fraction,"
@@ -345,8 +341,6 @@ void writeHandshakeStats(std::ostream& stats, const System& system, const Option
 }
 
 void writeComputeStats(std::ostream& stats, const System& system) {
-    assertCondition(static_cast<bool>(stats), "statistics stream is not writable");
-    assertCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
     const std::array<const Compute*, UNIT_COUNT> computeUnits{&system.m_compute0, &system.m_compute1};
     for (unsigned unit = 0; unit < UNIT_COUNT; ++unit) {
         stats << "compute" << unit << "_busy_cycles," << computeUnits[unit]->m_statistics.m_busyCycles << '\n'
@@ -359,8 +353,6 @@ void writeComputeStats(std::ostream& stats, const System& system) {
 }
 
 void writeWindowStats(std::ostream& stats, const System& system, const Options& options) {
-    assertCondition(static_cast<bool>(stats), "statistics stream is not writable");
-    assertCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
     stats << "window_capacity," << options.m_window << "\nwindow_results_peak," << system.m_windowResults.m_peak
           << "\nwindow_results_average," << static_cast<double>(system.m_windowResults.m_sum) / system.m_cycles
           << "\nwindow_reserved_peak," << system.m_windowReserved.m_peak << "\nwindow_reserved_average,"

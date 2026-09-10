@@ -62,7 +62,11 @@ void checkModule(const std::string& testCase) {
             "output stream is not writable");
     } else {
         assertCondition(testCase == "event", "unknown test case");
-        expectException<std::invalid_argument>([&testLog]() { testLog.record(0, nullptr); }, "null event name");
+        std::ostringstream testEventStream;
+        testEventStream.setstate(std::ios::badbit);
+        testLog.m_testStream = &testEventStream;
+        expectException<std::runtime_error>([&testLog]() { testLog.record(0, "parser_send"); },
+                                            "event stream is not writable");
     }
 }
 } // namespace

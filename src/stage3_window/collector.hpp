@@ -45,7 +45,7 @@ SC_MODULE(Collector) {
     sc_core::sc_out<std::uint64_t> m_baseOut{"base_out"};
     std::uint64_t m_nextId = 0;
     model::instrumentation::CollectorStatistics m_statistics;
-    unsigned occupancy() const {
+    [[nodiscard]] unsigned occupancy() const {
         return m_completed;
     }
     /**

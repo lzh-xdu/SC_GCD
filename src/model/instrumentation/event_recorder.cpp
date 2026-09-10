@@ -10,9 +10,8 @@
 #include <ostream>
 
 namespace model::instrumentation {
-void EventRecorder::record(std::uint64_t id, const char* event, std::uint64_t a, std::uint64_t b, std::uint64_t value,
-                           std::uint64_t latency) const {
-    assertCondition<std::invalid_argument>(event != nullptr, "null event name");
+void EventRecorder::record(std::uint64_t id, std::string_view event, std::uint64_t a, std::uint64_t b,
+                           std::uint64_t value, std::uint64_t latency) const {
     assertCondition(m_testStream == nullptr || static_cast<bool>(*m_testStream), "event stream is not writable");
     const auto cycle = timing::currentCycle();
     m_statistics.record(id, event, cycle);

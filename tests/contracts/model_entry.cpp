@@ -48,7 +48,7 @@ void checkOptions() {
     for (const auto& testText : {std::string("999999999999999999999999999999"), std::string("101"), std::string("0")}) {
         bool testRejected = false;
         try {
-            parsePositiveInteger(testText.c_str(), TEST_LIMIT);
+            static_cast<void>(parsePositiveInteger(testText.c_str(), TEST_LIMIT));
         } catch (const std::runtime_error& testError) {
             assertCondition(std::string(testError.what()) == "option out of range", "unexpected range diagnostic");
             testRejected = true;

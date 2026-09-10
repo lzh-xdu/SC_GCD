@@ -393,3 +393,9 @@
 
 - 新增 [证据与选型说明](fifo-handshake-evidence.md)，核对历史 Stage1/2 三组输入输出哈希、容量/输出节拍扫描与慢输出时间线；参考 AMD 官方文档解释弹性缓冲和异步 FIFO。
 - 仅文档分析，未运行新模型测试；结论区分已有实测与未覆盖场景，其他工作区修改不纳入提交。
+
+## 2026-09-11：按开源审美实施 A 类风格修改（全阶段）
+
+- 实施审查 A 类 1～8 项：[[nodiscard]] 查询函数、operator== 自由函数+!=、static→匿名命名空间、write*Stats 断言去重、消息改写、事件名 string_view、include 字母序、using 声明标注；[逐项记录](review-fixes.md)。
+- [[nodiscard]] 抓到 model_entry.cpp 丢弃返回值；verify.cpp nullptr 用例随契约更新，首轮构建即段错误暴露后修复。
+- 四环境验证（Linux/Windows PowerShell 各 Debug+Release）均 25/25、零警告；正常输出逐字节不变，仅非法参数消息文本变化。代码与证据本地提交。

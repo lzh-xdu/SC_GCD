@@ -4,13 +4,14 @@
  * @brief Shared modulo latency policy for the event-scheduled Compute model.
  */
 #include "gcd_plan.hpp"
-#include "../functional/operands.hpp"
 #include "../../common/contract.hpp"
+#include "../functional/operands.hpp"
 
 #include <algorithm>
 
 namespace stage4::model::timing {
-static unsigned bits(std::uint64_t value) {
+namespace {
+[[nodiscard]] unsigned bits(std::uint64_t value) {
     unsigned count = 0;
     while (value != 0) {
         ++count;
@@ -18,6 +19,7 @@ static unsigned bits(std::uint64_t value) {
     }
     return count;
 }
+} // namespace
 std::pair<std::uint64_t, std::uint64_t> planGcd(std::uint64_t a, std::uint64_t b) {
     assertCondition<std::logic_error>(a >= b, "compute requires ordered magnitudes");
     std::uint64_t latency = 0;

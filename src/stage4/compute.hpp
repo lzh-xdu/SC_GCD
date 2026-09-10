@@ -46,7 +46,7 @@ SC_MODULE(Compute) {
     /**
      * @brief 只读内部空闲状态；实际接收仍以该调度边界 valid && ready 为准。
      */
-    bool idle() const {
+    [[nodiscard]] bool idle() const {
         return m_state == State::IDLE;
     }
     Compute(sc_core::sc_module_name name, EventRecorder & recorder, unsigned unit = 0);
@@ -55,7 +55,7 @@ SC_MODULE(Compute) {
      * @brief 事件推进；BUSY 不得超过完成时刻，异常状态抛 logic_error。
      */
     void advance();
-    std::uint64_t nextDelay() const;
+    [[nodiscard]] std::uint64_t nextDelay() const;
     void accountSkipped(std::uint64_t first, std::uint64_t count);
 
 private:
