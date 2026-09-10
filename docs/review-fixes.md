@@ -46,4 +46,4 @@
 
 行为保持：用法字符串、统计数值、模拟周期与输出逐字节不变（第 10 项仅改文本生成方式，内容相同）。本轮无运行时缺陷，未新增缺陷案例；其中“compute.hpp 文件级两个 @brief 重复”经复核为 @file 与 @class 各自摘要的 Doxygen 惯例，不属重复，未改。
 
-验证在 WSL g++ 11.4 环境完成：Debug/Release 各 25/25（[Debug](evidence/review-fixes/style-round-debug-tests.log)、[Release](evidence/review-fixes/style-round-release-tests.log)），-Wall -Wextra -Wpedantic 零警告；Windows 侧构建未在本轮重跑，不宣称等价于用户环境验收。提交时工作区另有用户未提交的 constexpr 学习记录，随日志文件一并保留。
+验证在 WSL g++ 11.4 环境完成：Debug/Release 各 25/25（[Debug](evidence/review-fixes/style-round-debug-tests.log)、[Release](evidence/review-fixes/style-round-release-tests.log)），-Wall -Wextra -Wpedantic 零警告。同日补测 Windows 环境（Strawberry MinGW g++ + Ninja，经 WSL interop 调用）：`build`（Release）与 `build\debug` 均 87/87 目标零警告重建，ctest 各 25/25（[Windows Release](evidence/review-fixes/style-round-windows-release-tests.log)、[Windows Debug](evidence/review-fixes/style-round-windows-debug-tests.log)）；stage4_gcd.exe 用法字符串与 WSL 一致、非法参数退出码 2，同输入模拟输出与统计与 WSL 逐字节一致（仅文本模式 CRLF 差异）。提交时工作区另有用户未提交的 constexpr 学习记录，随日志文件一并保留。

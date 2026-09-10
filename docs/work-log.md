@@ -339,7 +339,7 @@
 ## 2026-09-10：第二轮规范与风格修复（Stage4）
 
 - 按用户要求实施审查意见 5～12：容量类型统一、重复信号读取、注释错位、EventRecorder const/mutable、Usage 字段、用法字符串常量化、内部不变量 logic_error、限定符一致；[逐项记录](review-fixes.md)。
-- WSL g++ 11.4 环境验证：Debug/Release 各 25/25 通过、-Wall -Wextra -Wpedantic 零警告；用法字符串与统计输出逐字节不变。Windows 侧构建与性能未重跑。
+- WSL g++ 11.4 环境验证：Debug/Release 各 25/25 通过、-Wall -Wextra -Wpedantic 零警告；用法字符串与统计输出逐字节不变。同日补测 Windows（Strawberry MinGW）双配置重建零警告、ctest 各 25/25，exe 输出与 WSL 一致（仅 CRLF 文本模式差异）；[验证记录](review-fixes.md)。
 - 本轮无新缺陷案例，仅风格与维护性修改，不改任何数值。代码与记录本地提交；工作区另有用户未提交的 constexpr 学习记录，随日志文件一并保留。
 
 
