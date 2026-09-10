@@ -373,6 +373,8 @@
 - 按用户要求重写 [最终设计](final-design.md)：压缩为概述/时序契约/决策/验证/实测发现/边界/索引七节，纳入四阶段完成态与实测结论；替代 2026-09-07「作业4待实现」版本（历史在 Git）。该文档为 AI 草稿，待用户审阅修订。
 - 修复导出脚本两处缺陷：profile 目录场景名提取用了原始目录名（误将模型名当场景）、内容去重把同名异内容写法颠倒；修复后按场景名各存一份并检测同名冲突。
 - 按用户要求把导出目录改为与提交要求一一对应的编号结构：01_systemc_sources、02_build_scripts、03_test_inputs、04_functional_outputs、05_performance_stats、06_design_docs；README 清单同步标注对应关系。
+- 用户指出编号目录会破坏构建脚本的相对路径假设，决定改回原始项目布局（CMakeLists.txt、src/、tests/、scripts/ 同级），六类内容与目录的映射改记在生成的 README.md 中，并加入一键构建/测试与结果复现命令（Windows/Linux 双平台）。
+- 实际验证导出包可独立构建与复现：链接 third_party 后 `cmake -S export` 构建成功；README 中的 stage1/混合与 stage3_window/偏斜复现命令运行后，功能输出与统计 CSV 均与导出结果逐字节一致（统计不含主机耗时，同源码同输入确定性成立）。
 
 ## 2026-09-10：SystemC Web 查看器扩展到作业 1～4
 
