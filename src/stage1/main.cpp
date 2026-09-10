@@ -5,6 +5,10 @@
 /**
  * @file main.cpp
  * @brief Connect and observe the stage 1 simulation.
+ *
+ * The CLI skeleton (parsePositiveInteger, parseOptions, checkDistinctPaths, flushFiles, openTestEvents)
+ * is shared verbatim across all five stage mains; only the accepted positional arguments differ.
+ * Read this copy once, then skip those helpers in later stages.
  */
 #include "../common/contract.hpp"
 #include "compute.hpp"

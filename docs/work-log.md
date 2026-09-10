@@ -412,3 +412,8 @@
 
 - 用户发现 a2_depth_blocked 图中 S/V 序列疑似为 0。核实数据无误（S/V 全深度恒 0.979、S/T 0.9789，两者仅差 0.01 个百分点），根因是两条折线数值几乎相同、像素级完全重叠，后画的 S/T 实线盖住了 S/V。
 - 修复：metrics_svg.line_chart 增加 dashed 参数，S/T 改虚线并在标题注明"与 S/V 几乎重合"；a2_depth/a2_period 两张阻塞率图从既有 CSV 重新生成（未重跑测量），run_metrics_matrix.py 同步该样式，导出包已刷新。
+
+## 2026-09-11：为理解性添加注释（骨架标注 + 调度语义）
+
+- 为帮助通读 stage1～4：五个 main.cpp 文件头标注 CLI 骨架函数（parsePositiveInteger/parseOptions/checkDistinctPaths/flushFiles/openTestEvents）逐字共享、只需精读 stage1 一份；stage4 runEvents 补齐三个零时间 delta 的逐步语义（提交→组合求值→输出生效）；stage3 Dispatcher::tick 补轮转前进语义及与 stage3_window 择闲分水岭的说明。
+- 纯注释变更，零行为改动；相关测试（stage3 轮转 + stage4 全套）通过、零警告。此前分析中的可选项 3/4（collector 小重构）、6（parseTaskLine 提取）与模块×阶段矩阵待用户决定。

@@ -5,6 +5,9 @@
 /**
  * @file main.cpp
  * @brief Connect and observe the stage 3 dual-engine simulation.
+ *
+ * The CLI skeleton (parsePositiveInteger, parseOptions, checkDistinctPaths, flushFiles, openTestEvents)
+ * is shared verbatim across all five stage mains; only the accepted positional arguments differ.
  */
 #include "../common/contract.hpp"
 #include "../stage2/compute.hpp"

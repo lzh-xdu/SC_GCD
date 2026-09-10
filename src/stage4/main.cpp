@@ -5,6 +5,9 @@
 /**
  * @file main.cpp
  * @brief Connect the window model and schedule only actionable event timestamps.
+ *
+ * The CLI skeleton (parsePositiveInteger, parseOptions, checkDistinctPaths, flushFiles, openTestEvents)
+ * is shared verbatim across all five stage mains; only the accepted positional arguments differ.
  */
 #include "collector.hpp"
 #include "common/contract.hpp"
@@ -197,6 +200,10 @@ void System::sampleUsage() {
 }
 void System::runEvents() {
     // Channel update -> combinational route -> route output update. No simulated time passes.
+    // The three zero-time deltas do exactly that, in order: 1) the sc_fifo/sc_signal writes
+    // from the previous boundary's advance() calls commit, 2) Dispatcher::route re-evaluates
+    // its combinational outputs on the new values, 3) route's own writes commit, so every
+    // module reads a fully settled network at the next scheduled boundary.
     constexpr unsigned SETTLE_DELTA_COUNT = 3;
     while (true) {
         for (unsigned phase = 0; phase < SETTLE_DELTA_COUNT; ++phase) {

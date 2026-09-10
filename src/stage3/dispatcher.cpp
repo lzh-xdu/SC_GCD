@@ -34,6 +34,9 @@ void Dispatcher::tick() {
     }
     const auto selected = m_turn.read();
     const auto next = (selected + 1) % UNIT_COUNT;
+    // The turn advances only after a successful handoff: a busy target holds both the task
+    // and the turn (round-robin without skipping), even when the other engine is idle.
+    // This is the key behavioral difference from stage3_window's ready-first selection.
     if (m_readyIn[selected].read()) {
         m_turn.write(next);
     } else if (m_readyIn[next].read()) {
