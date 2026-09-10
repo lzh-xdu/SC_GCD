@@ -16,7 +16,6 @@
  * - When valid is false, data has no transaction meaning.
  * - The sender holds data/valid while stalled; connected modules implement the handshake.
  * - Equality compares id and both operands; stream output and sc_trace support inspection.
- * - Parser, Output, raw/result types, the observer and simulation-time helpers are reused from stage4.
  *
  * Timing:
  * - Payload is a plain value, with no clock process or latency of its own.
@@ -27,9 +26,9 @@
  * - Connected module documentation specifies initial valid/ready values.
  */
 #pragma once
-#include "parser.hpp"
-#include "output.hpp"
-
+#include <cstdint>
+#include <iosfwd>
+#include <string>
 #include <systemc>
 
 namespace stage4 {

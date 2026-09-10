@@ -36,7 +36,6 @@ struct LinkStatistics {
     std::uint64_t m_blockedCycles = 0;
 };
 struct DispatchStatistics {
-    std::uint64_t m_idleOtherBlockedCycles = 0;
     std::uint64_t m_dispatched = 0;
     std::uint64_t m_windowBlockedCycles = 0;
     std::uint64_t m_windowBlockedWithReadyCycles = 0;

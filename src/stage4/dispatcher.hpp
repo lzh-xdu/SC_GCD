@@ -5,6 +5,8 @@
 #pragma once
 #include "payload.hpp"
 
+#include "types.hpp"
+
 namespace stage4 {
 inline constexpr unsigned UNIT_COUNT = 2;
 /**

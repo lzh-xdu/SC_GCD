@@ -7,6 +7,8 @@
 
 #include <optional>
 
+#include "types.hpp"
+
 namespace stage4 {
 /**
  * @brief Transforms operands through two elastic stages with a valid/ready output.

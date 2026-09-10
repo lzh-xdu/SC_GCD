@@ -132,16 +132,25 @@ std::uint64_t parsePositiveInteger(const char* text, std::uint64_t limit) {
     assertCondition<std::invalid_argument>(text != nullptr && limit > 0, "invalid option parser arguments");
     const std::string optionText(text);
     assertCondition(!optionText.empty() && optionText.find_first_not_of("0123456789") == std::string::npos,
-                     "expected parsePositiveInteger integer option");
-    const auto parsedOptionValue = std::stoull(optionText);
-    assertCondition(parsedOptionValue > 0 && parsedOptionValue <= limit, "option out of range");
+                    "expected parsePositiveInteger integer option");
+    constexpr std::uint64_t DECIMAL_RADIX = 10;
+    std::uint64_t parsedOptionValue = 0;
+    for (const char character : optionText) {
+        const auto digit = static_cast<std::uint64_t>(character - '0');
+        // Check before multiplication/addition, including when limit is UINT64_MAX.
+        assertCondition(parsedOptionValue < limit / DECIMAL_RADIX ||
+                            (parsedOptionValue == limit / DECIMAL_RADIX && digit <= limit % DECIMAL_RADIX),
+                        "option out of range");
+        parsedOptionValue = parsedOptionValue * DECIMAL_RADIX + digit;
+    }
+    assertCondition(parsedOptionValue > 0, "option out of range");
     return parsedOptionValue;
 }
 
 Options parseOptions(int argc, char** argv) {
     assertCondition<std::invalid_argument>(argc >= MIN_COMMAND_LINE_ARGUMENT_COUNT &&
-                                                argc <= MAX_COMMAND_LINE_ARGUMENT_COUNT && argv != nullptr,
-                                            "invalid command line arguments");
+                                               argc <= MAX_COMMAND_LINE_ARGUMENT_COUNT && argv != nullptr,
+                                           "invalid command line arguments");
     for (int argument = 0; argument < argc; ++argument) {
         assertCondition<std::invalid_argument>(argv[argument] != nullptr, "null command line argument");
     }
@@ -174,10 +183,9 @@ void checkDistinctPaths(char** argv, bool testTraceEnabled) {
     for (const int argument : arguments) {
         const auto path = std::filesystem::weakly_canonical(argv[argument]);
         for (const auto& previous : paths) {
-            assertCondition(
-                !(path == previous || (std::filesystem::exists(path) && std::filesystem::exists(previous) &&
-                                       std::filesystem::equivalent(path, previous))),
-                "input, output, stats and events must be distinct files");
+            assertCondition(!(path == previous || (std::filesystem::exists(path) && std::filesystem::exists(previous) &&
+                                                   std::filesystem::equivalent(path, previous))),
+                            "input, output, stats and events must be distinct files");
         }
         paths.push_back(path);
     }
@@ -205,7 +213,7 @@ void writeStats(std::ostream& stats, const System& system, const Options& option
     const auto elapsedSimulationCycles = system.m_cycles;
     stats << std::setprecision(STATISTICS_SIGNIFICANT_DIGITS) << "metric,value\n"
           << "cycles," << elapsedSimulationCycles << "\ntasks," << system.m_output.m_received << "\nsimulated_time_ns,"
-          << elapsedSimulationCycles << "\nthroughput_tasks_per_cycle,"
+          << static_cast<double>(elapsedSimulationCycles) * CLOCK_PERIOD_NS << "\nthroughput_tasks_per_cycle,"
           << static_cast<double>(system.m_output.m_received) / elapsedSimulationCycles << "\ncompute_busy_cycles,"
           << system.m_compute.m_statistics.m_busyCycles << "\ncompute_utilization,"
           << static_cast<double>(system.m_compute.m_statistics.m_busyCycles) / elapsedSimulationCycles

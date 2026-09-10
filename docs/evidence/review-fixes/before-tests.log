@@ -1,0 +1,99 @@
+Internal ctest changing into directory: D:/0_lzh/GPU/MOORE/build
+Test project D:/0_lzh/GPU/MOORE/build
+      Start 16: stage1_reporting_contract
+ 1/10 Test #16: stage1_reporting_contract ..........***Failed    0.08 sec
+
+        SystemC 3.0.1-Accellera --- Sep  5 2026 21:41:55
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+FAIL: 7 cycles at 2.5 ns must report 17.5 ns
+
+      Start 17: stage1_options_contract
+ 2/10 Test #17: stage1_options_contract ............***Failed    0.02 sec
+
+        SystemC 3.0.1-Accellera --- Sep  5 2026 21:41:55
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+FAIL: stoull
+
+      Start 18: stage2_reporting_contract
+ 3/10 Test #18: stage2_reporting_contract ..........***Failed    0.09 sec
+
+        SystemC 3.0.1-Accellera --- Sep  5 2026 21:41:55
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+FAIL: 7 cycles at 2.5 ns must report 17.5 ns
+
+      Start 19: stage2_options_contract
+ 4/10 Test #19: stage2_options_contract ............***Failed    0.01 sec
+
+        SystemC 3.0.1-Accellera --- Sep  5 2026 21:41:55
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+FAIL: stoull
+
+      Start 20: stage3_reporting_contract
+ 5/10 Test #20: stage3_reporting_contract ..........***Failed    0.08 sec
+
+        SystemC 3.0.1-Accellera --- Sep  5 2026 21:41:55
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+FAIL: 7 cycles at 2.5 ns must report 17.5 ns
+
+      Start 21: stage3_options_contract
+ 6/10 Test #21: stage3_options_contract ............***Failed    0.02 sec
+
+        SystemC 3.0.1-Accellera --- Sep  5 2026 21:41:55
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+FAIL: stoull
+
+      Start 22: stage3_window_reporting_contract
+ 7/10 Test #22: stage3_window_reporting_contract ...***Failed    0.09 sec
+
+        SystemC 3.0.1-Accellera --- Sep  5 2026 21:41:55
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+FAIL: 7 cycles at 2.5 ns must report 17.5 ns
+
+      Start 23: stage3_window_options_contract
+ 8/10 Test #23: stage3_window_options_contract .....***Failed    0.01 sec
+
+        SystemC 3.0.1-Accellera --- Sep  5 2026 21:41:55
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+FAIL: stoull
+
+      Start 24: stage4_reporting_contract
+ 9/10 Test #24: stage4_reporting_contract ..........***Failed    0.08 sec
+
+        SystemC 3.0.1-Accellera --- Sep  5 2026 21:41:55
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+FAIL: 7 cycles at 2.5 ns must report 17.5 ns
+
+      Start 25: stage4_options_contract
+10/10 Test #25: stage4_options_contract ............***Failed    0.01 sec
+
+        SystemC 3.0.1-Accellera --- Sep  5 2026 21:41:55
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+FAIL: stoull
+
+
+0% tests passed, 10 tests failed out of 10
+
+Total Test time (real) =   0.51 sec
+
+The following tests FAILED:
+	 16 - stage1_reporting_contract (Failed)
+	 17 - stage1_options_contract (Failed)
+	 18 - stage2_reporting_contract (Failed)
+	 19 - stage2_options_contract (Failed)
+	 20 - stage3_reporting_contract (Failed)
+	 21 - stage3_options_contract (Failed)
+	 22 - stage3_window_reporting_contract (Failed)
+	 23 - stage3_window_options_contract (Failed)
+	 24 - stage4_reporting_contract (Failed)
+	 25 - stage4_options_contract (Failed)
+Errors while running CTest

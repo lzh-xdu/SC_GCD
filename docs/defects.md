@@ -124,3 +124,18 @@
 - 原始证据：[主实验样本](evidence/model-comparison/samples.jsonl)、[同输入控制样本](evidence/model-comparison/trace-controls/samples.jsonl)、[完整报告](model-comparison.md)；七次结果/统计哈希稳定。未制造功能失败或修改数据挑选最好一次。
 - 修正建议（未实施）：改为按事件批次增量输出，或用区间表示长阻塞，在测试端归一化。需保留正确时间点、次数和顺序。
 - 回归状态：本轮只测量并验证包装入口等价，原模型未改；Release CTest 15/15。未声称优化已完成，内存/耗时限制仍存在。
+
+## B-012：simulated_time_ns 隐含周期为 1 ns
+
+- 2026-09-10，用户审查指出；潜在单位缺陷，已修复。涉及五个入口，源码基线 9e613e9。
+- 复现配置：真实 writeStats 报表方法，测试翻译单元周期时长 2.5 ns，System 已观察周期数 7；预期 simulated_time_ns=17.5、cycles=7，实际旧报表输出 simulated_time_ns=7。未运行非标准周期的完整仿真。
+- 定位：写报表直接输出 elapsedSimulationCycles，未乘本阶段的周期时长。默认 1 ns 掩盖了问题。
+- 修正：五个入口显式换算 ns，保留周期数及原字段名；时间限制等其他配置不在本轮扩展为任意周期支持。
+- 回归：修复前五项报告测试失败，修复后两种构建全部 25/25；原始失败、方法和日志见 [四项修复](review-fixes.md)。
+
+## B-013：超长正整数暴露库异常诊断
+
+- 2026-09-10，用户审查指出；输入诊断缺陷，已修复。涉及五个入口，源码基线 9e613e9。
+- 复现：30 个 9 作为正整数选项（测试 limit=100）；预期 option out of range，实际 std::stoull 在自定义校验前抛 out_of_range，最终显示 FAIL: stoull。输入仍被拒绝，不是越界值被接受。
+- 修正：仅接受原有十进制字符，每次乘 10 和加 digit 之前按业务 limit 检查，无 uint64 溢出；不依赖 stoull 诊断，非法范围统一 runtime_error。
+- 回归：30 位 9、0、101/limit=100 被拒绝；100、长前导零和 uint64 最大值正确处理；五个 CLI 实际返回友好信息。双配置 25/25，见 [证据](review-fixes.md)。

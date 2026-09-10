@@ -1,0 +1,13 @@
+PASS standalone include: payload.hpp
+PASS standalone include: types.hpp
+PASS standalone include: parser.hpp
+PASS standalone include: output.hpp
+PASS standalone include: compute.hpp
+PASS standalone include: transform.hpp
+PASS standalone include: dispatcher.hpp
+PASS standalone include: collector.hpp
+PASS stage1: 30-digit option -> exit 1, FAIL: option out of range
+PASS stage2: 30-digit option -> exit 1, FAIL: option out of range
+PASS stage3: 30-digit option -> exit 1, FAIL: option out of range
+PASS stage3_window: 30-digit option -> exit 1, FAIL: option out of range
+PASS stage4: 30-digit option -> exit 1, FAIL: option out of range

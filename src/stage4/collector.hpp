@@ -8,6 +8,8 @@
 #include <optional>
 #include <vector>
 
+#include "types.hpp"
+
 namespace stage4 {
 /**
  * @brief Stores completed results in a finite reserved window and retires them in order.
