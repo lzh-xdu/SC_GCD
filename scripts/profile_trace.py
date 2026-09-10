@@ -72,6 +72,8 @@ def compare(test_options, test_folder, test_pairs):
     test_models = {"before": test_options.before, "after": test_options.after}
     if test_options.clock:
         test_models["clock"] = test_options.clock
+    if test_options.old_clock:
+        test_models["old_clock"] = test_options.old_clock
     test_cases = [("mixed_on", test_pairs, 1, True), ("mixed_off", test_pairs, 1, False),
                   ("zero_on", [(7, 0)] * 10000, 1, True), ("slow_on", [(48, 18)] * 100, 1000, True)]
     test_rows = []
@@ -122,13 +124,14 @@ def main():
     test_parser.add_argument("--before", type=Path, required=True)
     test_parser.add_argument("--after", type=Path)
     test_parser.add_argument("--clock", type=Path)
+    test_parser.add_argument("--old-clock", type=Path)
     test_parser.add_argument("--perf", type=Path)
     test_parser.add_argument("--report", type=Path, required=True)
     test_parser.add_argument("--repeat", type=int, default=7)
     test_options = test_parser.parse_args()
     if test_options.repeat < 1 or bool(test_options.perf) == bool(test_options.after):
         test_parser.error("choose perf recording or before/after comparison; repeat must be positive")
-    for test_key in ("before", "after", "clock", "perf", "report"):
+    for test_key in ("before", "after", "clock", "old_clock", "perf", "report"):
         if getattr(test_options, test_key):
             setattr(test_options, test_key, getattr(test_options, test_key).resolve())
     test_options.report.mkdir(parents=True, exist_ok=True)
@@ -139,7 +142,7 @@ def main():
                          ["git", "rev-parse", "HEAD"], text=True).strip(),
                      "binaries": {test_key: {"path": str(getattr(test_options, test_key)),
                                               "sha256": digest(getattr(test_options, test_key))}
-                                  for test_key in ("before", "after", "clock", "perf")
+                                  for test_key in ("before", "after", "clock", "old_clock", "perf")
                                   if getattr(test_options, test_key)}}
     (test_options.report / "metadata.json").write_text(json.dumps(test_metadata, indent=2) + "\n")
     test_random = random.Random(20260910)

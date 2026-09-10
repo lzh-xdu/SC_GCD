@@ -374,6 +374,7 @@ int run(int argc, char** argv) {
     std::ofstream testEvents;
     assertCondition(output && stats, "cannot open output or stats");
     EventRecorder recorder;
+    recorder.m_testBufferedTrace = true;
     openTestEvents(testEvents, recorder, argv, options.m_testTraceEnabled);
     System system("system", input, output, recorder, options);
     // Include the last allowed rising edge, but no extra rising edge.
@@ -386,6 +387,7 @@ int run(int argc, char** argv) {
           << '\n';
     stats << "compute0_idle_no_input_cycles," << system.m_compute0.m_statistics.m_idleNoInputCycles << '\n'
           << "compute1_idle_no_input_cycles," << system.m_compute1.m_statistics.m_idleNoInputCycles << '\n';
+    recorder.flushTrace();
     flushFiles(output, stats, testEvents, options.m_testTraceEnabled);
     // Diagnostics belong to the console; OUTPUT contains only final GCD values.
     std::cerr << "PASS: " << system.m_output.m_received << " tasks, " << system.m_cycles << " cycles\n";

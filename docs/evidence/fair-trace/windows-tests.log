@@ -1,27 +1,27 @@
 Internal ctest changing into directory: D:/0_lzh/GPU/MOORE/build
 Test project D:/0_lzh/GPU/MOORE/build
       Start  1: stage1_function_timing_backpressure
- 1/26 Test  #1: stage1_function_timing_backpressure ...   Passed    2.30 sec
+ 1/26 Test  #1: stage1_function_timing_backpressure ...   Passed    1.70 sec
       Start  2: day01_signal_timing
- 2/26 Test  #2: day01_signal_timing ...................   Passed    0.11 sec
+ 2/26 Test  #2: day01_signal_timing ...................   Passed    0.04 sec
       Start  3: stage4_initial_equivalence
- 3/26 Test  #3: stage4_initial_equivalence ............   Passed    5.66 sec
+ 3/26 Test  #3: stage4_initial_equivalence ............   Passed    6.99 sec
       Start  4: stage4_parser_timing
- 4/26 Test  #4: stage4_parser_timing ..................   Passed    0.13 sec
+ 4/26 Test  #4: stage4_parser_timing ..................   Passed    0.77 sec
       Start  5: stage4_trace_ordering
- 5/26 Test  #5: stage4_trace_ordering .................   Passed    0.15 sec
+ 5/26 Test  #5: stage4_trace_ordering .................   Passed    0.51 sec
       Start  6: stage4_event_scheduler
- 6/26 Test  #6: stage4_event_scheduler ................   Passed    0.66 sec
+ 6/26 Test  #6: stage4_event_scheduler ................   Passed    0.60 sec
       Start  7: stage2_handshake
- 7/26 Test  #7: stage2_handshake ......................   Passed    1.95 sec
+ 7/26 Test  #7: stage2_handshake ......................   Passed    1.77 sec
       Start  8: stage3_round_robin_ordering
- 8/26 Test  #8: stage3_round_robin_ordering ...........   Passed    2.11 sec
+ 8/26 Test  #8: stage3_round_robin_ordering ...........   Passed    1.97 sec
       Start  9: stage3_performance_comparison
- 9/26 Test  #9: stage3_performance_comparison .........   Passed    0.47 sec
+ 9/26 Test  #9: stage3_performance_comparison .........   Passed    0.39 sec
       Start 10: stage3_ready_window
-10/26 Test #10: stage3_ready_window ...................   Passed    2.48 sec
+10/26 Test #10: stage3_ready_window ...................   Passed    2.69 sec
       Start 11: contract_helper
-11/26 Test #11: contract_helper .......................   Passed    0.09 sec
+11/26 Test #11: contract_helper .......................   Passed    0.07 sec
       Start 12: contract_period
 12/26 Test #12: contract_period .......................   Passed    0.02 sec
       Start 13: contract_input
@@ -33,26 +33,26 @@ Test project D:/0_lzh/GPU/MOORE/build
       Start 16: contract_statistics
 16/26 Test #16: contract_statistics ...................   Passed    0.02 sec
       Start 17: stage1_reporting_contract
-17/26 Test #17: stage1_reporting_contract .............   Passed    0.13 sec
+17/26 Test #17: stage1_reporting_contract .............   Passed    0.08 sec
       Start 18: stage1_options_contract
 18/26 Test #18: stage1_options_contract ...............   Passed    0.02 sec
       Start 19: stage2_reporting_contract
-19/26 Test #19: stage2_reporting_contract .............   Passed    0.13 sec
+19/26 Test #19: stage2_reporting_contract .............   Passed    0.08 sec
       Start 20: stage2_options_contract
 20/26 Test #20: stage2_options_contract ...............   Passed    0.02 sec
       Start 21: stage3_reporting_contract
-21/26 Test #21: stage3_reporting_contract .............   Passed    0.12 sec
+21/26 Test #21: stage3_reporting_contract .............   Passed    0.08 sec
       Start 22: stage3_options_contract
 22/26 Test #22: stage3_options_contract ...............   Passed    0.02 sec
       Start 23: stage3_window_reporting_contract
-23/26 Test #23: stage3_window_reporting_contract ......   Passed    0.13 sec
+23/26 Test #23: stage3_window_reporting_contract ......   Passed    0.10 sec
       Start 24: stage3_window_options_contract
 24/26 Test #24: stage3_window_options_contract ........   Passed    0.02 sec
       Start 25: stage4_reporting_contract
-25/26 Test #25: stage4_reporting_contract .............   Passed    0.12 sec
+25/26 Test #25: stage4_reporting_contract .............   Passed    0.03 sec
       Start 26: stage4_options_contract
 26/26 Test #26: stage4_options_contract ...............   Passed    0.02 sec
 
 100% tests passed, 0 tests failed out of 26
 
-Total Test time (real) =  17.01 sec
+Total Test time (real) =  18.08 sec

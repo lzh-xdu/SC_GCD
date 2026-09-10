@@ -1,0 +1,72 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 3K of event 'cpu-clock:u'
+# Event count (approx.): 3518555572
+#
+# Children      Self  Command          Shared Object         Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+# ........  ........  ...............  ....................  ..........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+#
+    75.06%     0.00%  stage3_window_g  libc.so.6             [.] __libc_start_call_main
+    75.06%     0.00%  stage3_window_g  stage3_window_gcd     [.] sc_elab_and_sim
+    75.06%     0.00%  stage3_window_g  stage3_window_gcd     [.] sc_main
+    75.03%     0.00%  stage3_window_g  stage3_window_gcd     [.] (anonymous namespace)::run
+    74.40%     0.00%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_start
+    73.63%     3.62%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_simcontext::simulate
+    65.02%    13.26%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_simcontext::crunch
+    18.67%     1.48%  stage3_window_g  stage3_window_gcd     [.] model::instrumentation::EventRecorder::record
+    12.34%     1.45%  stage3_window_g  stage3_window_gcd     [.] stage2::Transform::tick
+    11.89%     0.03%  stage3_window_g  stage3_window_gcd     [.] qt_align
+    11.86%     0.00%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_thread_cor_fn
+    10.75%     0.86%  stage3_window_g  stage3_window_gcd     [.] (anonymous namespace)::System::observe
+    10.69%     0.86%  stage3_window_g  stage3_window_gcd     [.] model::instrumentation::EventRecorder::writeBuffered
+     9.21%     4.28%  stage3_window_g  stage3_window_gcd     [.] model::timing::currentCycle
+     8.87%     1.08%  stage3_window_g  stage3_window_gcd     [.] stage3_window::Dispatcher::tick
+     8.61%     8.61%  stage3_window_g  stage3_window_gcd     [.] model::instrumentation::(anonymous namespace)::appendNumber
+     8.61%     6.87%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_event::trigger
+     5.79%     5.79%  stage3_window_g  libstdc++.so.6.0.30   [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace
+     5.30%     0.74%  stage3_window_g  stage3_window_gcd     [.] stage2::Compute::tick
+     4.65%     4.65%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_time::sc_time
+     4.53%     3.73%  stage3_window_g  stage3_window_gcd     [.] sc_core::wait
+     4.02%     4.02%  stage3_window_g  libc.so.6             [.] __memmove_avx_unaligned_erms
+     3.71%     1.05%  stage3_window_g  stage3_window_gcd     [.] stage1::Output::tick
+     3.56%     0.09%  stage3_window_g  stage3_window_gcd     [.] stage2::Compute::accept
+     3.36%     2.02%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_prim_channel_registry::perform_update
+     2.57%     0.40%  stage3_window_g  stage3_window_gcd     [.] stage3_window::Collector::tick
+     2.11%     2.11%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_thread_process::trigger_dynamic
+     2.02%     2.02%  stage3_window_g  stage3_window_gcd     [.] model::timing::planGcd
+     2.00%     1.20%  stage3_window_g  stage3_window_gcd     [.] stage1::Parser::tick
+     1.91%     1.54%  stage3_window_g  stage3_window_gcd     [.] sc_core::wait
+     1.62%     1.62%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_signal_t<bool, (sc_core::sc_writer_policy)0>::read
+     1.37%     1.17%  stage3_window_g  stage3_window_gcd     [.] stage3_window::Collector::retire
+     1.28%     1.28%  stage3_window_g  stage3_window_gcd     [.] non-virtual thunk to sc_core::sc_signal_t<bool, (sc_core::sc_writer_policy)0>::write(bool const&)
+     1.28%     1.28%  stage3_window_g  stage3_window_gcd     [.] qt_abort
+     1.17%     1.17%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_ppq_base::insert
+     1.14%     0.83%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_ppq_base::extract_top
+     1.11%     0.57%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_clock::posedge_action
+     1.00%     0.43%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_clock::negedge_action
+     0.97%     0.97%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_signal<bool, (sc_core::sc_writer_policy)0>::do_update
+     0.86%     0.86%  stage3_window_g  stage3_window_gcd     [.] stage3_window::Dispatcher::selectedUnit
+     0.80%     0.74%  stage3_window_g  stage3_window_gcd     [.] TaskStatistics::record
+     0.74%     0.43%  stage3_window_g  stage3_window_gcd     [.] stage3_window::Collector::receive
+     0.71%     0.71%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_simcontext::do_timestep
+     0.71%     0.00%  stage3_window_g  libstdc++.so.6.0.30   [.] std::__numpunct_cache<char>::~__numpunct_cache
+     0.71%     0.00%  stage3_window_g  [unknown]             [.] 0x48fb894853001526
+     0.71%     0.00%  stage3_window_g  [unknown]             [.] 0x0000000000000001
+     0.68%     0.68%  stage3_window_g  libstdc++.so.6.0.30   [.] std::num_get<char, std::istreambuf_iterator<char, std::char_traits<char> > >::_M_extract_int<long>
+     0.68%     0.68%  stage3_window_g  stage3_window_gcd     [.] model::instrumentation::Usage::sample
+     0.68%     0.68%  stage3_window_g  stage3_window_gcd     [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace@plt
+     0.63%     0.63%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_time_stamp
+     0.57%     0.57%  stage3_window_g  libstdc++.so.6.0.30   [.] 0x00000000000a20f0
+     0.57%     0.57%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_cor_pkg_qt::yield
+     0.57%     0.57%  stage3_window_g  stage3_window_gcd     [.] sc_core::sc_writer_policy_check_write::check_write
+     0.57%     0.34%  stage3_window_g  stage3_window_gcd     [.] non-virtual thunk to sc_core::sc_signal_t<unsigned long, (sc_core::sc_writer_policy)0>::write(unsigned long const&)
+     0.54%     0.11%  stage3_window_g  stage3_window_gcd     [.] stage3_window::Dispatcher::route
+     0.51%     0.37%  stage3_window_g  stage3_window_gcd     [.] non-virtual thunk to sc_core::sc_signal_t<stage2::Payload, (sc_core::sc_writer_policy)0>::write(stage2::Payload const&)
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

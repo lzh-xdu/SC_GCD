@@ -1,0 +1,42 @@
+{
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+  "python": "3.10.12 (main, Feb  4 2025, 14:57:36) [GCC 11.4.0]",
+  "seed": 20260910,
+  "mixed_tasks": 10000,
+  "repeat": 7,
+  "argv": [
+    "scripts/profile_trace.py",
+    "--before",
+    "tmp/perf-trace/before/stage4_gcd",
+    "--after",
+    "build-linux/perf-trace/stage4_gcd",
+    "--clock",
+    "build-linux/perf-trace/stage3_window_gcd",
+    "--old-clock",
+    "tmp/perf-trace/before/clock_gcd",
+    "--repeat",
+    "7",
+    "--report",
+    "docs/evidence/fair-trace/comparison"
+  ],
+  "scope": "whole process; Linux native temporary output files",
+  "baseline_revision": "c072e0918fc2ec147348d32f2d6ac5397096c4ec",
+  "binaries": {
+    "before": {
+      "path": "/mnt/d/0_lzh/GPU/MOORE/tmp/perf-trace/before/stage4_gcd",
+      "sha256": "b5b3a008aadb36936273a7a3f0e6703b396b15315170d2fa3cd1c4bdaf796287"
+    },
+    "after": {
+      "path": "/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/stage4_gcd",
+      "sha256": "a43bb056a1c41684298a37b89efe8c5acfb519f8f986a120bf68e888559181e7"
+    },
+    "clock": {
+      "path": "/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/stage3_window_gcd",
+      "sha256": "fea27135e948b394d56856cd664a63d5af1b56613f678a9f164f948979624ad9"
+    },
+    "old_clock": {
+      "path": "/mnt/d/0_lzh/GPU/MOORE/tmp/perf-trace/before/clock_gcd",
+      "sha256": "72eda80d7dba449aac17ac67250356b57f37daf6affda76c7d5bf6045aa0f964"
+    }
+  }
+}

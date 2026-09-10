@@ -25,12 +25,20 @@
 
 #include <cstdint>
 #include <iosfwd>
+#include <string>
 #include <string_view>
 
 namespace model::instrumentation {
 struct EventRecorder {
     std::ostream* m_testStream = nullptr;
     mutable TaskStatistics m_statistics;
+    // Stage 3 opts into the same decimal encoder and byte-buffer threshold as Stage 4.
+    // Call flushTrace at drain; stages 1/2 retain their original direct stream path.
+    bool m_testBufferedTrace = false;
+    mutable std::string m_traceBuffer;
+    void flushTrace() const;
+    void writeBuffered(std::uint64_t cycle, std::uint64_t id, std::string_view event, std::uint64_t a, std::uint64_t b,
+                       std::uint64_t value, std::uint64_t latency) const;
     void record(std::uint64_t id, std::string_view event, std::uint64_t a = 0, std::uint64_t b = 0,
                 std::uint64_t value = 0, std::uint64_t latency = 0) const;
 };

@@ -444,3 +444,9 @@
 - 按用户要求从主机采样定位 B-011：保留 b2207d3 旧二进制，perf 前/后 3391/2973 样本；针对全量排序和流格式化热点实施按区间/批次合并与缓冲编码，保持完整 Trace。
 - 新增独立 Trace 顺序/数值/生命周期/写入错误回归与可复用采样/测量脚本；84 次无 profiler 干扰的成对实验，混合 Trace 302.77→83.83 ms（3.61×），峰值 RSS 73980→21052 KiB，全部输出/统计/Trace 哈希一致。
 - B-011 从“建议未实施”更新为实际改进闭环。详细复现、热点、实验环境、原始失败与回归见 [证据报告](evidence/perf-trace/README.md)；同步 [状态](status.md)、[设计](final-design.md)、[实测](metrics-results.md)、[AI 记录](ai-log.md) 与 [学习记录](learning-log.md)。未推送远端。
+
+## 2026-09-11：重新导出提交包（含进行中修改）
+
+- 在含未提交修改（event_recorder Trace 优化延续、fair-trace 证据、Windows 日志刷新）的工作区重跑 export_project.py：2082 个文件，零缺失零告警。
+- 验证：工作区 26/26 → 导出包挂 third_party 独立构建零警告、ctest 26/26；README 两条复现命令（stage1 混合、stage3_window 偏斜）输出与统计均逐字节一致；链接检查仅剩 1 处真实断链：perf-trace README 指向尚未编写的 fair-trace/README.md，待该轮工作收尾后补写并重导。
+- 导出后已清理验证用的 build/ 与 third_party 链接；本轮仅追加日志，未提交（避免与进行中的 fair-trace 修改混合）。

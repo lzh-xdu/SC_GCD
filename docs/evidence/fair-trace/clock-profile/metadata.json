@@ -1,0 +1,30 @@
+{
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+  "python": "3.10.12 (main, Feb  4 2025, 14:57:36) [GCC 11.4.0]",
+  "seed": 20260910,
+  "mixed_tasks": 10000,
+  "repeat": 24,
+  "argv": [
+    "scripts/profile_trace.py",
+    "--before",
+    "build-linux/perf-trace/stage3_window_gcd",
+    "--perf",
+    "tmp/perf-trace/tools/extracted/usr/lib/linux-tools-5.15.0-136/perf",
+    "--repeat",
+    "24",
+    "--report",
+    "docs/evidence/fair-trace/clock-profile"
+  ],
+  "scope": "whole process; Linux native temporary output files",
+  "baseline_revision": "c072e0918fc2ec147348d32f2d6ac5397096c4ec",
+  "binaries": {
+    "before": {
+      "path": "/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/stage3_window_gcd",
+      "sha256": "fea27135e948b394d56856cd664a63d5af1b56613f678a9f164f948979624ad9"
+    },
+    "perf": {
+      "path": "/mnt/d/0_lzh/GPU/MOORE/tmp/perf-trace/tools/extracted/usr/lib/linux-tools-5.15.0-136/perf",
+      "sha256": "a2d12f8a6ee95419ca02516559a514862a639ec936b41e182d9c2ff2ee824a08"
+    }
+  }
+}
