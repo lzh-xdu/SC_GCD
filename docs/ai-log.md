@@ -275,3 +275,9 @@
 - 用户要求按 [指标设计](metrics-presentation.md) 跑数。AI 方案：WSL 无法直接运行 Windows exe，改用 Linux 原生 Release 构建；主机测量采用进程口径（`wait4` 取 CPU/峰值 RSS、墙钟含启动），并在报告中明确与 Windows 入口径基线不可直接比较；连续阻塞段不改模型代码，由逐周期 `link` 事件离线导出并与 `handshake_blocked_cycles` 核对。
 - AI 发现并修正自己脚本的缺陷：skew 时间线误读 `compute_unit` 的 value 列（引擎号在 a 列），修复后重新生成该时间线，矩阵其余数据不受影响。
 - 加速比/并行效率、背压与保序时间线的解释、窗口结论均为 AI 从数据归纳，待用户审阅，未记为用户已批准或已掌握。
+
+## 2026-09-10：验证并文档化双编译环境
+
+- 应用户要求在真实 PowerShell 中完整运行 `scripts/build-test.ps1`（Release 与 Debug，各 CTest 25/25、零警告）；Linux/WSL 侧按文档命令用 `build-linux/` 与 `build-linux/debug` 复核，同样 25/25、零警告。四份日志存 [evidence/dual-environment/](evidence/dual-environment/)。
+- README 快速开始改为双环境说明：Windows（PowerShell/MinGW/Ninja，产物 `build/`）与 Linux（bash/GCC/Make，产物 `build-linux/`），含 SystemC 获取与配置、编译、测试命令；decisions.md 与 model-comparison.md 的历史环境描述不改写。
+- 本轮仅文档与验证证据，未改模型源码；learning-log 的未提交记录保留在工作区。

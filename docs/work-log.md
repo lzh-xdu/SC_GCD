@@ -353,3 +353,9 @@
 - WSL 原生 Release 构建（build-linux/，CTest 25/25 通过）后运行 `scripts/run_metrics_matrix.py`：75 次模型运行＋160 次主机测量，覆盖设计文档的最小场景矩阵、容量/节拍/窗口/结果深度扫描与 Trace 开关对照；每次运行独立 `math.gcd` 校验，另通过 Trace 开/关统计一致性与重复运行确定性检查。
 - 四阶段表图与结论见 [实测结果](metrics-results.md)，原始证据在 [evidence/metrics-matrix/](evidence/metrics-matrix/)（runs/resources/profiling_samples 等 CSV＋零依赖 SVG）。要点：`T=B+N+5` 契约验证；容量不改饱和吞吐、节拍 P>7 时吞吐=1/P；双实例计算受限加速比≈2.0、偏斜负载 1.06×、W≥块长后恢复 2.0×；两模型功能时序完全等价，事件模型慢输出/稀疏等待快 22×/30×（Linux 进程口径），B-011 在 Linux 复现。
 - 设计中"新增"的连续阻塞段以逐周期 Trace 离线导出完成（与模型计数核对一致）；满载占比、窗口驻留分布仍未实施。Windows 入口径效率基线保留引用，未重测。本轮未修改模型源码；新增两个脚本、报告与证据本地提交。
+
+## 2026-09-10：双编译环境验证与文档
+
+- 在真实 Windows PowerShell 中完整执行 `scripts/build-test.ps1`（Release、Debug 两配置，各 25/25，零警告）；Linux/WSL 侧按 README 新命令用 `build-linux/` 与 `build-linux/debug` 验证（各 25/25，零警告）；[四份日志](evidence/dual-environment/)。
+- README 快速开始改写为双环境：Windows（PowerShell/MinGW/Ninja，`build/`）与 Linux（bash/GCC/Make，`build-linux/`），含 SystemC 获取、配置/编译/测试命令与 gitignore 说明。
+- 本轮不改模型源码；代码与证据随文档本地提交，不推送远端。

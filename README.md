@@ -13,19 +13,37 @@
 
 ## 快速开始
 
-已验证环境：Windows x64、MinGW GCC 13.2.0、CMake 3.29.2、Ninja、C++17、SystemC 3.0.1。需将 Git、编译工具和 Python 3 加入 PATH；无需 GPU。
+支持 Windows 和 Linux 两套编译运行环境，均已验证：
 
-在项目目录的 PowerShell 中运行：
+- **Windows x64**：PowerShell、MinGW GCC 13.2.0、CMake 3.29.2、Ninja，产物目录 `build`。
+- **Linux x64**：bash、GCC 11.4（WSL Ubuntu 22.04 验证）、CMake 3.22+、Unix Makefiles，产物目录 `build-linux`。
+
+两套环境均需 Git、C++17 编译器和 Python 3 在 PATH 中，无需 GPU；SystemC 与模型用同一编译器构建，无需预装系统级库。
+
+**Windows（PowerShell）**
 
 ```powershell
 # 首次下载固定版本的 SystemC，需要联网
 ./scripts/setup.ps1
 
-# 编译并运行自动测试
+# 编译并运行自动测试（默认 Release；Debug 加 -Configuration Debug -BuildDirectory build\debug）
 ./scripts/build-test.ps1
 ```
 
-SystemC 与模型使用同一编译器构建，无需预装系统级库。模型运行示例见[流水线](docs/stage1-run.md)、[握手](docs/stage2-run.md)和[双实例保序](docs/stage3-run.md)。
+**Linux / WSL（bash）**
+
+```bash
+# 首次下载固定版本的 SystemC，需要联网（等同 setup.ps1）
+git clone --depth 1 --branch 3.0.1 \
+    https://github.com/accellera-official/systemc.git third_party/systemc
+
+# 配置、编译并运行自动测试（Debug 换 -DCMAKE_BUILD_TYPE=Debug 及独立目录）
+cmake -S . -B build-linux -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+cmake --build build-linux --parallel 4
+ctest --test-dir build-linux --output-on-failure
+```
+
+两套环境共用同一源码和测试，产物目录均已加入 .gitignore；双环境完整验证日志见 [docs/evidence/dual-environment/](docs/evidence/dual-environment/)。模型运行示例见[流水线](docs/stage1-run.md)、[握手](docs/stage2-run.md)和[双实例保序](docs/stage3-run.md)。
 
 ## 文档
 
