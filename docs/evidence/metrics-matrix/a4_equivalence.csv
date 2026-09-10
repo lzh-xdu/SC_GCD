@@ -1,0 +1,12 @@
+case,tasks,cycles_clock,cycles_event,output_identical,stats_identical,trace_identical
+empty,0,1,1,True,True,
+single,1,13,13,True,True,
+zero_delay,30000,30006,30006,True,True,
+short,10000,35007,35007,True,True,
+long,10000,375007,375007,True,True,
+mixed,10000,238115,238115,True,True,
+skew,10500,45011,45011,True,True,
+slow_sink,2000,2000000,2000000,True,True,
+sparse_wait,1,2000000,2000000,True,True,
+dense_small,2000,,,True,True,True
+mixed_small,1000,,,True,True,True

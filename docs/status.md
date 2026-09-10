@@ -1,6 +1,6 @@
 # 项目状态
 
-更新：2026-09-07。
+更新：2026-09-10。
 
 完整需求、验收和预算见 [总体计划](master-plan.md)。21 小时为初始预算，实际剩余时间尚未统计。
 
@@ -28,5 +28,7 @@
 6.6 逐项审核及未完成项见 [工程审核](engineering-audit.md)。
 
 作业1～3进一步优化建议与58组配置探测见[优化审查](stages1-3-optimization-review.md)；本轮只分析，未替换默认模型或参数。
+
+2026-09-10：作业 1～4 指标矩阵实测完成（75 次模型运行＋160 次主机测量，Linux/WSL 进程口径；Windows 效率基线保留引用）。表图与证据见 [实测结果](metrics-results.md) 与 [evidence/metrics-matrix/](evidence/metrics-matrix/)；连续阻塞段已离线导出，满载占比与窗口驻留分布未实施。本轮未修改模型源码。
 
 2026-09-07：提交设计统一入口见 [最终设计](final-design.md)；各阶段新增 [统一任务延迟与阻塞原因](task-statistics.md)。

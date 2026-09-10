@@ -1,0 +1,51 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='880' height='430' viewBox='0 0 880 430'>
+<rect width='880' height='430' fill='white'/>
+<line x1='72.0' y1='372.0' x2='860.0' y2='372.0' stroke='#6b7280' stroke-width='1'/>
+<line x1='72.0' y1='64.0' x2='72.0' y2='372.0' stroke='#6b7280' stroke-width='1'/>
+<line x1='72.0' y1='372.0' x2='860.0' y2='372.0' stroke='#e5e7eb' stroke-width='1'/>
+<text x='66.0' y='376.0' font-size='11' font-family='sans-serif' text-anchor='end' fill='#374151'>0</text>
+<line x1='72.0' y1='229.2' x2='860.0' y2='229.2' stroke='#e5e7eb' stroke-width='1'/>
+<text x='66.0' y='233.2' font-size='11' font-family='sans-serif' text-anchor='end' fill='#374151'>0.5</text>
+<line x1='72.0' y1='86.3' x2='860.0' y2='86.3' stroke='#e5e7eb' stroke-width='1'/>
+<text x='66.0' y='90.3' font-size='11' font-family='sans-serif' text-anchor='end' fill='#374151'>1</text>
+<text x='72.0' y='388.0' font-size='11' font-family='sans-serif' text-anchor='middle' fill='#374151'>1</text>
+<text x='124.5' y='388.0' font-size='11' font-family='sans-serif' text-anchor='middle' fill='#374151'>2</text>
+<text x='229.6' y='388.0' font-size='11' font-family='sans-serif' text-anchor='middle' fill='#374151'>4</text>
+<text x='439.7' y='388.0' font-size='11' font-family='sans-serif' text-anchor='middle' fill='#374151'>8</text>
+<text x='860.0' y='388.0' font-size='11' font-family='sans-serif' text-anchor='middle' fill='#374151'>16</text>
+<text x='466.0' y='412.0' font-size='13' font-family='sans-serif' text-anchor='middle' fill='#111827' font-weight='bold'>输出节拍 P</text>
+<text x='16.0' y='218.0' font-size='13' font-family='sans-serif' text-anchor='middle' fill='#111827' font-weight='bold' transform='rotate(-90 16.0 218.0)'>阻塞比例</text>
+<line x1='72.0' y1='127.1' x2='124.5' y2='127.1' stroke='#2563eb' stroke-width='2.2'/>
+<line x1='124.5' y1='127.1' x2='229.6' y2='127.1' stroke='#2563eb' stroke-width='2.2'/>
+<line x1='229.6' y1='127.1' x2='439.7' y2='122.0' stroke='#2563eb' stroke-width='2.2'/>
+<line x1='439.7' y1='122.0' x2='860.0' y2='104.2' stroke='#2563eb' stroke-width='2.2'/>
+<circle cx='72.0' cy='127.1' r='4' fill='#2563eb'/>
+<circle cx='124.5' cy='127.1' r='4' fill='#2563eb'/>
+<circle cx='229.6' cy='127.1' r='4' fill='#2563eb'/>
+<circle cx='439.7' cy='122.0' r='4' fill='#2563eb'/>
+<circle cx='860.0' cy='104.2' r='4' fill='#2563eb'/>
+<text x='72.0' y='119.1' font-size='10' font-family='sans-serif' text-anchor='middle' fill='#374151'>0.857</text>
+<text x='124.5' y='119.1' font-size='10' font-family='sans-serif' text-anchor='middle' fill='#374151'>0.857</text>
+<text x='229.6' y='119.1' font-size='10' font-family='sans-serif' text-anchor='middle' fill='#374151'>0.857</text>
+<text x='439.7' y='114.0' font-size='10' font-family='sans-serif' text-anchor='middle' fill='#374151'>0.875</text>
+<text x='860.0' y='96.2' font-size='10' font-family='sans-serif' text-anchor='middle' fill='#374151'>0.937</text>
+<line x1='72.0' y1='127.2' x2='124.5' y2='127.2' stroke='#dc2626' stroke-width='2.2'/>
+<line x1='124.5' y1='127.2' x2='229.6' y2='127.2' stroke='#dc2626' stroke-width='2.2'/>
+<line x1='229.6' y1='127.2' x2='439.7' y2='122.1' stroke='#dc2626' stroke-width='2.2'/>
+<line x1='439.7' y1='122.1' x2='860.0' y2='104.3' stroke='#dc2626' stroke-width='2.2'/>
+<circle cx='72.0' cy='127.2' r='4' fill='#dc2626'/>
+<circle cx='124.5' cy='127.2' r='4' fill='#dc2626'/>
+<circle cx='229.6' cy='127.2' r='4' fill='#dc2626'/>
+<circle cx='439.7' cy='122.1' r='4' fill='#dc2626'/>
+<circle cx='860.0' cy='104.3' r='4' fill='#dc2626'/>
+<text x='72.0' y='119.2' font-size='10' font-family='sans-serif' text-anchor='middle' fill='#374151'>0.857</text>
+<text x='124.5' y='119.2' font-size='10' font-family='sans-serif' text-anchor='middle' fill='#374151'>0.857</text>
+<text x='229.6' y='119.2' font-size='10' font-family='sans-serif' text-anchor='middle' fill='#374151'>0.857</text>
+<text x='439.7' y='114.1' font-size='10' font-family='sans-serif' text-anchor='middle' fill='#374151'>0.875</text>
+<text x='860.0' y='96.3' font-size='10' font-family='sans-serif' text-anchor='middle' fill='#374151'>0.937</text>
+<rect x='72.0' y='21.0' width='12.0' height='12.0' fill='#2563eb' stroke='none'/>
+<text x='88.0' y='31.0' font-size='12' font-family='sans-serif' text-anchor='start' fill='#111827'>阻塞/有效 S/V</text>
+<rect x='193.5' y='21.0' width='12.0' height='12.0' fill='#dc2626' stroke='none'/>
+<text x='209.5' y='31.0' font-size='12' font-family='sans-serif' text-anchor='start' fill='#111827'>阻塞/全程 S/T</text>
+<text x='440.0' y='18.0' font-size='15' font-family='sans-serif' text-anchor='middle' fill='#111827' font-weight='bold'>作业2 输出节拍扫描：阻塞率 vs P</text>
+</svg>

@@ -1,0 +1,20 @@
+{
+  "git_head": "737da642fac31c50785177fe00152d8319150d76",
+  "kernel": "6.18.33.2-microsoft-standard-WSL2",
+  "wsl": true,
+  "cpu": "12th Gen Intel(R) Core(TM) i5-12400F",
+  "logical_processors": 12,
+  "python": "3.10.12",
+  "compiler": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0",
+  "build_type": "Release",
+  "repeat": 7,
+  "warmups": 1,
+  "host_measurement_scope": "process: wall clock incl. startup; CPU and peak RSS from wait4",
+  "binaries": {
+    "stage1": "7d935013935f6b5a44fca53db01af05c8640bbe2218f4a9a3a4df4c699550296",
+    "stage2": "036cbc76e46342682277e9972e7efffc0d083ca1dba47209734bdcbfb159b97a",
+    "stage3": "939fca917f294dc4837a5875d3f0aadb9bf4a8310254b0e53d35d2f5234247c6",
+    "stage3_window": "487acd1c726502de6f99586164638c8dedf85519c0ce82136a4136a5de8eb6b8",
+    "stage4": "91d48f4dfc4f00873b475d49a57c410249d9af60323a56b862c0ff824887b4b2"
+  }
+}

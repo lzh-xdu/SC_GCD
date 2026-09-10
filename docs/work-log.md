@@ -347,3 +347,9 @@
 
 - 核查 System::runEvents、Dispatcher::route、Compute 完成期限及 Parser 节拍；解释信号变化、事务事件与时间推进的区别，见 [学习记录](learning-log.md#2026-09-10sc_method-与事件调度不是互斥选择)。
 - 仅追加讲解记录；核对本地 SystemC 源码及 Accellera sc_wait.cpp，未修改模型或重跑测试。工作区其他改动保留，不纳入本轮提交。
+
+## 2026-09-10：按指标设计实测作业 1～4 数据
+
+- WSL 原生 Release 构建（build-linux/，CTest 25/25 通过）后运行 `scripts/run_metrics_matrix.py`：75 次模型运行＋160 次主机测量，覆盖设计文档的最小场景矩阵、容量/节拍/窗口/结果深度扫描与 Trace 开关对照；每次运行独立 `math.gcd` 校验，另通过 Trace 开/关统计一致性与重复运行确定性检查。
+- 四阶段表图与结论见 [实测结果](metrics-results.md)，原始证据在 [evidence/metrics-matrix/](evidence/metrics-matrix/)（runs/resources/profiling_samples 等 CSV＋零依赖 SVG）。要点：`T=B+N+5` 契约验证；容量不改饱和吞吐、节拍 P>7 时吞吐=1/P；双实例计算受限加速比≈2.0、偏斜负载 1.06×、W≥块长后恢复 2.0×；两模型功能时序完全等价，事件模型慢输出/稀疏等待快 22×/30×（Linux 进程口径），B-011 在 Linux 复现。
+- 设计中"新增"的连续阻塞段以逐周期 Trace 离线导出完成（与模型计数核对一致）；满载占比、窗口驻留分布仍未实施。Windows 入口径效率基线保留引用，未重测。本轮未修改模型源码；新增两个脚本、报告与证据本地提交。

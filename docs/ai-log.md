@@ -269,3 +269,9 @@
 
 - 用户质疑 SC_METHOD 改为 data 敏感是否即可去掉 clock；AI 对照实际代码，确认 Dispatcher::route 仍是 SC_METHOD，并说明完整事件方案还须处理完成期限、背压和原输入节拍。
 - 将集中调度明确为实现取舍而非 SystemC 限制；分散 SC_METHOD/事件方案为可行备选，未自动改写代码。学习结论见 [学习记录](learning-log.md#2026-09-10sc_method-与事件调度不是互斥选择)。
+
+## 2026-09-10：跑数方案与一处自建脚本缺陷（AI 方案，用户要求按设计执行）
+
+- 用户要求按 [指标设计](metrics-presentation.md) 跑数。AI 方案：WSL 无法直接运行 Windows exe，改用 Linux 原生 Release 构建；主机测量采用进程口径（`wait4` 取 CPU/峰值 RSS、墙钟含启动），并在报告中明确与 Windows 入口径基线不可直接比较；连续阻塞段不改模型代码，由逐周期 `link` 事件离线导出并与 `handshake_blocked_cycles` 核对。
+- AI 发现并修正自己脚本的缺陷：skew 时间线误读 `compute_unit` 的 value 列（引擎号在 a 列），修复后重新生成该时间线，矩阵其余数据不受影响。
+- 加速比/并行效率、背压与保序时间线的解释、窗口结论均为 AI 从数据归纳，待用户审阅，未记为用户已批准或已掌握。
