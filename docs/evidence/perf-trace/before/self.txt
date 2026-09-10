@@ -1,0 +1,58 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 3K of event 'cpu-clock:u'
+# Event count (approx.): 3401203519
+#
+# Overhead  Command     Shared Object         Symbol
+# ........  ..........  ....................  .................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+#
+     7.11%  stage4_gcd  libstdc++.so.6.0.30   [.] std::basic_streambuf<char, std::char_traits<char> >::xsputn
+     6.58%  stage4_gcd  stage4_gcd            [.] std::__merge_sort_with_buffer<__gnu_cxx::__normal_iterator<stage4::model::instrumentation::EventRecorder::TraceRow*, std::vector<stage4::model::instrumentation::EventRecorder::TraceRow, std::allocator<stage4::model::instrumentation::EventRecorder::TraceRow> > >, stage4::model::instrumentation::EventRecorder::TraceRow*, __gnu_cxx::__ops::_Iter_comp_iter<stage4::model::instrumentation::EventRecorder::flushTrace()::{lambda(stage4::model::instrumentation::EventRecorder::TraceRow const&, stage4::model::instrumentation::EventRecorder::TraceRow const&)#1}> >
+     6.46%  stage4_gcd  stage4_gcd            [.] std::__move_merge<__gnu_cxx::__normal_iterator<stage4::model::instrumentation::EventRecorder::TraceRow*, std::vector<stage4::model::instrumentation::EventRecorder::TraceRow, std::allocator<stage4::model::instrumentation::EventRecorder::TraceRow> > >, stage4::model::instrumentation::EventRecorder::TraceRow*, __gnu_cxx::__ops::_Iter_comp_iter<stage4::model::instrumentation::EventRecorder::flushTrace()::{lambda(stage4::model::instrumentation::EventRecorder::TraceRow const&, stage4::model::instrumentation::EventRecorder::TraceRow const&)#1}> >
+     5.90%  stage4_gcd  libstdc++.so.6.0.30   [.] std::ostream::_M_insert<unsigned long>
+     5.63%  stage4_gcd  libstdc++.so.6.0.30   [.] std::__ostream_insert<char, std::char_traits<char> >
+     4.19%  stage4_gcd  libstdc++.so.6.0.30   [.] std::num_put<char, std::ostreambuf_iterator<char, std::char_traits<char> > >::_M_insert_int<unsigned long>
+     3.48%  stage4_gcd  libc.so.6             [.] __memmove_avx_unaligned_erms
+     2.30%  stage4_gcd  libstdc++.so.6.0.30   [.] std::ostream::sentry::sentry
+     2.27%  stage4_gcd  libc.so.6             [.] _int_malloc
+     2.24%  stage4_gcd  libc.so.6             [.] malloc
+     2.24%  stage4_gcd  libstdc++.so.6.0.30   [.] 0x000000000012e931
+     2.15%  stage4_gcd  stage4_gcd            [.] stage4::model::instrumentation::EventRecorder::append
+     1.89%  stage4_gcd  libc.so.6             [.] _int_free
+     1.71%  stage4_gcd  libstdc++.so.6.0.30   [.] std::__cxx11::basic_stringbuf<char, std::char_traits<char>, std::allocator<char> >::overflow
+     1.71%  stage4_gcd  libstdc++.so.6.0.30   [.] 0x00000000000a20f0
+     1.65%  stage4_gcd  libstdc++.so.6.0.30   [.] 0x000000000012e933
+     1.47%  stage4_gcd  libstdc++.so.6.0.30   [.] std::num_put<char, std::ostreambuf_iterator<char, std::char_traits<char> > >::do_put
+     1.42%  stage4_gcd  libc.so.6             [.] malloc_consolidate
+     1.27%  stage4_gcd  stage4_gcd            [.] sc_core::sc_time::sc_time
+     1.24%  stage4_gcd  stage4_gcd            [.] std::vector<stage4::model::instrumentation::EventRecorder::TraceRow, std::allocator<stage4::model::instrumentation::EventRecorder::TraceRow> >::_M_realloc_insert<stage4::model::instrumentation::EventRecorder::TraceRow>
+     1.21%  stage4_gcd  libstdc++.so.6.0.30   [.] std::basic_ios<char, std::char_traits<char> >::_M_cache_locale
+     1.18%  stage4_gcd  stage4_gcd            [.] sc_core::sc_simcontext::crunch
+     1.15%  stage4_gcd  libstdc++.so.6.0.30   [.] 0x00000000000a21f0
+     1.06%  stage4_gcd  stage4_gcd            [.] std::__merge_adaptive<__gnu_cxx::__normal_iterator<stage4::model::instrumentation::EventRecorder::TraceRow*, std::vector<stage4::model::instrumentation::EventRecorder::TraceRow, std::allocator<stage4::model::instrumentation::EventRecorder::TraceRow> > >, long, stage4::model::instrumentation::EventRecorder::TraceRow*, __gnu_cxx::__ops::_Iter_comp_iter<stage4::model::instrumentation::EventRecorder::flushTrace()::{lambda(stage4::model::instrumentation::EventRecorder::TraceRow const&, stage4::model::instrumentation::EventRecorder::TraceRow const&)#1}> >
+     1.00%  stage4_gcd  libstdc++.so.6.0.30   [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace
+     0.97%  stage4_gcd  libstdc++.so.6.0.30   [.] 0x000000000009f6b0
+     0.88%  stage4_gcd  stage4_gcd            [.] stage4::model::timing::currentCycle
+     0.83%  stage4_gcd  libstdc++.so.6.0.30   [.] std::locale::~locale
+     0.83%  stage4_gcd  stage4_gcd            [.] std::__insertion_sort<__gnu_cxx::__normal_iterator<stage4::model::instrumentation::EventRecorder::TraceRow*, std::vector<stage4::model::instrumentation::EventRecorder::TraceRow, std::allocator<stage4::model::instrumentation::EventRecorder::TraceRow> > >, __gnu_cxx::__ops::_Iter_comp_iter<stage4::model::instrumentation::EventRecorder::flushTrace()::{lambda(stage4::model::instrumentation::EventRecorder::TraceRow const&, stage4::model::instrumentation::EventRecorder::TraceRow const&)#1}> >
+     0.80%  stage4_gcd  libstdc++.so.6.0.30   [.] 0x000000000012e91d
+     0.80%  stage4_gcd  stage4_gcd            [.] sc_core::wait
+     0.80%  stage4_gcd  stage4_gcd            [.] std::__ostream_insert<char, std::char_traits<char> >@plt
+     0.74%  stage4_gcd  libstdc++.so.6.0.30   [.] std::locale::id::_M_id
+     0.71%  stage4_gcd  libstdc++.so.6.0.30   [.] std::use_facet<std::num_put<char, std::ostreambuf_iterator<char, std::char_traits<char> > > >
+     0.71%  stage4_gcd  stage4_gcd            [.] sc_core::sc_event::trigger
+     0.68%  stage4_gcd  libc.so.6             [.] unlink_chunk.constprop.0
+     0.68%  stage4_gcd  libstdc++.so.6.0.30   [.] std::locale::locale
+     0.65%  stage4_gcd  libc.so.6             [.] cfree@GLIBC_2.2.5
+     0.62%  stage4_gcd  stage4_gcd            [.] stage4::model::timing::planGcd
+     0.59%  stage4_gcd  libstdc++.so.6.0.30   [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate
+     0.50%  stage4_gcd  libstdc++.so.6.0.30   [.] std::basic_filebuf<char, std::char_traits<char> >::xsputn
+     0.50%  stage4_gcd  libstdc++.so.6.0.30   [.] std::use_facet<std::num_get<char, std::istreambuf_iterator<char, std::char_traits<char> > > >
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

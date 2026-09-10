@@ -1,0 +1,85 @@
+Internal ctest changing into directory: /mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace
+Test project /mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace
+    Start  3: stage4_initial_equivalence
+1/6 Test  #3: stage4_initial_equivalence .......   Passed    8.24 sec
+    Start  4: stage4_parser_timing
+2/6 Test  #4: stage4_parser_timing .............   Passed    0.00 sec
+    Start  5: stage4_trace_ordering
+3/6 Test  #5: stage4_trace_ordering ............   Passed    0.01 sec
+    Start  6: stage4_event_scheduler
+4/6 Test  #6: stage4_event_scheduler ...........   Passed    0.54 sec
+    Start 25: stage4_reporting_contract
+Could not find executable /mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/stage4_entry_checks
+Looked in the following places:
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Release/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Release/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Debug/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Debug/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/MinSizeRel/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/MinSizeRel/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/RelWithDebInfo/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/RelWithDebInfo/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Deployment/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Deployment/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Development/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Development/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Release/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Release/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Debug/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Debug/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/MinSizeRel/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/MinSizeRel/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/RelWithDebInfo/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/RelWithDebInfo/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Deployment/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Deployment/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Development/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Development/stage4_entry_checks
+Unable to find executable: /mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/stage4_entry_checks
+5/6 Test #25: stage4_reporting_contract ........***Not Run   0.00 sec
+    Start 26: stage4_options_contract
+Could not find executable /mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/stage4_entry_checks
+Looked in the following places:
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Release/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Release/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Debug/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Debug/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/MinSizeRel/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/MinSizeRel/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/RelWithDebInfo/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/RelWithDebInfo/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Deployment/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Deployment/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Development/stage4_entry_checks
+/mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Development/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Release/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Release/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Debug/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Debug/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/MinSizeRel/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/MinSizeRel/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/RelWithDebInfo/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/RelWithDebInfo/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Deployment/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Deployment/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Development/stage4_entry_checks
+mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/Development/stage4_entry_checks
+Unable to find executable: /mnt/d/0_lzh/GPU/MOORE/build-linux/perf-trace/stage4_entry_checks
+6/6 Test #26: stage4_options_contract ..........***Not Run   0.00 sec
+
+67% tests passed, 2 tests failed out of 6
+
+Total Test time (real) =   8.86 sec
+
+The following tests FAILED:
+	 25 - stage4_reporting_contract (Not Run)
+	 26 - stage4_options_contract (Not Run)
+Errors while running CTest

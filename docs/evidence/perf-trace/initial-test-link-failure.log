@@ -1,0 +1,20 @@
+Scanning dependencies of target systemc
+Consolidate compiler generated dependencies of target systemc
+[ 84%] Built target systemc
+Consolidate compiler generated dependencies of target stage4_gcd
+[ 85%] Building CXX object CMakeFiles/stage4_gcd.dir/src/stage4/model/instrumentation/event_recorder.cpp.o
+[ 87%] Linking CXX executable stage4_gcd
+[100%] Built target stage4_gcd
+[ 96%] Built target systemc
+[ 96%] Building CXX object CMakeFiles/stage4_trace_checks.dir/tests/stage4/trace_ordering.cpp.o
+[ 98%] Building CXX object CMakeFiles/stage4_trace_checks.dir/src/stage4/common/task_statistics.cpp.o
+[ 98%] Building CXX object CMakeFiles/stage4_trace_checks.dir/src/stage4/model/timing/simulation_time.cpp.o
+[100%] Building CXX object CMakeFiles/stage4_trace_checks.dir/src/stage4/model/instrumentation/event_recorder.cpp.o
+[100%] Linking CXX executable stage4_trace_checks
+/usr/bin/ld: third_party/systemc/src/libsystemc.a(sc_main_main.cpp.o): in function `sc_elab_and_sim':
+/mnt/d/0_lzh/GPU/MOORE/third_party/systemc/src/sysc/kernel/sc_main_main.cpp:90: undefined reference to `sc_main'
+collect2: error: ld returned 1 exit status
+gmake[3]: *** [CMakeFiles/stage4_trace_checks.dir/build.make:146: stage4_trace_checks] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:384: CMakeFiles/stage4_trace_checks.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:391: CMakeFiles/stage4_trace_checks.dir/rule] Error 2
+gmake: *** [Makefile:270: stage4_trace_checks] Error 2

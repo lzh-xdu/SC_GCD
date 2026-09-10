@@ -1,0 +1,10 @@
+
+        SystemC 3.0.1-Accellera --- Sep 11 2026 02:29:34
+        Copyright (c) 1996-2024 by all Contributors,
+        ALL RIGHTS RESERVED
+
+Info: /OSCI/SystemC: Simulation stopped by user.
+PASS: 10000 tasks, 238115 cycles
+EVENT_SCHEDULER activations=38700 max_jump_cycles=53
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.035 MB /tmp/moore-perf-trace/before.data (306 samples) ]

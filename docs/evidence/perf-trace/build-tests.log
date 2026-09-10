@@ -1,0 +1,14 @@
+[ 96%] Built target systemc
+Consolidate compiler generated dependencies of target stage4_trace_checks
+[ 96%] Building CXX object CMakeFiles/stage4_trace_checks.dir/tests/stage4/trace_ordering.cpp.o
+[ 96%] Linking CXX executable stage4_trace_checks
+[100%] Built target stage4_trace_checks
+[ 92%] Built target systemc
+[ 92%] Building CXX object CMakeFiles/stage4_parser_checks.dir/tests/stage4/parser_timing.cpp.o
+[ 94%] Building CXX object CMakeFiles/stage4_parser_checks.dir/src/stage4/parser.cpp.o
+[ 94%] Building CXX object CMakeFiles/stage4_parser_checks.dir/src/stage4/types.cpp.o
+[ 96%] Building CXX object CMakeFiles/stage4_parser_checks.dir/src/stage4/common/task_statistics.cpp.o
+[ 96%] Building CXX object CMakeFiles/stage4_parser_checks.dir/src/stage4/model/timing/simulation_time.cpp.o
+[ 98%] Building CXX object CMakeFiles/stage4_parser_checks.dir/src/stage4/model/instrumentation/event_recorder.cpp.o
+[100%] Linking CXX executable stage4_parser_checks
+[100%] Built target stage4_parser_checks

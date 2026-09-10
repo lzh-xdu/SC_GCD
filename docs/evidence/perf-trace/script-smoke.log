@@ -1,0 +1,110 @@
+[
+  {
+    "case": "mixed_on",
+    "model": "before",
+    "wall_ms": 381.3456730000002,
+    "user_ms": 327.173,
+    "system_ms": 47.879,
+    "peak_rss_kib": 73752,
+    "trace_bytes": 21635542
+  },
+  {
+    "case": "mixed_on",
+    "model": "after",
+    "wall_ms": 98.15979200000058,
+    "user_ms": 86.884,
+    "system_ms": 4.1370000000000005,
+    "peak_rss_kib": 21208,
+    "trace_bytes": 21635542
+  },
+  {
+    "case": "mixed_on",
+    "model": "clock",
+    "wall_ms": 457.16238099999987,
+    "user_ms": 433.12899999999996,
+    "system_ms": 16.191,
+    "peak_rss_kib": 21208,
+    "trace_bytes": 21635542
+  },
+  {
+    "case": "mixed_off",
+    "model": "before",
+    "wall_ms": 39.74415400000009,
+    "user_ms": 34.811,
+    "system_ms": 0.0,
+    "peak_rss_kib": 21208,
+    "trace_bytes": 0
+  },
+  {
+    "case": "mixed_off",
+    "model": "after",
+    "wall_ms": 44.544822999999845,
+    "user_ms": 35.106,
+    "system_ms": 3.9,
+    "peak_rss_kib": 21208,
+    "trace_bytes": 0
+  },
+  {
+    "case": "mixed_off",
+    "model": "clock",
+    "wall_ms": 117.26276899999988,
+    "user_ms": 104.06599999999999,
+    "system_ms": 7.707999999999999,
+    "peak_rss_kib": 21208,
+    "trace_bytes": 0
+  },
+  {
+    "case": "zero_on",
+    "model": "before",
+    "wall_ms": 87.10606399999944,
+    "user_ms": 73.53899999999999,
+    "system_ms": 7.741,
+    "peak_rss_kib": 21208,
+    "trace_bytes": 3761048
+  },
+  {
+    "case": "zero_on",
+    "model": "after",
+    "wall_ms": 36.71258600000016,
+    "user_ms": 30.879,
+    "system_ms": 0.0,
+    "peak_rss_kib": 21208,
+    "trace_bytes": 3761048
+  },
+  {
+    "case": "zero_on",
+    "model": "clock",
+    "wall_ms": 91.1842699999994,
+    "user_ms": 70.19699999999999,
+    "system_ms": 8.258,
+    "peak_rss_kib": 21208,
+    "trace_bytes": 3761048
+  },
+  {
+    "case": "slow_on",
+    "model": "before",
+    "wall_ms": 139.87023899999951,
+    "user_ms": 113.34599999999999,
+    "system_ms": 20.24,
+    "peak_rss_kib": 37328,
+    "trace_bytes": 8455585
+  },
+  {
+    "case": "slow_on",
+    "model": "after",
+    "wall_ms": 25.307005999999355,
+    "user_ms": 16.035,
+    "system_ms": 4.007999999999999,
+    "peak_rss_kib": 21208,
+    "trace_bytes": 8455585
+  },
+  {
+    "case": "slow_on",
+    "model": "clock",
+    "wall_ms": 104.96985099999989,
+    "user_ms": 95.55,
+    "system_ms": 3.9810000000000003,
+    "peak_rss_kib": 21208,
+    "trace_bytes": 8455585
+  }
+]

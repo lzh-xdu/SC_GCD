@@ -16,7 +16,8 @@
  *
  * Timing:
  * - Read the current cycle without advancing simulation time or modifying scheduling.
- * - Skipped control rows are expanded only for optional Trace; flushTrace sorts and writes them at drain.
+ * - flushBatch merges complete time intervals; later batches must not precede already emitted cycles.
+ * - Skipped control intervals stay compact until CSV emission; flushTrace writes the final buffered bytes.
  *
  * Reset:
  * - A new recorder has a null trace stream and empty task statistics; no runtime reset protocol.
@@ -35,16 +36,26 @@ namespace stage4::model::instrumentation {
 struct EventRecorder {
     struct TraceRow {
         std::uint64_t m_cycle;
-        std::string m_text;
+        std::uint64_t m_count;
+        std::uint64_t m_id;
+        std::string m_event;
+        std::uint64_t m_a;
+        std::uint64_t m_b;
+        std::uint64_t m_value;
+        std::uint64_t m_latency;
     };
     std::ostream* m_testStream = nullptr;
     TaskStatistics m_statistics;
     std::vector<TraceRow> m_trace;
+    std::string m_traceBuffer;
     void record(std::uint64_t id, std::string_view event, std::uint64_t a = 0, std::uint64_t b = 0,
                 std::uint64_t value = 0, std::uint64_t latency = 0);
     void repeat(std::uint64_t first, std::uint64_t count, std::uint64_t id, std::string_view event, std::uint64_t a = 0,
                 std::uint64_t b = 0, std::uint64_t value = 0);
     void flushTrace();
+    void flushBatch();
+    void writeRow(const TraceRow& row);
+    void writeBuffer();
     void append(std::uint64_t cycle, std::uint64_t id, std::string_view event, std::uint64_t a, std::uint64_t b,
                 std::uint64_t value, std::uint64_t latency);
 };

@@ -1,0 +1,73 @@
+[ 48%] Built target systemc
+[ 48%] Building CXX object CMakeFiles/day01_basics.dir/src/day01_basics.cpp.o
+[ 49%] Building CXX object CMakeFiles/stage4_entry_checks.dir/tests/contracts/model_entry.cpp.o
+[ 49%] Building CXX object CMakeFiles/stage4_entry_checks.dir/src/stage4/types.cpp.o
+[ 50%] Building CXX object CMakeFiles/stage4_entry_checks.dir/src/stage4/parser.cpp.o
+[ 50%] Building CXX object CMakeFiles/stage4_entry_checks.dir/src/stage4/output.cpp.o
+Consolidate compiler generated dependencies of target stage4_trace_checks
+Consolidate compiler generated dependencies of target model_support
+[ 52%] Built target stage4_trace_checks
+[ 53%] Building CXX object CMakeFiles/stage4_entry_checks.dir/src/stage4/payload.cpp.o
+[ 56%] Built target model_support
+[ 56%] Building CXX object CMakeFiles/stage4_entry_checks.dir/src/stage4/transform.cpp.o
+Consolidate compiler generated dependencies of target stage4_parser_checks
+[ 60%] Built target stage4_parser_checks
+[ 61%] Building CXX object CMakeFiles/stage1_gcd.dir/src/stage1/main.cpp.o
+[ 62%] Building CXX object CMakeFiles/stage4_entry_checks.dir/src/stage4/compute.cpp.o
+Consolidate compiler generated dependencies of target stage4_gcd
+[ 62%] Building CXX object CMakeFiles/stage4_entry_checks.dir/src/stage4/dispatcher.cpp.o
+[ 71%] Built target stage4_gcd
+[ 72%] Building CXX object CMakeFiles/stage4_entry_checks.dir/src/stage4/collector.cpp.o
+[ 73%] Building CXX object CMakeFiles/stage4_entry_checks.dir/src/stage4/common/task_statistics.cpp.o
+[ 74%] Linking CXX executable day01_basics
+[ 74%] Building CXX object CMakeFiles/stage4_entry_checks.dir/src/stage4/model/functional/operands.cpp.o
+[ 75%] Building CXX object CMakeFiles/stage1_entry_checks.dir/tests/contracts/model_entry.cpp.o
+[ 76%] Building CXX object CMakeFiles/stage4_entry_checks.dir/src/stage4/model/timing/gcd_plan.cpp.o
+Consolidate compiler generated dependencies of target handshake_modules
+[ 76%] Building CXX object CMakeFiles/stage4_entry_checks.dir/src/stage4/model/timing/simulation_time.cpp.o
+[ 80%] Built target handshake_modules
+[ 81%] Building CXX object CMakeFiles/stage4_entry_checks.dir/src/stage4/model/instrumentation/event_recorder.cpp.o
+[ 82%] Building CXX object CMakeFiles/stage2_gcd.dir/src/stage2/main.cpp.o
+[ 83%] Building CXX object CMakeFiles/stage3_gcd.dir/src/stage3/main.cpp.o
+[ 83%] Building CXX object CMakeFiles/stage1_entry_checks.dir/src/stage1/types.cpp.o
+[ 84%] Building CXX object CMakeFiles/stage3_gcd.dir/src/stage3/dispatcher.cpp.o
+[ 84%] Building CXX object CMakeFiles/stage1_gcd.dir/src/stage1/types.cpp.o
+[ 84%] Building CXX object CMakeFiles/stage4_entry_checks.dir/src/stage4/model/instrumentation/statistics.cpp.o
+[ 85%] Building CXX object CMakeFiles/stage1_gcd.dir/src/stage1/parser.cpp.o
+[ 85%] Building CXX object CMakeFiles/stage1_gcd.dir/src/stage1/transform.cpp.o
+[ 86%] Linking CXX executable stage4_entry_checks
+[ 86%] Built target day01_basics
+[ 87%] Building CXX object CMakeFiles/stage1_gcd.dir/src/stage1/compute.cpp.o
+[ 88%] Building CXX object CMakeFiles/stage1_entry_checks.dir/src/stage1/parser.cpp.o
+[ 89%] Building CXX object CMakeFiles/stage1_entry_checks.dir/src/stage1/transform.cpp.o
+[ 89%] Building CXX object CMakeFiles/stage1_entry_checks.dir/src/stage1/compute.cpp.o
+Consolidate compiler generated dependencies of target stage3_window_gcd
+[ 91%] Built target stage3_window_gcd
+[ 92%] Building CXX object CMakeFiles/stage1_entry_checks.dir/src/stage1/output.cpp.o
+[ 93%] Building CXX object CMakeFiles/stage1_gcd.dir/src/stage1/output.cpp.o
+[ 93%] Linking CXX executable stage2_gcd
+[ 93%] Built target stage4_entry_checks
+[ 93%] Building CXX object CMakeFiles/contract_checks.dir/tests/contracts/verify.cpp.o
+[ 94%] Building CXX object CMakeFiles/stage2_entry_checks.dir/tests/contracts/model_entry.cpp.o
+[ 95%] Building CXX object CMakeFiles/stage3_entry_checks.dir/tests/contracts/model_entry.cpp.o
+[ 95%] Building CXX object CMakeFiles/stage3_gcd.dir/src/stage3/collector.cpp.o
+[ 95%] Building CXX object CMakeFiles/stage3_entry_checks.dir/src/stage3/dispatcher.cpp.o
+[ 95%] Linking CXX executable stage1_entry_checks
+[ 95%] Linking CXX executable stage1_gcd
+[ 96%] Linking CXX executable contract_checks
+[ 97%] Linking CXX executable stage3_gcd
+[ 97%] Built target stage2_gcd
+[ 97%] Building CXX object CMakeFiles/stage3_window_entry_checks.dir/tests/contracts/model_entry.cpp.o
+[ 98%] Building CXX object CMakeFiles/stage3_entry_checks.dir/src/stage3/collector.cpp.o
+[ 98%] Built target stage1_entry_checks
+[ 99%] Building CXX object CMakeFiles/stage3_window_entry_checks.dir/src/stage3_window/dispatcher.cpp.o
+[ 99%] Linking CXX executable stage2_entry_checks
+[ 99%] Built target stage1_gcd
+[ 99%] Building CXX object CMakeFiles/stage3_window_entry_checks.dir/src/stage3_window/collector.cpp.o
+[ 99%] Built target contract_checks
+[ 99%] Linking CXX executable stage3_entry_checks
+[ 99%] Built target stage3_gcd
+[ 99%] Built target stage2_entry_checks
+[100%] Linking CXX executable stage3_window_entry_checks
+[100%] Built target stage3_entry_checks
+[100%] Built target stage3_window_entry_checks

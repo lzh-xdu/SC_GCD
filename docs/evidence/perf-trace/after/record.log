@@ -1,0 +1,2 @@
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.333 MB /tmp/moore-perf-trace-87kppr7r/perf.data (2973 samples) ]

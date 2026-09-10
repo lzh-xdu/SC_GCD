@@ -1,0 +1,22 @@
+{
+  "recorded_after_measurement": true,
+  "revision": "b2207d32e0db87a2d5c97c7a0dd8f01445b3f591",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+  "cpu": "12th Gen Intel(R) Core(TM) i5-12400F",
+  "compiler": "c++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0",
+  "flags": "-O3 -g -DNDEBUG -fno-omit-frame-pointer",
+  "binaries": {
+    "before": {
+      "path": "tmp/perf-trace/before/stage4_gcd",
+      "sha256": "b5b3a008aadb36936273a7a3f0e6703b396b15315170d2fa3cd1c4bdaf796287"
+    },
+    "after": {
+      "path": "build-linux/perf-trace/stage4_gcd",
+      "sha256": "a43bb056a1c41684298a37b89efe8c5acfb519f8f986a120bf68e888559181e7"
+    },
+    "clock": {
+      "path": "tmp/perf-trace/before/clock_gcd",
+      "sha256": "72eda80d7dba449aac17ac67250356b57f37daf6affda76c7d5bf6045aa0f964"
+    }
+  }
+}

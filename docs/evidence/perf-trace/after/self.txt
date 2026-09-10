@@ -1,0 +1,51 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 2K of event 'cpu-clock:u'
+# Event count (approx.): 2981945757
+#
+# Overhead  Command     Shared Object         Symbol
+# ........  ..........  ....................  ..........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+#
+    18.23%  stage4_gcd  stage4_gcd            [.] stage4::model::instrumentation::(anonymous namespace)::appendNumber
+    11.03%  stage4_gcd  libstdc++.so.6.0.30   [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace
+     7.87%  stage4_gcd  libc.so.6             [.] __memmove_avx_unaligned_erms
+     6.02%  stage4_gcd  stage4_gcd            [.] stage4::model::instrumentation::EventRecorder::flushBatch
+     4.07%  stage4_gcd  stage4_gcd            [.] sc_core::sc_time::sc_time
+     3.94%  stage4_gcd  stage4_gcd            [.] stage4::model::timing::currentCycle
+     3.90%  stage4_gcd  stage4_gcd            [.] sc_core::sc_simcontext::crunch
+     2.89%  stage4_gcd  stage4_gcd            [.] stage4::model::timing::planGcd
+     1.98%  stage4_gcd  stage4_gcd            [.] sc_core::wait
+     1.75%  stage4_gcd  stage4_gcd            [.] sc_core::sc_event::trigger
+     1.72%  stage4_gcd  stage4_gcd            [.] std::__adjust_heap<__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, long, unsigned long, __gnu_cxx::__ops::_Iter_comp_iter<stage4::model::instrumentation::EventRecorder::flushBatch()::{lambda(unsigned long, unsigned long)#1}> >
+     1.41%  stage4_gcd  stage4_gcd            [.] std::vector<stage4::model::instrumentation::EventRecorder::TraceRow, std::allocator<stage4::model::instrumentation::EventRecorder::TraceRow> >::emplace_back<stage4::model::instrumentation::EventRecorder::TraceRow>
+     1.35%  stage4_gcd  stage4_gcd            [.] stage4::model::instrumentation::EventRecorder::writeRow
+     1.21%  stage4_gcd  libc.so.6             [.] _int_free
+     1.18%  stage4_gcd  stage4_gcd            [.] sc_core::sc_signal_t<bool, (sc_core::sc_writer_policy)0>::read
+     1.18%  stage4_gcd  stage4_gcd            [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace@plt
+     1.14%  stage4_gcd  libstdc++.so.6.0.30   [.] std::num_get<char, std::istreambuf_iterator<char, std::char_traits<char> > >::_M_extract_int<long>
+     1.08%  stage4_gcd  stage4_gcd            [.] stage4::model::functional::remainder
+     1.01%  stage4_gcd  libstdc++.so.6.0.30   [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append
+     0.94%  stage4_gcd  libstdc++.so.6.0.30   [.] 0x00000000000a20f0
+     0.94%  stage4_gcd  stage4_gcd            [.] sc_core::sc_thread_process::trigger_dynamic
+     0.91%  stage4_gcd  libc.so.6             [.] malloc
+     0.84%  stage4_gcd  stage4_gcd            [.] (anonymous namespace)::System::runEvents
+     0.81%  stage4_gcd  stage4_gcd            [.] qt_abort
+     0.81%  stage4_gcd  stage4_gcd            [.] stage4::Dispatcher::selectedUnit
+     0.81%  stage4_gcd  stage4_gcd            [.] stage4::model::instrumentation::EventRecorder::record
+     0.77%  stage4_gcd  stage4_gcd            [.] std::__introsort_loop<__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, long, __gnu_cxx::__ops::_Iter_less_iter>
+     0.71%  stage4_gcd  stage4_gcd            [.] sc_core::sc_cor_pkg_qt::yield
+     0.71%  stage4_gcd  stage4_gcd            [.] stage4::Dispatcher::route
+     0.67%  stage4_gcd  stage4_gcd            [.] non-virtual thunk to sc_core::sc_signal_t<bool, (sc_core::sc_writer_policy)0>::write(bool const&)
+     0.64%  stage4_gcd  stage4_gcd            [.] stage4::model::instrumentation::Usage::sample
+     0.61%  stage4_gcd  stage4_gcd            [.] sc_core::sc_time_stamp
+     0.54%  stage4_gcd  stage4_gcd            [.] TaskStatistics::record
+     0.54%  stage4_gcd  stage4_gcd            [.] sc_core::sc_simcontext::simulate
+     0.50%  stage4_gcd  libc.so.6             [.] cfree@GLIBC_2.2.5
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

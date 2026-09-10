@@ -1,0 +1,2 @@
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.344 MB /tmp/moore-perf-trace-fdmhm72a/perf.data (3391 samples) ]

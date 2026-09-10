@@ -1,0 +1,128 @@
+Scanning dependencies of target systemc
+[  0%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/communication/sc_clock.cpp.o
+[  1%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/communication/sc_event_finder.cpp.o
+[  3%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/communication/sc_event_queue.cpp.o
+[  3%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/communication/sc_export.cpp.o
+[  5%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/communication/sc_mutex.cpp.o
+[  5%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/communication/sc_interface.cpp.o
+[  6%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/communication/sc_port.cpp.o
+[  6%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/communication/sc_prim_channel.cpp.o
+[  8%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/communication/sc_semaphore.cpp.o
+[ 10%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/communication/sc_signal.cpp.o
+[ 10%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/communication/sc_signal_ports.cpp.o
+[ 12%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/communication/sc_signal_resolved.cpp.o
+[ 12%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/communication/sc_signal_resolved_ports.cpp.o
+[ 13%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/bit/sc_bit.cpp.o
+[ 13%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/bit/sc_bv_base.cpp.o
+[ 15%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/bit/sc_logic.cpp.o
+[ 17%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/bit/sc_lv_base.cpp.o
+[ 17%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/fx/sc_fxcast_switch.cpp.o
+[ 18%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/fx/sc_fxdefs.cpp.o
+[ 18%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/fx/sc_fxnum.cpp.o
+[ 20%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/fx/sc_fxnum_observer.cpp.o
+[ 20%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/fx/sc_fxtype_params.cpp.o
+[ 22%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/fx/sc_fxval.cpp.o
+[ 22%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/fx/sc_fxval_observer.cpp.o
+[ 24%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/fx/scfx_mant.cpp.o
+[ 25%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/fx/scfx_pow10.cpp.o
+[ 25%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/fx/scfx_rep.cpp.o
+[ 27%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/fx/scfx_utils.cpp.o
+[ 27%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/int/sc_int64_io.cpp.o
+[ 29%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/int/sc_int64_mask.cpp.o
+[ 29%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/int/sc_int_base.cpp.o
+[ 31%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/int/sc_length_param.cpp.o
+[ 32%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/int/sc_nbutils.cpp.o
+[ 32%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/int/sc_signed.cpp.o
+[ 34%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/int/sc_uint_base.cpp.o
+[ 34%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/int/sc_unsigned.cpp.o
+[ 36%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/datatypes/misc/sc_value_base.cpp.o
+[ 36%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_attribute.cpp.o
+[ 37%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_cor_fiber.cpp.o
+[ 39%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_cor_pthread.cpp.o
+[ 39%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_cor_qt.cpp.o
+[ 41%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_cthread_process.cpp.o
+[ 41%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_event.cpp.o
+[ 43%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_except.cpp.o
+[ 43%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_join.cpp.o
+[ 44%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_method_process.cpp.o
+[ 44%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_module.cpp.o
+[ 46%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_module_name.cpp.o
+[ 48%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_module_registry.cpp.o
+[ 48%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_name_gen.cpp.o
+[ 50%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_object.cpp.o
+[ 50%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_object_manager.cpp.o
+[ 51%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_stage_callback_registry.cpp.o
+[ 51%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_process.cpp.o
+[ 53%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_reset.cpp.o
+[ 55%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_sensitive.cpp.o
+[ 55%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_simcontext.cpp.o
+[ 56%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_spawn_options.cpp.o
+[ 56%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_thread_process.cpp.o
+[ 58%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_time.cpp.o
+[ 58%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_ver.cpp.o
+[ 60%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_wait.cpp.o
+[ 62%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_wait_cthread.cpp.o
+[ 62%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/tracing/sc_trace.cpp.o
+[ 63%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/tracing/sc_trace_file_base.cpp.o
+[ 63%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/tracing/sc_vcd_trace.cpp.o
+[ 65%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/tracing/sc_wif_trace.cpp.o
+[ 65%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/utils/sc_hash.cpp.o
+[ 67%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/utils/sc_list.cpp.o
+[ 67%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/utils/sc_mempool.cpp.o
+[ 68%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/utils/sc_pq.cpp.o
+[ 70%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/utils/sc_report.cpp.o
+[ 70%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/utils/sc_report_handler.cpp.o
+[ 72%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/utils/sc_stop_here.cpp.o
+[ 72%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/utils/sc_utils_ids.cpp.o
+[ 74%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/utils/sc_vector.cpp.o
+[ 74%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/tlm_core/tlm_2/tlm_generic_payload/tlm_gp.cpp.o
+[ 75%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/tlm_core/tlm_2/tlm_generic_payload/tlm_phase.cpp.o
+[ 77%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/tlm_core/tlm_2/tlm_quantum/tlm_global_quantum.cpp.o
+[ 77%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/tlm_utils/convenience_socket_bases.cpp.o
+[ 79%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/tlm_utils/instance_specific_extensions.cpp.o
+[ 79%] Building C object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/packages/qt/qt.c.o
+[ 81%] Building ASM object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/packages/qt/md/iX86_64.s.o
+[ 81%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_main.cpp.o
+[ 82%] Building CXX object third_party/systemc/src/CMakeFiles/systemc.dir/sysc/kernel/sc_main_main.cpp.o
+[ 84%] Linking CXX static library libsystemc.a
+[ 84%] Built target systemc
+[ 84%] Building CXX object CMakeFiles/stage4_gcd.dir/src/stage4/main.cpp.o
+[ 87%] Building CXX object CMakeFiles/stage4_gcd.dir/src/stage4/types.cpp.o
+[ 87%] Building CXX object CMakeFiles/stage4_gcd.dir/src/stage4/parser.cpp.o
+[ 87%] Building CXX object CMakeFiles/stage4_gcd.dir/src/stage4/output.cpp.o
+[ 89%] Building CXX object CMakeFiles/stage4_gcd.dir/src/stage4/payload.cpp.o
+[ 89%] Building CXX object CMakeFiles/stage4_gcd.dir/src/stage4/transform.cpp.o
+[ 91%] Building CXX object CMakeFiles/stage4_gcd.dir/src/stage4/dispatcher.cpp.o
+[ 91%] Building CXX object CMakeFiles/stage4_gcd.dir/src/stage4/compute.cpp.o
+[ 93%] Building CXX object CMakeFiles/stage4_gcd.dir/src/stage4/collector.cpp.o
+[ 94%] Building CXX object CMakeFiles/stage4_gcd.dir/src/stage4/common/task_statistics.cpp.o
+[ 94%] Building CXX object CMakeFiles/stage4_gcd.dir/src/stage4/model/functional/operands.cpp.o
+[ 96%] Building CXX object CMakeFiles/stage4_gcd.dir/src/stage4/model/timing/gcd_plan.cpp.o
+[ 96%] Building CXX object CMakeFiles/stage4_gcd.dir/src/stage4/model/timing/simulation_time.cpp.o
+[ 98%] Building CXX object CMakeFiles/stage4_gcd.dir/src/stage4/model/instrumentation/event_recorder.cpp.o
+[ 98%] Building CXX object CMakeFiles/stage4_gcd.dir/src/stage4/model/instrumentation/statistics.cpp.o
+[100%] Linking CXX executable stage4_gcd
+[100%] Built target stage4_gcd
+Consolidate compiler generated dependencies of target systemc
+[ 83%] Built target systemc
+[ 83%] Building CXX object CMakeFiles/model_support.dir/src/model/functional/operands.cpp.o
+[ 84%] Building CXX object CMakeFiles/model_support.dir/src/model/timing/gcd_plan.cpp.o
+[ 84%] Building CXX object CMakeFiles/model_support.dir/src/model/timing/clock.cpp.o
+[ 88%] Building CXX object CMakeFiles/model_support.dir/src/model/instrumentation/event_recorder.cpp.o
+[ 88%] Building CXX object CMakeFiles/model_support.dir/src/model/instrumentation/statistics.cpp.o
+[ 88%] Building CXX object CMakeFiles/model_support.dir/src/common/task_statistics.cpp.o
+[ 89%] Linking CXX static library libmodel_support.a
+[ 89%] Built target model_support
+[ 89%] Building CXX object CMakeFiles/handshake_modules.dir/src/stage1/types.cpp.o
+[ 91%] Building CXX object CMakeFiles/handshake_modules.dir/src/stage1/parser.cpp.o
+[ 91%] Building CXX object CMakeFiles/handshake_modules.dir/src/stage1/output.cpp.o
+[ 93%] Building CXX object CMakeFiles/handshake_modules.dir/src/stage2/payload.cpp.o
+[ 94%] Building CXX object CMakeFiles/handshake_modules.dir/src/stage2/transform.cpp.o
+[ 94%] Building CXX object CMakeFiles/handshake_modules.dir/src/stage2/compute.cpp.o
+[ 96%] Linking CXX static library libhandshake_modules.a
+[ 96%] Built target handshake_modules
+[ 96%] Building CXX object CMakeFiles/stage3_window_gcd.dir/src/stage3_window/main.cpp.o
+[ 98%] Building CXX object CMakeFiles/stage3_window_gcd.dir/src/stage3_window/dispatcher.cpp.o
+[ 98%] Building CXX object CMakeFiles/stage3_window_gcd.dir/src/stage3_window/collector.cpp.o
+[100%] Linking CXX executable stage3_window_gcd
+[100%] Built target stage3_window_gcd

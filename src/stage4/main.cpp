@@ -90,6 +90,7 @@ SC_MODULE(System) {
     Compute m_compute1;
     Collector m_collector;
     Output m_output;
+    EventRecorder& m_recorder;
     std::array<Usage, OBSERVED_FIFO_COUNT> m_queues;
     Usage m_pipeline;
     Usage m_windowResults;
@@ -123,7 +124,8 @@ System::System(sc_core::sc_module_name name, std::istream& input, std::ostream& 
     , m_compute0("compute0", recorder, 0)
     , m_compute1("compute1", recorder, 1)
     , m_collector("collector", recorder, options.m_window)
-    , m_output("output", output, recorder, options.m_testOutputPeriod) {
+    , m_output("output", output, recorder, options.m_testOutputPeriod)
+    , m_recorder(recorder) {
     connectModules();
     SC_THREAD(runEvents);
 }
@@ -221,6 +223,8 @@ void System::runEvents() {
         assertCondition<std::logic_error>(delay != model::timing::NO_DEADLINE,
                                           "event model deadlock: no pending state transition");
         accountSkipped(delay - 1);
+        // All rows before the next boundary are now known; no simulated time is advanced by output.
+        m_recorder.flushBatch();
         wait(sc_core::sc_time(static_cast<double>(delay) * CYCLE_DURATION_NS, sc_core::SC_NS));
         m_cycles = currentCycle();
         ++m_activations;
