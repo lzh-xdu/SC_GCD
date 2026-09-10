@@ -96,3 +96,9 @@
 
 - 技术设计见 [final-design.md](final-design.md)，实测结果见 [metrics-results.md](metrics-results.md)，过程日志见 [work-log.md](work-log.md)，用户学习记录见 [learning-log.md](learning-log.md)。
 - 被替代或已融合的历史文档见 [archive/](archive/)；证据数据在 [evidence/](evidence/)。
+
+## 2026-09-11：主动缺陷案例的报告写法
+
+- 用户询问作业 3/4 主动场景如何写；AI 核对 B-006/B-011 记录、证据说明及当前 Stage4 EventRecorder。本轮未修改实现、未重跑实验。
+- B-006 可按四项要求整理，明确为历史轮转版容量改进，不写成当前择闲窗口版新发现的故障。B-011 已复现，但增量输出/区间表示仍为未实施建议；“主动案例完成”仅表示已暴露问题，不代表最终修正已闭环，仍需实际优化和成对回归。
+- 报告用客观表述，不把 AI 构造、执行或定位写成用户亲自完成，不用测试适配错误冒充处理器缺陷。
