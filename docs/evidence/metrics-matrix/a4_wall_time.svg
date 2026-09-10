@@ -9,11 +9,11 @@
 <line x1='72.0' y1='85.4' x2='860.0' y2='85.4' stroke='#e5e7eb' stroke-width='1'/>
 <text x='66.0' y='89.4' font-size='11' font-family='sans-serif' text-anchor='end' fill='#374151'>600</text>
 <text x='137.7' y='388.0' font-size='11' font-family='sans-serif' text-anchor='middle' fill='#374151'>零延迟</text>
-<text x='269.0' y='388.0' font-size='11' font-family='sans-serif' text-anchor='middle' fill='#374151'>长任务</text>
-<text x='400.3' y='388.0' font-size='11' font-family='sans-serif' text-anchor='middle' fill='#374151'>混合</text>
+<text x='269.0' y='388.0' font-size='11' font-family='sans-serif' text-anchor='middle' fill='#374151'>长计算</text>
+<text x='400.3' y='388.0' font-size='11' font-family='sans-serif' text-anchor='middle' fill='#374151'>随机混合</text>
 <text x='531.7' y='388.0' font-size='11' font-family='sans-serif' text-anchor='middle' fill='#374151'>慢输出</text>
 <text x='663.0' y='388.0' font-size='11' font-family='sans-serif' text-anchor='middle' fill='#374151'>长短偏斜</text>
-<text x='794.3' y='388.0' font-size='11' font-family='sans-serif' text-anchor='middle' fill='#374151'>稀疏等待</text>
+<text x='794.3' y='388.0' font-size='11' font-family='sans-serif' text-anchor='middle' fill='#374151'>稀疏长等待</text>
 <text x='16.0' y='218.0' font-size='13' font-family='sans-serif' text-anchor='middle' fill='#111827' font-weight='bold' transform='rotate(-90 16.0 218.0)'>主机耗时 ms（对数轴）</text>
 <rect x='92.7' y='282.5' width='44.0' height='89.5' fill='#2563eb' stroke='none'/>
 <line x1='92.7' y1='283.6' x2='136.7' y2='283.6' stroke='#111827' stroke-width='1.4'/>

@@ -43,6 +43,49 @@ def _fmt(value: float) -> str:
     return f"{value:.3g}"
 
 
+def _nice_step(raw: float) -> float:
+    """Smallest 1/2/5-ladder step that covers the raw spacing."""
+    if raw <= 0:
+        return 1.0
+    magnitude = 10 ** math.floor(math.log10(raw))
+    for factor in (1, 2, 5, 10):
+        step = factor * magnitude
+        if step >= raw:
+            return step
+    return 10 * magnitude
+
+
+def _snap_axis(low: float, high: float, target: int = 5):
+    """Expand [low, high] to round multiples of a nice tick step.
+
+    Returns (low_nice, high_nice, step) so gridlines land on values that are
+    readable at the zoom level the data actually spans; never returns a
+    negative lower bound for non-negative data.
+    """
+    if not math.isfinite(low) or not math.isfinite(high) or high < low:
+        return 0.0, 1.0, 0.2
+    if high == low:
+        pad = abs(low) * 0.1 if low else 0.5
+        low, high = low - pad, high + pad
+    step = _nice_step((high - low) / max(1, target))
+    low_nice = math.floor(low / step) * step
+    high_nice = math.ceil(high / step) * step
+    if high_nice <= low_nice:
+        high_nice = low_nice + step
+    return round(low_nice, 10), round(high_nice, 10), step
+
+
+def _tick_label(value: float, step: float) -> str:
+    """Tick label with decimals matched to the step so zoomed axes stay readable."""
+    if value == 0:
+        return "0"
+    decimals = max(0, -math.floor(math.log10(step)))
+    text = f"{value:.{decimals}f}"
+    if abs(value) >= 1000 and decimals == 0:
+        return f"{value:,.0f}"
+    return text
+
+
 class _Canvas:
     def __init__(self, width: int, height: int):
         self.width, self.height = width, height
@@ -79,10 +122,11 @@ class _Canvas:
 class _Axis:
     """Maps data coordinates into canvas pixels with optional log-y."""
 
-    def __init__(self, left, top, right, bottom, x0, x1, y0, y1, log_y=False):
+    def __init__(self, left, top, right, bottom, x0, x1, y0, y1, log_y=False, step=None):
         self.left, self.top, self.right, self.bottom = left, top, right, bottom
         self.x0, self.x1, self.y0, self.y1 = x0, x1, y0, y1
         self.log_y = log_y
+        self.step = step
         if log_y:
             self.y0 = math.log10(max(y0, 1e-12))
             self.y1 = math.log10(max(y1, y0 * 1.000001))
@@ -104,6 +148,9 @@ class _Axis:
             if len(ticks) < 2:
                 ticks = [low, high]
             return ticks
+        if self.step:
+            count = int(round((self.y1 - self.y0) / self.step + 1e-9))
+            return [round(self.y0 + index * self.step, 10) for index in range(count + 1)]
         return _nice_ticks(self.y0, self.y1, target)
 
 
@@ -113,7 +160,8 @@ def _draw_axes(canvas, axis, xlabel, ylabel, x_labels):
     for tick in axis.y_ticks():
         y = axis.py(tick)
         canvas.line(axis.left, y, axis.right, y, stroke="#e5e7eb")
-        canvas.text(axis.left - 6, y + 4, _fmt(tick), size=11, anchor="end", fill="#374151")
+        label = _tick_label(tick, axis.step) if axis.step else _fmt(tick)
+        canvas.text(axis.left - 6, y + 4, label, size=11, anchor="end", fill="#374151")
     if x_labels:
         for x, label in x_labels:
             canvas.text(axis.px(x), axis.bottom + 16, label, size=11, fill="#374151")
@@ -171,22 +219,34 @@ def grouped_bar_chart(path, categories, series, *, ylabel, title, xlabel=None, l
     canvas.save(Path(path))
 
 
-def line_chart(path, xs, series, *, xlabel, ylabel, title, log_y=False, height=430, width=880, dashed=()):
+def line_chart(path, xs, series, *, xlabel, ylabel, title, log_y=False, height=430, width=880, dashed=(),
+               y_range=None):
     """One polyline per series sharing the same x values.
 
-    Names listed in ``dashed`` draw with a dashed stroke so series that are
-    numerically almost identical (and would otherwise completely overlap)
-    remain visually distinguishable.
+    The linear y-axis snaps to the data span (rounded to a 1/2/5 tick step)
+    so close values stay distinguishable; pass y_range=(low, high) to pin it.
+    Names listed in ``dashed`` draw with a dashed stroke.
     """
     canvas = _Canvas(width, height)
-    axis = _Axis(72, 64, width - 20, height - 58, min(xs), max(xs), 0, 1, log_y)
-    values = [v for vs in series.values() for v in vs if v > 0]
-    top = max(values) if values else 1.0
-    axis.y1 = top * 1.15
-    axis.y0 = min(values) * 0.85 if values and log_y else 0
+    values = [v for vs in series.values() for v in vs if v is not None and math.isfinite(v)]
     if log_y:
-        _Axis.__init__(axis, axis.left, axis.top, axis.right, axis.bottom, axis.x0, axis.x1, axis.y0, axis.y1, True)
+        positive = [v for v in values if v > 0]
+        low, high = (min(positive), max(positive)) if positive else (1.0, 10.0)
+        axis = _Axis(72, 64, width - 20, height - 58, min(xs), max(xs),
+                     low * 0.85, high * 1.15, log_y=True)
+    elif y_range is not None:
+        axis = _Axis(72, 64, width - 20, height - 58, min(xs), max(xs),
+                     y_range[0], y_range[1], step=_nice_step((y_range[1] - y_range[0]) / 5))
+    else:
+        span = (max(values) - min(values)) if values else 0.0
+        low = min(values) - span * 0.12 if values else 0.0
+        high = max(values) + span * 0.18 if values else 1.0
+        low_nice, high_nice, step = _snap_axis(low, high)
+        if values and min(values) >= 0 and low_nice < 0:
+            low_nice = 0.0  # Never suggest negative storage/occupancy.
+        axis = _Axis(72, 64, width - 20, height - 58, min(xs), max(xs), low_nice, high_nice, step=step)
     _draw_axes(canvas, axis, xlabel, ylabel, [(x, _fmt(x)) for x in xs])
+    label_step = axis.step if axis.step else (axis.y1 - axis.y0) / 5
     for column, (name, ys) in enumerate(series.items()):
         color = PALETTE[column % len(PALETTE)]
         pattern = "7 5" if name in dashed else None
@@ -198,7 +258,7 @@ def line_chart(path, xs, series, *, xlabel, ylabel, title, log_y=False, height=4
             canvas.parts.append(
                 f"<circle cx='{x:.1f}' cy='{y:.1f}' r='4' fill='{color}'/>")
         for x, y, value in zip(xs, ys, ys):
-            canvas.text(axis.px(x), axis.py(y) - 8, _fmt(value), size=10, fill="#374151")
+            canvas.text(axis.px(x), axis.py(y) - 8, _tick_label(value, label_step), size=10, fill="#374151")
     _legend(canvas, series, 30, 72)
     canvas.text(width / 2, 18, title, size=15, bold=True)
     canvas.save(Path(path))

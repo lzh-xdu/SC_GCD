@@ -581,7 +581,7 @@ def summarize(runner, profiler, segments, report, by_key, depth_runs, period_run
                {"阻塞/有效 S/V": [row["blocked_over_valid"] for row in a2_depth],
                 "阻塞/全程 S/T": [row["blocked_over_total"] for row in a2_depth]},
                xlabel="FIFO 深度 D", ylabel="阻塞比例",
-               title="作业2 容量扫描：阻塞率 vs D（S/T 虚线，与 S/V 几乎重合）", dashed={"阻塞/全程 S/T"})
+               title="作业2 容量扫描：阻塞率 vs D", dashed={"阻塞/全程 S/T"})
     line_chart(report / "a2_period_throughput.svg", [row["period"] for row in a2_period],
                {"吞吐(任务/周期)": [row["throughput"] for row in a2_period]},
                xlabel="输出节拍 P", ylabel="吞吐", title="作业2 输出节拍扫描：吞吐 vs P（short, D=2）")
@@ -589,7 +589,7 @@ def summarize(runner, profiler, segments, report, by_key, depth_runs, period_run
                {"阻塞/有效 S/V": [row["blocked_over_valid"] for row in a2_period],
                 "阻塞/全程 S/T": [row["blocked_over_total"] for row in a2_period]},
                xlabel="输出节拍 P", ylabel="阻塞比例",
-               title="作业2 输出节拍扫描：阻塞率 vs P（S/T 虚线，与 S/V 几乎重合）", dashed={"阻塞/全程 S/T"})
+               title="作业2 输出节拍扫描：阻塞率 vs P", dashed={"阻塞/全程 S/T"})
     grouped_bar_chart(
         report / "a3_cycles.svg", [labels[row["case"]] for row in a3],
         {"stage2 单实例": [row["t_single"] for row in a3], "stage3 双实例轮转": [row["t_dual"] for row in a3],

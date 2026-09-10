@@ -417,3 +417,9 @@
 
 - 为帮助通读 stage1～4：五个 main.cpp 文件头标注 CLI 骨架函数（parsePositiveInteger/parseOptions/checkDistinctPaths/flushFiles/openTestEvents）逐字共享、只需精读 stage1 一份；stage4 runEvents 补齐三个零时间 delta 的逐步语义（提交→组合求值→输出生效）；stage3 Dispatcher::tick 补轮转前进语义及与 stage3_window 择闲分水岭的说明。
 - 纯注释变更，零行为改动；相关测试（stage3 轮转 + stage4 全套）通过、零警告。此前分析中的可选项 3/4（collector 小重构）、6（parseTaskLine 提取）与模块×阶段矩阵待用户决定。
+
+## 2026-09-11：折线图纵轴改为数据自适应范围
+
+- 用户指出阻塞率图纵轴 0~1 不专业、两个接近的值应有区分。实施：line_chart 线性轴自动适配数据跨度并吸附到 1/2/5 整数刻度（_snap_axis/_nice_step），刻度与数据标签精度跟随步长（_tick_label），支持 y_range 覆盖；柱状图保持 0 基线（长度编码的惯例），对数轴逻辑不变。
+- 效果：a2_depth_blocked 轴变为 [0.97885, 0.97905]、刻度 5 位小数，S/V 与 S/T 两线分离约 155px，标签 0.97899/0.97889 可区分；恒定值序列（吞吐 0.021）自动展开为局部范围显示平坦线。修复过程发现非负数据误出 -1,000 刻度（钳制基准误用填充后下界），改为按数据最小值钳制。
+- 6 张折线图与 3 张柱状图全部从既有 CSV 重新生成（未重跑测量），SVG 校验无异常；导出包已同步。
