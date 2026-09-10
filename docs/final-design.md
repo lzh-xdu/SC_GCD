@@ -62,4 +62,4 @@
 | 统计与实测 | [指标设计](metrics-presentation.md) · [实测结果](metrics-results.md) · [双模型对比](model-comparison.md) · [任务统计口径](task-statistics.md) |
 | 过程与质量 | [决策记录](decisions.md) · [缺陷记录](defects.md) · [工程审核](engineering-audit.md) · [状态](status.md) · [工作日志](work-log.md) |
 
-提交导出：`python3 scripts/export_project.py` 生成根目录 `export/`（源码、构建配置、测试、功能输出、性能统计、设计文档六类，含 README 清单）。
+提交导出：`python3 scripts/export_project.py` 生成根目录 `export/`，六个编号目录与提交要求一一对应（01 源码、02 编译脚本、03 测试输入、04 功能输出、05 性能统计、06 设计文档，含 README 清单与复现命令）。

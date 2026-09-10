@@ -1,20 +1,20 @@
 """Export the submission package into a temporary folder at the project root.
 
-Collects the six required categories into one self-describing tree:
+Collects the six required categories into numbered folders that map one-to-one
+to the submission requirements:
 
     export/
-    ├── README.txt            manifest: provenance, layout, reproduction
-    ├── src/                  all SystemC sources (common/model/stage1-4)
-    ├── build/                CMakeLists.txt, .clang-format, setup/build scripts
-    ├── tests/                test scripts, case inputs and expected outputs
-    │   └── metrics-inputs/   generated scenario inputs (deduplicated by content)
-    ├── results/
-    │   ├── functional/       one GCD output file per measured run
-    │   └── performance/
-    │       ├── runs/         one stats CSV per measured run
-    │       ├── summary/      aggregated tables, plots and timelines (metrics matrix)
-    │       └── evidence/     remaining historical evidence trees
-    └── docs/                 design documents (top-level *.md)
+    ├── README.txt              manifest: provenance, mapping, reproduction
+    ├── 01_systemc_sources/     all SystemC sources (common/model/stage1-4)
+    ├── 02_build_scripts/       CMakeLists.txt, .clang-format, setup/build scripts
+    ├── 03_test_inputs/         test scripts, case inputs, expected outputs;
+    │   └── metrics-inputs/     generated scenario inputs (one per scenario)
+    ├── 04_functional_outputs/  one GCD output file per measured run
+    ├── 05_performance_stats/
+    │   ├── runs/               one stats CSV per measured run
+    │   ├── summary/            aggregated tables, plots and timelines
+    │   └── evidence/           remaining historical evidence trees
+    └── 06_design_docs/         design documents (top-level *.md)
 
 The destination is disposable (recreated on every run) and must stay out of
 version control; see /export/ in .gitignore. Nothing here modifies measured
@@ -61,10 +61,10 @@ def run_tag(folder: Path) -> str:
     return name[len("profile-"):] if name.startswith("profile-") else name
 
 
-def collect_runs(work: Path, results: Path, log: list[str]):
-    functional = results / "functional"
-    performance = results / "performance" / "runs"
-    inputs = results.parent / "tests" / "metrics-inputs"
+def collect_runs(work: Path, export: Path, log: list[str]):
+    functional = export / "04_functional_outputs"
+    performance = export / "05_performance_stats" / "runs"
+    inputs = export / "03_test_inputs" / "metrics-inputs"
     functional.mkdir(parents=True, exist_ok=True)
     performance.mkdir(parents=True, exist_ok=True)
     inputs.mkdir(parents=True, exist_ok=True)
@@ -102,22 +102,27 @@ def write_manifest(export: Path, log: list[str], options):
         f"生成时间：{datetime.now().isoformat(timespec='seconds')}",
         f"Git HEAD：{options.git_head}",
         "",
-        "目录内容：",
-        "  src/                     所有 SystemC 源代码（common/model/stage1~4）",
-        "  build/                   编译配置：CMakeLists.txt、.clang-format、构建脚本",
-        "  tests/                   测试脚本、用例输入与期望输出；",
-        "      metrics-inputs/     性能矩阵场景输入（每场景一份）",
-        "  results/functional/     每个测量配置的 GCD 功能输出（每行一个最终结果）",
-        "  results/performance/    runs/ 每配置统计 CSV；summary/ 汇总表、图、时间线；",
-        "                          evidence/ 其余历史测量证据",
-        "  docs/                   设计文档（docs/*.md）",
+        "目录与提交要求一一对应：",
+        "  01_systemc_sources/     SystemC 源代码（common/model/stage1~4 全部实现）",
+        "  02_build_scripts/       编译脚本（CMakeLists.txt、.clang-format、setup/build 脚本）",
+        "  03_test_inputs/         测试输入（用例输入与期望输出、验证脚本；",
+        "                          metrics-inputs/ 为性能矩阵场景输入，每场景一份）",
+        "  04_functional_outputs/  功能输出结果（每个测量配置一份，每行一个最终 GCD）",
+        "  05_performance_stats/   性能统计结果（runs/ 每配置统计 CSV；summary/ 汇总表、",
+        "                          图、时间线；evidence/ 其余历史测量证据）",
+        "  06_design_docs/         设计文档（docs/*.md，含最终设计与实测报告）",
+        "",
+        "说明：03 中的验证脚本（verify.py 等）与用例输入同源，随输入一并提交以便复现；",
+        "04/05 的文件名即运行配置标签，命名规则见文末。",
         "",
         "复制日志：",
     ]
     lines += [f"  {entry}" for entry in log]
+    folders = {"01_systemc_sources": "01_systemc_sources", "02_build_scripts": "02_build_scripts",
+               "03_test_inputs": "03_test_inputs", "04_functional_outputs": "04_functional_outputs",
+               "05_performance_stats": "05_performance_stats", "06_design_docs": "06_design_docs"}
     counts = {}
-    for category, folder in (("src", "src"), ("build", "build"), ("tests", "tests"),
-                             ("results", "results"), ("docs", "docs")):
+    for category, folder in folders.items():
         tree = export / folder
         counts[category] = sum(1 for item in tree.rglob("*") if item.is_file()) if tree.is_dir() else 0
     total = sum(counts.values())
@@ -159,18 +164,19 @@ def main():
     export.mkdir(parents=True)
     log: list[str] = []
 
-    copy_tree(root / "src", export / "src", "SystemC sources", log)
-    (export / "build").mkdir()
+    copy_tree(root / "src", export / "01_systemc_sources", "SystemC sources", log)
+    build = export / "02_build_scripts"
+    build.mkdir()
     for name in ("CMakeLists.txt", ".clang-format"):
-        copy_file(root / name, export / "build" / name, "build config", log)
+        copy_file(root / name, build / name, "build config", log)
     for name in ("setup.ps1", "build-test.ps1"):
-        copy_file(root / "scripts" / name, export / "build" / name, "build script", log)
-    copy_tree(root / "tests", export / "tests", "test suite", log)
-    collect_runs(work, export / "results", log)
+        copy_file(root / "scripts" / name, build / name, "build script", log)
+    copy_tree(root / "tests", export / "03_test_inputs", "test suite", log)
+    collect_runs(work, export, log)
 
-    summary = export / "results" / "performance" / "summary"
-    copy_tree(evidence / "metrics-matrix", summary, "metrics summary", log)
-    remaining = export / "results" / "performance" / "evidence"
+    stats = export / "05_performance_stats"
+    copy_tree(evidence / "metrics-matrix", stats / "summary", "metrics summary", log)
+    remaining = stats / "evidence"
     remaining.mkdir(parents=True, exist_ok=True)
     for item in sorted(evidence.iterdir()) if evidence.is_dir() else []:
         if item.name != "metrics-matrix" and item.is_dir():
@@ -179,7 +185,7 @@ def main():
             copy_file(item, remaining / item.name, "evidence file", log)
 
     for item in sorted(root.joinpath("docs").glob("*.md")):
-        copy_file(item, export / "docs" / item.name, "design doc", log)
+        copy_file(item, export / "06_design_docs" / item.name, "design doc", log)
 
     total = write_manifest(export, log, options)
     print("\n".join(log))
