@@ -281,3 +281,10 @@
 - 应用户要求在真实 PowerShell 中完整运行 `scripts/build-test.ps1`（Release 与 Debug，各 CTest 25/25、零警告）；Linux/WSL 侧按文档命令用 `build-linux/` 与 `build-linux/debug` 复核，同样 25/25、零警告。四份日志存 [evidence/dual-environment/](evidence/dual-environment/)。
 - README 快速开始改为双环境说明：Windows（PowerShell/MinGW/Ninja，产物 `build/`）与 Linux（bash/GCC/Make，产物 `build-linux/`），含 SystemC 获取与配置、编译、测试命令；decisions.md 与 model-comparison.md 的历史环境描述不改写。
 - 本轮仅文档与验证证据，未改模型源码；learning-log 的未提交记录保留在工作区。
+
+## 2026-09-10：设计并实现 SystemC Web 查看器（A-019）
+
+- 用户要求：设计一个 Python 脚本，以 SystemC 模块代码为输入、用前端网页动画展示模块链接与运行周期等信息。AI 先勘察项目（已是 Parser→Transform→Compute→Output 管线，存在真实事件 CSV 与 TUI 查看器），据此提出"正则解析结构 + 复用真实事件 CSV 做周期动画 + 自包含单文件前端"的设计，并实现首版 `scripts/scviz*`。
+- AI 实现过程中发现并修正一处自身缺陷：模块节点初始按类型名字典序排列，导致图从左到右是 Compute/Output/Parser/Transform，与数据流不符；改为按 FIFO 连线拓扑排序后才得到 Parser→Transform→Compute→Output。另修正 SVG 宽度不足裁掉最后一个模块的问题。
+- 待用户判断：render 方向（是否偏好真实 trace、是否要 VCD/libclang/TLM 扩展）；AI 方案尚未获用户批准，仅记为建议与已实施首版。
+- 证据：解析输出模块 7 根连线（4 时钟 + 3 FIFO）、8 条任务、end_cycle=79，与 stage1-stats.csv 一致；生成 HTML 经 Node 校验 JS 语法通过。详见 [web-viewer.md](web-viewer.md) 与 [decisions.md](decisions.md#d-026)。

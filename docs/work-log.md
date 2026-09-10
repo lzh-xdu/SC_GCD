@@ -359,3 +359,10 @@
 - 在真实 Windows PowerShell 中完整执行 `scripts/build-test.ps1`（Release、Debug 两配置，各 25/25，零警告）；Linux/WSL 侧按 README 新命令用 `build-linux/` 与 `build-linux/debug` 验证（各 25/25，零警告）；[四份日志](evidence/dual-environment/)。
 - README 快速开始改写为双环境：Windows（PowerShell/MinGW/Ninja，`build/`）与 Linux（bash/GCC/Make，`build-linux/`），含 SystemC 获取、配置/编译/测试命令与 gitignore 说明。
 - 本轮不改模型源码；代码与证据随文档本地提交，不推送远端。
+
+## 2026-09-10：新增 SystemC Web 查看器工具
+
+- 用户提出用 Python 脚本 + 前端网页动画展示 SystemC 模块链接与运行周期；AI 给出设计并实现首版，关联 [D-026](decisions.md#d-026)、[A-019](ai-log.md#2026-09-10设计并实现-systemc-web-查看器a-019)。
+- 新增 `scripts/scviz.py` 与 `scripts/scviz/`（model/sc_parser/events/webgen/template.html），零第三方依赖；生成 `web/stage1.html`（自包含，内嵌结构 + 事件 trace）。
+- 验证：对作业 1 源码运行后解析得到 top=System、模块 m_clk/m_parser/m_transform/m_compute/m_output（拓扑序）、7 根连线（4 时钟 + 3 FIFO）、8 条任务、end_cycle=79，与 stage1-stats.csv 一致；生成 HTML 经 Node 校验 JS 语法通过。未在浏览器中人工目测动画（沙箱无图形浏览器），视觉与交互效果待用户打开确认。
+- 设计文档见 [web-viewer.md](web-viewer.md)；生成物 `/web/` 加入 .gitignore，按命令重建。
