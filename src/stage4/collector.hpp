@@ -41,8 +41,8 @@ namespace stage4 {
  * - Construction creates W empty slots, initializes m_baseOut/m_nextId=0, and zeroes occupancy, poll turn and counters.
  */
 SC_MODULE(Collector) {
-    sc_core::sc_vector<sc_core::sc_fifo_in<stage4::Result>> m_resultsIn{"results_in", UNIT_COUNT};
-    sc_core::sc_fifo_out<stage4::Result> m_resultsOut{"results_out"};
+    sc_core::sc_vector<sc_core::sc_fifo_in<Result>> m_resultsIn{"results_in", UNIT_COUNT};
+    sc_core::sc_fifo_out<Result> m_resultsOut{"results_out"};
     sc_core::sc_out<std::uint64_t> m_baseOut{"base_out"};
     std::uint64_t m_nextId = 0;
     model::instrumentation::CollectorStatistics m_statistics;
@@ -53,15 +53,15 @@ SC_MODULE(Collector) {
      * @brief window 是预留槽数量，须与 Dispatcher 一致；日志引用须覆盖模块寿命。
      * @throws std::invalid_argument window 为零；越窗、重复或错序结果抛 logic_error。
      */
-    Collector(sc_core::sc_module_name name, stage4::EventRecorder & recorder, unsigned window);
+    Collector(sc_core::sc_module_name name, EventRecorder & recorder, unsigned window);
 
     void advance();
     std::uint64_t nextDelay() const;
     void accountSkipped(std::uint64_t first, std::uint64_t count);
 
 private:
-    stage4::EventRecorder& m_recorder;
-    std::vector<std::optional<stage4::Result>> m_slots;
+    EventRecorder& m_recorder;
+    std::vector<std::optional<Result>> m_slots;
     unsigned m_completed = 0;
     unsigned m_pollTurn = 0;
     void retire();

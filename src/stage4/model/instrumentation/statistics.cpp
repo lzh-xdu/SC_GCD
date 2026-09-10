@@ -8,7 +8,7 @@
 #include <algorithm>
 
 namespace stage4::model::instrumentation {
-void Usage::sample(unsigned count) {
+void Usage::sample(std::uint64_t count) {
     m_sum += count;
     m_peak = std::max(m_peak, count);
     m_last = count;

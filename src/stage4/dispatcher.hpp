@@ -38,11 +38,11 @@ inline constexpr unsigned UNIT_COUNT = 2;
  * - Construction initializes the random state from seed and zeroes counters.
  */
 SC_MODULE(Dispatcher) {
-    sc_core::sc_in<stage4::Payload> m_dataIn{"data_in"};
+    sc_core::sc_in<Payload> m_dataIn{"data_in"};
     sc_core::sc_in<bool> m_validIn{"valid_in"};
     sc_core::sc_out<bool> m_readyOut{"ready_out"};
     sc_core::sc_in<std::uint64_t> m_baseIn{"base_in"};
-    sc_core::sc_vector<sc_core::sc_out<stage4::Payload>> m_dataOut{"data_out", UNIT_COUNT};
+    sc_core::sc_vector<sc_core::sc_out<Payload>> m_dataOut{"data_out", UNIT_COUNT};
     sc_core::sc_vector<sc_core::sc_out<bool>> m_validOut{"valid_out", UNIT_COUNT};
     sc_core::sc_vector<sc_core::sc_in<bool>> m_readyIn{"ready_in", UNIT_COUNT};
     model::instrumentation::DispatchStatistics m_statistics;
@@ -50,7 +50,7 @@ SC_MODULE(Dispatcher) {
      * @brief window 为未退休任务上限，须与 Collector 一致；seed 是可复现仲裁种子。
      * @throws std::invalid_argument window 或 seed 为零。端口须在 sc_start 前绑定。
      */
-    Dispatcher(sc_core::sc_module_name name, stage4::EventRecorder & recorder, unsigned window, std::uint32_t seed);
+    Dispatcher(sc_core::sc_module_name name, EventRecorder & recorder, unsigned window, std::uint32_t seed);
 
     void advance();
     std::uint64_t nextDelay() const;
@@ -58,7 +58,7 @@ SC_MODULE(Dispatcher) {
 
 private:
     sc_core::sc_signal<std::uint32_t> m_randomState{"random_state"};
-    stage4::EventRecorder& m_recorder;
+    EventRecorder& m_recorder;
     unsigned m_window;
     bool hasCredit() const;
     unsigned selectedUnit() const;

@@ -21,13 +21,11 @@
 #include <iomanip>
 #include <iostream>
 #include <stdexcept>
+#include <sstream>
 #include <string>
 #include <vector>
 
 using namespace stage4;
-using stage4::Collector;
-using stage4::Dispatcher;
-using stage4::UNIT_COUNT;
 namespace {
 constexpr int MIN_COMMAND_LINE_ARGUMENT_COUNT = 4;
 constexpr int MAX_COMMAND_LINE_ARGUMENT_COUNT = 11;
@@ -37,7 +35,7 @@ constexpr unsigned DEFAULT_REORDER_WINDOW_CAPACITY_TASKS = 8;
 constexpr std::uint32_t DEFAULT_ARBITRATION_RANDOM_SEED = 1;
 constexpr std::uint64_t MAX_ARBITRATION_RANDOM_SEED = 4294967295ULL;
 constexpr int COMPUTE_RESULT_FIFO_DEPTH_ARGUMENT_INDEX = 8;
-constexpr int DEFAULT_COMPUTE_RESULT_FIFO_CAPACITY_TASKS = 2;
+constexpr unsigned DEFAULT_COMPUTE_RESULT_FIFO_CAPACITY_TASKS = 2;
 constexpr int INPUT_FILE_ARGUMENT_INDEX = 1;
 constexpr int OUTPUT_FILE_ARGUMENT_INDEX = 2;
 constexpr int STATISTICS_FILE_ARGUMENT_INDEX = 3;
@@ -45,8 +43,8 @@ constexpr int FIFO_DEPTH_ARGUMENT_INDEX = 4;
 constexpr int TEST_EVENT_LOG_ARGUMENT_INDEX = 5;
 constexpr int TEST_OUTPUT_PERIOD_ARGUMENT_INDEX = 6;
 constexpr int SIMULATION_CYCLE_LIMIT_ARGUMENT_INDEX = 7;
-constexpr int DEFAULT_FIFO_CAPACITY_TASKS = 2;
-constexpr int MAX_BUFFER_CAPACITY_TASKS = 1000000;
+constexpr unsigned DEFAULT_FIFO_CAPACITY_TASKS = 2;
+constexpr unsigned MAX_BUFFER_CAPACITY_TASKS = 1000000;
 constexpr std::uint64_t DEFAULT_SIMULATION_CYCLE_LIMIT = 1000000;
 constexpr std::uint64_t MAX_ALLOWED_SIMULATION_CYCLES = 1000000000;
 constexpr std::uint64_t TEST_DEFAULT_OUTPUT_PERIOD_CYCLES = 1;
@@ -61,8 +59,8 @@ constexpr double SIMULATION_STOP_MARGIN_AFTER_LAST_EDGE_NS = 0.5;
 struct Options {
     unsigned m_window = DEFAULT_REORDER_WINDOW_CAPACITY_TASKS;
     std::uint32_t m_seed = DEFAULT_ARBITRATION_RANDOM_SEED;
-    int m_resultDepth = DEFAULT_COMPUTE_RESULT_FIFO_CAPACITY_TASKS;
-    int m_depth = DEFAULT_FIFO_CAPACITY_TASKS;
+    unsigned m_resultDepth = DEFAULT_COMPUTE_RESULT_FIFO_CAPACITY_TASKS;
+    unsigned m_depth = DEFAULT_FIFO_CAPACITY_TASKS;
     std::uint64_t m_testOutputPeriod = TEST_DEFAULT_OUTPUT_PERIOD_CYCLES;
     std::uint64_t m_maxCycles = DEFAULT_SIMULATION_CYCLE_LIMIT;
     bool m_testTraceEnabled = false;
@@ -189,13 +187,13 @@ void System::accountSkipped(std::uint64_t count) {
 }
 void System::sampleUsage() {
     auto usage = m_queues.begin();
-    (usage++)->sample(static_cast<unsigned>(m_parserToTransform.num_available()));
-    (usage++)->sample(static_cast<unsigned>(m_compute0Results.num_available()));
-    (usage++)->sample(static_cast<unsigned>(m_compute1Results.num_available()));
-    usage->sample(static_cast<unsigned>(m_collectorToOutput.num_available()));
+    (usage++)->sample(static_cast<std::uint64_t>(m_parserToTransform.num_available()));
+    (usage++)->sample(static_cast<std::uint64_t>(m_compute0Results.num_available()));
+    (usage++)->sample(static_cast<std::uint64_t>(m_compute1Results.num_available()));
+    usage->sample(static_cast<std::uint64_t>(m_collectorToOutput.num_available()));
     m_pipeline.sample(m_transform.occupancy());
     m_windowResults.sample(m_collector.occupancy());
-    m_windowReserved.sample(static_cast<unsigned>(m_dispatcher.m_statistics.m_dispatched - m_collector.m_nextId));
+    m_windowReserved.sample(m_dispatcher.m_statistics.m_dispatched - m_collector.m_nextId);
 }
 void System::runEvents() {
     // Channel update -> combinational route -> route output update. No simulated time passes.
@@ -213,7 +211,8 @@ void System::runEvents() {
             }
         }
         const auto delay = nextDelay();
-        assertCondition(delay != model::timing::NO_DEADLINE, "event model deadlock: no pending state transition");
+        assertCondition<std::logic_error>(delay != model::timing::NO_DEADLINE,
+                                          "event model deadlock: no pending state transition");
         accountSkipped(delay - 1);
         wait(sc_core::sc_time(static_cast<double>(delay) * CYCLE_DURATION_NS, sc_core::SC_NS));
         m_cycles = currentCycle();
@@ -266,12 +265,12 @@ Options parseOptions(int argc, char** argv) {
             parsePositiveInteger(argv[ARBITRATION_SEED_ARGUMENT_INDEX], MAX_ARBITRATION_RANDOM_SEED));
     }
     if (argc > COMPUTE_RESULT_FIFO_DEPTH_ARGUMENT_INDEX) {
-        options.m_resultDepth = static_cast<int>(
+        options.m_resultDepth = static_cast<unsigned>(
             parsePositiveInteger(argv[COMPUTE_RESULT_FIFO_DEPTH_ARGUMENT_INDEX], MAX_BUFFER_CAPACITY_TASKS));
     }
     if (argc > FIFO_DEPTH_ARGUMENT_INDEX) {
         options.m_depth =
-            static_cast<int>(parsePositiveInteger(argv[FIFO_DEPTH_ARGUMENT_INDEX], MAX_BUFFER_CAPACITY_TASKS));
+            static_cast<unsigned>(parsePositiveInteger(argv[FIFO_DEPTH_ARGUMENT_INDEX], MAX_BUFFER_CAPACITY_TASKS));
     }
     if (argc > TEST_OUTPUT_PERIOD_ARGUMENT_INDEX) {
         options.m_testOutputPeriod =
@@ -310,8 +309,8 @@ void writeQueueStats(std::ostream& stats, const System& system, const Options& o
     assertCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
     const std::array<const char*, OBSERVED_FIFO_COUNT> fifoMetricNames{"parser_to_transform", "compute0_results",
                                                                        "compute1_results", "collector_to_output"};
-    const std::array<int, OBSERVED_FIFO_COUNT> fifoCapacitiesTasks{options.m_depth, options.m_resultDepth,
-                                                                   options.m_resultDepth, options.m_depth};
+    const std::array<unsigned, OBSERVED_FIFO_COUNT> fifoCapacitiesTasks{options.m_depth, options.m_resultDepth,
+                                                                        options.m_resultDepth, options.m_depth};
     for (unsigned index = 0; index < OBSERVED_FIFO_COUNT; ++index) {
         stats << fifoMetricNames[index] << "_capacity," << fifoCapacitiesTasks[index] << '\n'
               << fifoMetricNames[index] << "_average,"
@@ -444,8 +443,15 @@ int run(int argc, char** argv) {
 
 int sc_main(int argc, char** argv) {
     if (argc < MIN_COMMAND_LINE_ARGUMENT_COUNT || argc > MAX_COMMAND_LINE_ARGUMENT_COUNT) {
-        std::cerr << "Usage: stage4_gcd INPUT OUTPUT STATS [DEPTH=2] [EVENTS.csv|-]"
-                     " [OUTPUT_PERIOD=1] [MAX_CYCLES=1000000] [RESULT_DEPTH=2] [WINDOW=8] [SEED=1]\n";
+        // Keep the usage text and the parsed defaults in one place: the named constants below.
+        std::ostringstream usage;
+        usage << "Usage: stage4_gcd INPUT OUTPUT STATS [DEPTH=" << DEFAULT_FIFO_CAPACITY_TASKS << "] [EVENTS.csv|-]"
+              << " [OUTPUT_PERIOD=" << TEST_DEFAULT_OUTPUT_PERIOD_CYCLES
+              << "] [MAX_CYCLES=" << DEFAULT_SIMULATION_CYCLE_LIMIT
+              << "] [RESULT_DEPTH=" << DEFAULT_COMPUTE_RESULT_FIFO_CAPACITY_TASKS
+              << "] [WINDOW=" << DEFAULT_REORDER_WINDOW_CAPACITY_TASKS
+              << "] [SEED=" << DEFAULT_ARBITRATION_RANDOM_SEED << "]\n";
+        std::cerr << usage.str();
         constexpr int INVALID_ARGUMENT_COUNT_EXIT_CODE = 2;
         return INVALID_ARGUMENT_COUNT_EXIT_CODE;
     }

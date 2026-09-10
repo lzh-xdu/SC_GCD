@@ -23,8 +23,9 @@ void Transform::advance() {
     if (m_validOut.read()) {
         ++m_statistics.m_validCycles;
         const auto task = m_dataOut.read();
-        m_recorder.record(task.m_id, "link", task.m_a, task.m_b, m_readyIn.read());
-        if (m_readyIn.read()) {
+        const bool ready = m_readyIn.read();
+        m_recorder.record(task.m_id, "link", task.m_a, task.m_b, ready);
+        if (ready) {
             m_recorder.record(task.m_id, "transform_emit", task.m_a, task.m_b);
             m_orderedStage.reset();
         } else {
@@ -56,7 +57,7 @@ std::uint64_t Transform::nextDelay() const {
 }
 void Transform::accountSkipped(std::uint64_t first, std::uint64_t count) {
     if (m_orderedStage) {
-        assertCondition(!m_readyIn.read(), "skipped a ready transform transfer");
+        assertCondition<std::logic_error>(!m_readyIn.read(), "skipped a ready transform transfer");
         m_statistics.m_validCycles += count;
         m_statistics.m_blockedCycles += count;
         m_recorder.repeat(first, count, m_orderedStage->m_id, "link", m_orderedStage->m_a, m_orderedStage->m_b, 0);

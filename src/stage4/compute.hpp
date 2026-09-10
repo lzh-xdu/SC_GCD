@@ -51,6 +51,9 @@ SC_MODULE(Compute) {
     }
     Compute(sc_core::sc_module_name name, EventRecorder & recorder, unsigned unit = 0);
 
+    /**
+     * @brief 事件推进；BUSY 不得超过完成时刻，异常状态抛 logic_error。
+     */
     void advance();
     std::uint64_t nextDelay() const;
     void accountSkipped(std::uint64_t first, std::uint64_t count);
@@ -62,9 +65,6 @@ private:
     std::uint64_t m_completeCycle = 0;
     EventRecorder & m_recorder;
     unsigned m_unit;
-    /**
-     * @brief 事件推进；BUSY 不得超过完成时刻，异常状态抛 logic_error。
-     */
     /**
      * @brief 仅在 RESULT_PENDING 尝试交付；FIFO 满是正常背压并保留结果。
      */

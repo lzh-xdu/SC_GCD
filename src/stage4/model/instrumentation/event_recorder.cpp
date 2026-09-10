@@ -13,7 +13,7 @@
 
 namespace stage4::model::instrumentation {
 void EventRecorder::record(std::uint64_t id, const char* event, std::uint64_t a, std::uint64_t b, std::uint64_t value,
-                           std::uint64_t latency) const {
+                           std::uint64_t latency) {
     assertCondition<std::invalid_argument>(event != nullptr, "null event name");
     assertCondition(m_testStream == nullptr || static_cast<bool>(*m_testStream), "event stream is not writable");
     const auto cycle = timing::currentCycle();
@@ -21,7 +21,7 @@ void EventRecorder::record(std::uint64_t id, const char* event, std::uint64_t a,
     append(cycle, id, event, a, b, value, latency);
 }
 void EventRecorder::append(std::uint64_t cycle, std::uint64_t id, const char* event, std::uint64_t a, std::uint64_t b,
-                           std::uint64_t value, std::uint64_t latency) const {
+                           std::uint64_t value, std::uint64_t latency) {
     if (!m_testStream) {
         return;
     }
@@ -30,7 +30,7 @@ void EventRecorder::append(std::uint64_t cycle, std::uint64_t id, const char* ev
     m_trace.push_back({cycle, row.str()});
 }
 void EventRecorder::repeat(std::uint64_t first, std::uint64_t count, std::uint64_t id, const char* event,
-                           std::uint64_t a, std::uint64_t b, std::uint64_t value) const {
+                           std::uint64_t a, std::uint64_t b, std::uint64_t value) {
     // Expand legacy per-cycle diagnostics only when tracing. This never advances model time.
     if (m_testStream) {
         for (std::uint64_t offset = 0; offset < count; ++offset) {
@@ -38,7 +38,7 @@ void EventRecorder::repeat(std::uint64_t first, std::uint64_t count, std::uint64
         }
     }
 }
-void EventRecorder::flushTrace() const {
+void EventRecorder::flushTrace() {
     if (!m_testStream) {
         return;
     }

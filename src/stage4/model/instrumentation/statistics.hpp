@@ -16,7 +16,7 @@
  * - Sample occupancy after channel updates; counters never advance simulation time.
  *
  * Reset:
- * - Value initialization clears counters; Usage starts with zero sum and peak.
+ * - Value initialization clears counters; Usage starts with zero sum, peak and last occupancy.
  */
 #pragma once
 
@@ -48,9 +48,9 @@ struct CollectorStatistics {
 };
 struct Usage {
     std::uint64_t m_sum = 0;
-    unsigned m_peak = 0;
-    void sample(unsigned count);
+    std::uint64_t m_peak = 0;
+    std::uint64_t m_last = 0;
+    void sample(std::uint64_t count);
     void hold(std::uint64_t cycles);
-    unsigned m_last = 0;
 };
 } // namespace stage4::model::instrumentation

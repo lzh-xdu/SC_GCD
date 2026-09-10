@@ -74,7 +74,8 @@ std::uint64_t Compute::nextDelay() const {
 }
 void Compute::accountSkipped(std::uint64_t, std::uint64_t count) {
     if (m_state == State::BUSY) {
-        assertCondition(m_completeCycle > currentCycle() + count, "skipped compute completion deadline");
+        assertCondition<std::logic_error>(m_completeCycle > currentCycle() + count,
+                                          "skipped compute completion deadline");
         m_statistics.m_busyCycles += count;
     } else if (m_state == State::RESULT_PENDING) {
         m_statistics.m_resultWaitCycles += count;

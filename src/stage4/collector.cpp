@@ -8,7 +8,7 @@
 #include <stdexcept>
 
 namespace stage4 {
-Collector::Collector(sc_core::sc_module_name name, stage4::EventRecorder& recorder, unsigned window)
+Collector::Collector(sc_core::sc_module_name name, EventRecorder& recorder, unsigned window)
     : sc_module(name)
     , m_recorder(recorder)
     , m_slots(window) {
@@ -43,7 +43,7 @@ void Collector::receive() {
     assertCondition<std::logic_error>(m_pollTurn < UNIT_COUNT, "collector poll turn out of range");
     const auto other = (m_pollTurn + 1) % UNIT_COUNT;
     const auto selected = m_resultsIn[m_pollTurn].num_available() != 0 ? m_pollTurn : other;
-    stage4::Result result;
+    Result result;
     if (!m_resultsIn[selected].nb_read(result)) {
         return;
     }
@@ -71,7 +71,7 @@ std::uint64_t Collector::nextDelay() const {
 }
 void Collector::accountSkipped(std::uint64_t first, std::uint64_t count) {
     if (m_slots[m_nextId % m_slots.size()]) {
-        assertCondition(m_resultsOut.num_free() == 0, "skipped a collector retirement");
+        assertCondition<std::logic_error>(m_resultsOut.num_free() == 0, "skipped a collector retirement");
         m_statistics.m_outputBlockedCycles += count;
         m_recorder.repeat(first, count, m_nextId, "collector_blocked");
     } else if (m_completed != 0) {

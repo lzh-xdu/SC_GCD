@@ -18,8 +18,7 @@ static std::uint32_t nextRandom(std::uint32_t state) {
     state ^= state << LEFT_SHIFT_LAST;
     return state;
 }
-Dispatcher::Dispatcher(sc_core::sc_module_name name, stage4::EventRecorder& recorder, unsigned window,
-                       std::uint32_t seed)
+Dispatcher::Dispatcher(sc_core::sc_module_name name, EventRecorder& recorder, unsigned window, std::uint32_t seed)
     : sc_module(name)
     , m_recorder(recorder)
     , m_window(window) {
@@ -91,7 +90,7 @@ void Dispatcher::accountSkipped(std::uint64_t first, std::uint64_t count) {
         }
         m_recorder.repeat(first, count, id, "window_blocked");
     } else {
-        assertCondition(!m_readyIn[selectedUnit()].read(), "skipped a ready dispatch");
+        assertCondition<std::logic_error>(!m_readyIn[selectedUnit()].read(), "skipped a ready dispatch");
         m_statistics.m_engineBlockedCycles += count;
         m_recorder.repeat(first, count, id, "engines_blocked");
     }

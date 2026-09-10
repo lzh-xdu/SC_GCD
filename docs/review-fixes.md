@@ -28,3 +28,22 @@
 - 新旧模型等价、原有功能/时序/背压测试继续通过；默认 1 ns 结果和统计未改变。格式和 Git 空白检查通过。
 
 本轮未重测主机性能，不改历史性能报告。开始时 docs/ai-log.md、docs/learning-log.md、docs/work-log.md 已有其他未提交学习记录；保留这些修改，本次提交仅纳入本轮追加的 AI/工作记录。
+
+## 同日第二轮：审查意见 5～12（规范与风格）
+
+用户确认 1～4 修复完成后要求继续处理第二轮八项；AI 在 `9b34b47` 基线上实施，范围仅限 Stage4。
+
+| 项目 | 判断 | 修改 |
+|---|---|---|
+| Options 容量字段 int/unsigned 混用 | 容量语义应统一 | m_depth/m_resultDepth 及对应默认/上限常量统一为 unsigned；fifoCapacitiesTasks 数组同步 |
+| transform.cpp 重复读取 m_readyIn | 同一 delta 内两次 read() 造成两次采样语义误导 | 读一次存入局部 `ready` 后复用 |
+| compute.hpp deliver() 前孤立注释 | advance() 的契约注释错位悬挂 | 移至 advance() 声明处；deliver() 保留自身说明 |
+| EventRecorder const + mutable | const 方法经 mutable 改状态，语义异味 | 四个方法去掉 const，成员去掉 mutable；头文件 Protocol 注明非 const 设计意图 |
+| Usage 字段顺序与类型 | m_last 与其他字段分隔且类型不一 | 三字段统一 uint64_t 并集中声明；sample 参数改 uint64_t，sampleUsage 调用侧同步 |
+| sc_main 用法字符串硬编码默认值 | 与常量双份维护易失同步 | 改为 ostringstream 从常量生成，输出文本不变 |
+| 内部不变量用默认 runtime_error | 违反自身 logic_error 约定 | runEvents 死锁检查及 transform/dispatcher/compute/collector 的 accountSkipped 检查改 logic_error |
+| stage4:: 限定不一致 | 同命名空间内混用 | dispatcher/collector 头/源去除冗余限定；main.cpp 删除 using namespace 下多余的 using 声明 |
+
+行为保持：用法字符串、统计数值、模拟周期与输出逐字节不变（第 10 项仅改文本生成方式，内容相同）。本轮无运行时缺陷，未新增缺陷案例；其中“compute.hpp 文件级两个 @brief 重复”经复核为 @file 与 @class 各自摘要的 Doxygen 惯例，不属重复，未改。
+
+验证在 WSL g++ 11.4 环境完成：Debug/Release 各 25/25（[Debug](evidence/review-fixes/style-round-debug-tests.log)、[Release](evidence/review-fixes/style-round-release-tests.log)），-Wall -Wextra -Wpedantic 零警告；Windows 侧构建未在本轮重跑，不宣称等价于用户环境验收。提交时工作区另有用户未提交的 constexpr 学习记录，随日志文件一并保留。
