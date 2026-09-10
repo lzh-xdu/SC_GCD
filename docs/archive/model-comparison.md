@@ -2,11 +2,11 @@
 
 2026-09-10；正式模型基线 `cd03b91`，测量入口与脚本为本条所在提交。对比 `stage3_window_gcd` 与 `stage4_gcd`。
 
-> 2026-09-10 晚补充：已按本设计完成首轮实测（Linux/WSL 进程口径），数据、表图与结论见 [实测结果](metrics-results.md)；未覆盖项状态以其 §5 为准，Windows 入口径基线保留。
+> 2026-09-10 晚补充：已按本设计完成首轮实测（Linux/WSL 进程口径），数据、表图与结论见 [实测结果](../metrics-results.md)；未覆盖项状态以其 §5 为准，Windows 入口径基线保留。
 
 **结论：功能和硬件时序保持一致；事件模型在长计算、背压和稀疏事件场景显著降低仿真成本，但连续短任务不保证提速，详细 Trace 可使它更慢、占用更多内存。**
 
-![测量对照图](evidence/model-comparison/comparison.png)
+![测量对照图](../evidence/model-comparison/comparison.png)
 
 ## 方法与可信范围
 
@@ -99,4 +99,4 @@ python scripts/render_model_comparison.py
 
 历史本次主实验 8 组，补测两组保存于 trace-controls；当前脚本默认可一次执行全部 10 组。正式模型无改动；新增包装入口仅支持 Windows，两个 profiling 目标不进入默认构建。
 
-[环境与二进制哈希](evidence/model-comparison/environment.json) · [输入配置、功能/统计哈希及完整硬件指标](evidence/model-comparison/cases.json) · [140 次测量中的主实验 112 次原始样本](evidence/model-comparison/samples.jsonl) · [Trace 控制组 28 次样本](evidence/model-comparison/trace-controls/samples.jsonl) · [汇总及四分位数](evidence/model-comparison/summary.csv) · [回归日志](evidence/model-comparison/regression.log)。输入、输出和大 Trace 留在被忽略的 tmp/model-comparison，可由固定种子脚本重建。
+[环境与二进制哈希](../evidence/model-comparison/environment.json) · [输入配置、功能/统计哈希及完整硬件指标](../evidence/model-comparison/cases.json) · [140 次测量中的主实验 112 次原始样本](../evidence/model-comparison/samples.jsonl) · [Trace 控制组 28 次样本](../evidence/model-comparison/trace-controls/samples.jsonl) · [汇总及四分位数](../evidence/model-comparison/summary.csv) · [回归日志](../evidence/model-comparison/regression.log)。输入、输出和大 Trace 留在被忽略的 tmp/model-comparison，可由固定种子脚本重建。

@@ -58,4 +58,4 @@ stage1_gcd INPUT OUTPUT STATS [DEPTH=2] [EVENTS.csv|-] [OUTPUT_PERIOD=1] [MAX_CY
 统计由测试根据事件重新计算占用面积/峰值，功能使用 Python math.gcd；计算延迟还核对手工单任务时间线。
 这些结果是本配置下的验证证据，不是全输入形式化证明，不表示用户已经掌握全部代码。
 
-证据见 [evidence/stage1](evidence/stage1/)。首次预期文件错误及修正见 [B-003](defects.md)。
+证据见 [evidence/stage1](../evidence/stage1/)。首次预期文件错误及修正见 [B-003](defects.md)。

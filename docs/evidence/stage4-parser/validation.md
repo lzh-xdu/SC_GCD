@@ -13,7 +13,7 @@
 | `ctest --test-dir build -R stage4 --output-on-failure` | 强化事件时间顺序断言后 2/2，退出 0 |
 | `ctest --test-dir build/debug -R stage4 --output-on-failure` | 同上 2/2，退出 0 |
 
-原始日志：[Release](release-tests.log)、[Debug](debug-tests.log)、[最终 Release](release-focused.log)、[最终 Debug](debug-focused.log)、[详细通过摘要](checks.txt)。范围及限制见 [Parser 设计](../../stage4-parser.md)。
+原始日志：[Release](release-tests.log)、[Debug](debug-tests.log)、[最终 Release](release-focused.log)、[最终 Debug](debug-focused.log)、[详细通过摘要](checks.txt)。范围及限制见 [Parser 设计](../../archive/stage4-parser.md)。
 
 首次 `ctest --test-dir build -R stage4_initial_equivalence --output-on-failure` 退出 8，报告 basic/events.csv 不同：[失败日志](initial-test-failure.log)。保留 [旧事件](initial-baseline-events.csv) 与 [新事件](initial-candidate-events.csv)。当时 29 个场景的事件 CSV 行序变化，其余结果与统计无差异；basic 中 id=1 的 parser_send 和 id=0 的 transform_accept 都是 cycle=2，顺序交换，事件内容未变。
 

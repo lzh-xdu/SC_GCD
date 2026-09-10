@@ -56,6 +56,6 @@ handshakeValidCycles、fifoMetricNames、fifoCapacitiesTasks 等职责名称。c
 - 新 6 项测试：条件单次求值/异常类型、零输出周期、坏输入流、坏输出流、空事件指针、未完成及倒退统计事件。
 - Release 编译数据库中的 contract_checks 命令含 `-DNDEBUG`，证明关闭标准断言时新增检查仍工作。
 - clang-format 应用于本次源码；`git diff --check` 通过。
-- 原始 CTest 输出：[Release](evidence/contracts-release.txt)、[Debug](evidence/contracts-debug.txt)。
+- 原始 CTest 输出：[Release](../evidence/contracts-release.txt)、[Debug](../evidence/contracts-debug.txt)。
 
 这次属于现有阶段的可读性及错误诊断整理，不推进作业 4，不替代用户理解验收。

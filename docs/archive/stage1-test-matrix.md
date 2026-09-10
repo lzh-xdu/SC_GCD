@@ -13,7 +13,7 @@
 
 ## 输入矩阵
 
-固定输入与独立 `math.gcd` 预期在 [cases](../tests/stage1/cases/manifest.json)，生成器为 `tests/stage1/generate_cases.py`。回归直接读取已保存输入，不在每次运行时重新抽样。
+固定输入与独立 `math.gcd` 预期在 [cases](../../tests/stage1/cases/manifest.json)，生成器为 `tests/stage1/generate_cases.py`。回归直接读取已保存输入，不在每次运行时重新抽样。
 
 | 场景 | 输入与覆盖 | 配置/实际结果 |
 |---|---|---|
@@ -46,4 +46,4 @@
 ```
 
 每个场景在 `build[/debug]/stage1-tests/<case>/` 生成 input.txt、output.txt、stats.csv、events.csv、run.log；汇总为 summary.csv。
-Release/Debug 各 CTest 2/2 通过，模拟统计汇总逐字节相同。[保存的证据](evidence/stage1-expanded/README.md) 包含实际输出、统计、失败和回归日志。
+Release/Debug 各 CTest 2/2 通过，模拟统计汇总逐字节相同。[保存的证据](../evidence/stage1-expanded/README.md) 包含实际输出、统计、失败和回归日志。

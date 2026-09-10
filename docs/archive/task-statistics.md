@@ -23,11 +23,11 @@
 ### 2026-09-09：Instrumentation 开关的实际验证范围
 
 - 代码基线 `de1c0b3`：当前 `EVENTS.csv|-` 仅控制事件 CSV 写出，不是全部 Instrumentation 的总开关。`TestEventLog::record` 始终调用任务统计，模块和顶层统计也继续执行。
-- [作业 1 测试](../tests/stage1/verify.py) 的 `without_events` 对 basic 输入分别开启/关闭事件 CSV，逐字节比较 `output.txt` 和 `stats.csv`。2026-09-09 上一轮 Release 12/12 回归包含此测试并通过；本轮为源码核查，未重新运行。
-- [握手测试](../tests/handshake/verify.py) 覆盖作业 2、3 轮转版及窗口版的功能/时序，但尚未加入事件 CSV 开关的成对等价断言；不能把一般回归通过视为该项已验证。
+- [作业 1 测试](../../tests/stage1/verify.py) 的 `without_events` 对 basic 输入分别开启/关闭事件 CSV，逐字节比较 `output.txt` 和 `stats.csv`。2026-09-09 上一轮 Release 12/12 回归包含此测试并通过；本轮为源码核查，未重新运行。
+- [握手测试](../../tests/handshake/verify.py) 覆盖作业 2、3 轮转版及窗口版的功能/时序，但尚未加入事件 CSV 开关的成对等价断言；不能把一般回归通过视为该项已验证。
 - 当前不能宣称“全部 Instrumentation 开关在所有阶段均已验证一致”。主机运行时间也不要求一致：日志 I/O 和统计具有主机开销，但不应改变模型功能或模拟周期。
 
-后续更新（2026-09-09，同日 Model 分层工作）：上述作业 2/3 的成对测试缺口已补齐；96 个有效场景现均对比 Trace 开/关的结果和完整统计，见 [分层验证](evidence/model-structure-validation.md)。观察器已更名为 EventRecorder。仍无全部 Instrumentation 总开关，不能把 Trace 等价扩大为统计完全关闭的等价验证。
+后续更新（2026-09-09，同日 Model 分层工作）：上述作业 2/3 的成对测试缺口已补齐；96 个有效场景现均对比 Trace 开/关的结果和完整统计，见 [分层验证](../evidence/model-structure-validation.md)。观察器已更名为 EventRecorder。仍无全部 Instrumentation 总开关，不能把 Trace 等价扩大为统计完全关闭的等价验证。
 
 ## 关键原因及使用限制
 
@@ -65,4 +65,4 @@
 
 零延迟任务指绝对值/排序后 b=0，没有任何取余，如 `(20,0)`、`(0,-20)`、`(0,0)`。Compute 在接收沿完成这一条任务，但全系统仍需要解析、变换、传输和输出；同沿不能再接另一条。非零 `(30,30)` 需要一次取余，是 1 周期任务。
 
-验证与示例数据见 [本轮证据](evidence/task-statistics/validation.md)。
+验证与示例数据见 [本轮证据](../evidence/task-statistics/validation.md)。

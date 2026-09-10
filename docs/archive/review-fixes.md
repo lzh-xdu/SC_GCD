@@ -15,16 +15,16 @@
 
 新增 `tests/contracts/model_entry.cpp`，各入口单独构建。测试直接调用真实入口中的 writeStats 与 parsePositiveInteger：报表测试在该测试翻译单元提供 2.5 ns 单位、设置 7 个已观察周期，应输出 cycles=7、simulated_time_ns=17.5；不运行仿真，也不修改生产默认单位。
 
-修复前五个报表测试均失败，五个参数测试均报 `FAIL: stoull`；10/10 失败，退出 8。[原始失败](evidence/review-fixes/before-tests.log)。对应 B-012/B-013；这是用户触发的检查，不记为用户亲自改代码或 AI 独立发现。
+修复前五个报表测试均失败，五个参数测试均报 `FAIL: stoull`；10/10 失败，退出 8。[原始失败](../evidence/review-fixes/before-tests.log)。对应 B-012/B-013；这是用户触发的检查，不记为用户亲自改代码或 AI 独立发现。
 
 修复后参数测试覆盖 30 位 9、超过业务上限、0、恰等于上限、很长的前导零和 uint64_t 最大值；并额外在五个实际 CLI 中确认超长值退出 1、输出 `FAIL: option out of range`。
 
 ## 最终验证
 
 - `cmake --build build --parallel 4`、`cmake --build build/debug --parallel 4` 均退出 0。
-- `ctest --test-dir build --output-on-failure`：25/25，[Release 日志](evidence/review-fixes/release-tests.log)。
-- `ctest --test-dir build/debug --output-on-failure`：25/25，[Debug 日志](evidence/review-fixes/debug-tests.log)。
-- Stage4 的 payload/types/parser/output/compute/transform/dispatcher/collector 头文件逐个用独立翻译单元进行 C++17 语法检查通过；实际 CLI 诊断也通过。[记录](evidence/review-fixes/headers-and-cli.txt)。
+- `ctest --test-dir build --output-on-failure`：25/25，[Release 日志](../evidence/review-fixes/release-tests.log)。
+- `ctest --test-dir build/debug --output-on-failure`：25/25，[Debug 日志](../evidence/review-fixes/debug-tests.log)。
+- Stage4 的 payload/types/parser/output/compute/transform/dispatcher/collector 头文件逐个用独立翻译单元进行 C++17 语法检查通过；实际 CLI 诊断也通过。[记录](../evidence/review-fixes/headers-and-cli.txt)。
 - 新旧模型等价、原有功能/时序/背压测试继续通过；默认 1 ns 结果和统计未改变。格式和 Git 空白检查通过。
 
 本轮未重测主机性能，不改历史性能报告。开始时 docs/ai-log.md、docs/learning-log.md、docs/work-log.md 已有其他未提交学习记录；保留这些修改，本次提交仅纳入本轮追加的 AI/工作记录。
@@ -46,7 +46,7 @@
 
 行为保持：用法字符串、统计数值、模拟周期与输出逐字节不变（第 10 项仅改文本生成方式，内容相同）。本轮无运行时缺陷，未新增缺陷案例；其中“compute.hpp 文件级两个 @brief 重复”经复核为 @file 与 @class 各自摘要的 Doxygen 惯例，不属重复，未改。
 
-验证在 WSL g++ 11.4 环境完成：Debug/Release 各 25/25（[Debug](evidence/review-fixes/style-round-debug-tests.log)、[Release](evidence/review-fixes/style-round-release-tests.log)），-Wall -Wextra -Wpedantic 零警告。同日补测 Windows 环境（Strawberry MinGW g++ + Ninja，经 WSL interop 调用）：`build`（Release）与 `build\debug` 均 87/87 目标零警告重建，ctest 各 25/25（[Windows Release](evidence/review-fixes/style-round-windows-release-tests.log)、[Windows Debug](evidence/review-fixes/style-round-windows-debug-tests.log)）；stage4_gcd.exe 用法字符串与 WSL 一致、非法参数退出码 2，同输入模拟输出与统计与 WSL 逐字节一致（仅文本模式 CRLF 差异）。提交时工作区另有用户未提交的 constexpr 学习记录，随日志文件一并保留。
+验证在 WSL g++ 11.4 环境完成：Debug/Release 各 25/25（[Debug](../evidence/review-fixes/style-round-debug-tests.log)、[Release](../evidence/review-fixes/style-round-release-tests.log)），-Wall -Wextra -Wpedantic 零警告。同日补测 Windows 环境（Strawberry MinGW g++ + Ninja，经 WSL interop 调用）：`build`（Release）与 `build\debug` 均 87/87 目标零警告重建，ctest 各 25/25（[Windows Release](../evidence/review-fixes/style-round-windows-release-tests.log)、[Windows Debug](../evidence/review-fixes/style-round-windows-debug-tests.log)）；stage4_gcd.exe 用法字符串与 WSL 一致、非法参数退出码 2，同输入模拟输出与统计与 WSL 逐字节一致（仅文本模式 CRLF 差异）。提交时工作区另有用户未提交的 constexpr 学习记录，随日志文件一并保留。
 
 ## 同日第三轮：开源审美扫描的 A 类实施（1～8 项）
 
@@ -65,4 +65,4 @@
 
 [[nodiscard]] 立即抓到真实案例：model_entry.cpp 测试故意丢弃 parsePositiveInteger 返回值，MinGW GCC 13 报 -Wunused-result，改用 static_cast<void> 显式声明意图。verify.cpp 的 event 契约用例随参数类型更新：原 nullptr 非空检查已随 string_view 契约移除（构造自 nullptr 为 UB，首次构建即段错误暴露），改为测试仍存在的"事件流不可写抛 runtime_error"契约。
 
-行为影响仅限非法参数消息文本；正常路径输出与统计逐字节不变（人工比对 + CLI 冒烟）。验证：Linux g++ 11.4 与 Windows PowerShell（MinGW GCC 13.2）各 Debug/Release 25/25、零警告（[Linux Release](evidence/review-fixes/style-a-round-linux-release-tests.log)、[Linux Debug](evidence/review-fixes/style-a-round-linux-debug-tests.log)、[Windows Release](evidence/review-fixes/style-a-round-windows-release-tests.log)、[Windows Debug](evidence/review-fixes/style-a-round-windows-debug-tests.log)）。
+行为影响仅限非法参数消息文本；正常路径输出与统计逐字节不变（人工比对 + CLI 冒烟）。验证：Linux g++ 11.4 与 Windows PowerShell（MinGW GCC 13.2）各 Debug/Release 25/25、零警告（[Linux Release](../evidence/review-fixes/style-a-round-linux-release-tests.log)、[Linux Debug](../evidence/review-fixes/style-a-round-linux-debug-tests.log)、[Windows Release](../evidence/review-fixes/style-a-round-windows-release-tests.log)、[Windows Debug](../evidence/review-fixes/style-a-round-windows-debug-tests.log)）。

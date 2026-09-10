@@ -2,7 +2,7 @@
 
 ## 2026-09-08：作业3保序性能与资源分析
 
-- 核对两版Collector、窗口Dispatcher及历史数据，新增[分析](stage3-ordering-impact.md)，关联L-015/A-018。
+- 核对两版Collector、窗口Dispatcher及历史数据，新增[分析](archive/stage3-ordering-impact.md)，关联L-015/A-018。
 - 明确队头阻塞、有限窗口背压、额外一拍、带宽及载荷资源，并区分综合架构收益和纯保序代价。
 - 仅文档变更，核对引用与差异，不重跑无关代码测试；README既有修改不纳入。
 
@@ -215,27 +215,27 @@
 
 ## 2026-09-06：Stage 1 trace 终端可视化
 
-- 用户请求以 Python 终端交互图形理解过程和效率；新增 scripts/trace_tui.py、针对性单元测试和[中文使用说明](trace-viewer.md)，在 stage1-run.md 增加入口。
+- 用户请求以 Python 终端交互图形理解过程和效率；新增 scripts/trace_tui.py、针对性单元测试和[中文使用说明](archive/trace-viewer.md)，在 stage1-run.md 增加入口。
 - 实际输入得到 8 任务、79 事件周期、66 忙周期、83.54% 利用率、结果阻塞 0；当前数据主要体现计算与上游积压，不能度量主机模拟速度。
 - 5/5 工具测试通过；实际 Windows 伪终端导航、播放与退出通过；[验证及快照](evidence/stage1/trace-viewer-validation.md)。不修改 C++，不重复模型 CTest，不推进后续阶段。
 - 协作记录 [A-008b](ai-log.md#a-008bpython-终端-trace-可视化)，学习记录 [L-006b](learning-log.md#l-006b用-trace-区分驻留计算与主机运行效率)。下一步由用户结合时间线审阅现有时序，尚未实施优化设计。
 
 ## 2026-09-06：解释 Day01 VCD 与查看方式
 
-- 实读 build/debug/day01_basics.vcd、示例源码及本地 VCD tracing 源码；核对 GTKWave 官方文档，补充 [波形说明](inspect-simulation.md) 和 [L-007b](learning-log.md#l-007bvcd-与实际波形末尾的区别)。
+- 实读 build/debug/day01_basics.vcd、示例源码及本地 VCD tracing 源码；核对 GTKWave 官方文档，补充 [波形说明](archive/inspect-simulation.md) 和 [L-007b](learning-log.md#l-007bvcd-与实际波形末尾的区别)。
 - 新观察：文件末尾 #25 无信号变化；保留事实，未将代码预期冒充波形记录，未实施末沿记录修复。
 - 文档轮次，未安装查看器、未运行模型测试；本机 PATH 无 gtkwave。未触碰 README 原有改动。
 
 ## 2026-09-07：命名、函数校验与头文件注释
 
 - 用户要求改善各阶段 const 命名、增加入口异常校验、优化头文件注释；AI 实施始终生效的 requireCondition，保留异常分类和诊断。
-- 详细范围与取舍见 [命名与运行时契约](code-contracts.md)，规范同步至 [coding-style.md](coding-style.md)。
+- 详细范围与取舍见 [命名与运行时契约](archive/code-contracts.md)，规范同步至 [coding-style.md](coding-style.md)。
 - Release/Debug 构建退出 0，CTest 各 12/12：原 6 项回归及新增 6 项异常测试通过。证据链接见详细记录。
 - 未推进作业 4；用户原有 README.md 改动不纳入本轮提交。未做主机执行开销基准。
 
 ## 2026-09-08：明确零边界模型假设
 
-- 按用户要求，在 [阶段 1 设计](stage1-design.md) 和 [最终设计](final-design.md) 显式标注 spec 外的零输入约定，保留原行为并注明本次澄清日期。
+- 按用户要求，在 [阶段 1 设计](archive/stage1-design.md) 和 [最终设计](final-design.md) 显式标注 spec 外的零输入约定，保留原行为并注明本次澄清日期。
 - 核对 Compute 的循环条件及既有边界输入；仅改文档，未重新运行模型测试。协作记录见 [AI 日志](ai-log.md)。
 
 ## 2026-09-09：头文件接口注释统一
@@ -247,19 +247,19 @@
 
 ## 2026-09-09：核查 Instrumentation 开关等价证据
 
-- 用户询问当前开关结果是否一致；核查现有实现与测试，结论见 [统一统计文档](task-statistics.md#2026-09-09instrumentation-开关的实际验证范围)。
+- 用户询问当前开关结果是否一致；核查现有实现与测试，结论见 [统一统计文档](archive/task-statistics.md#2026-09-09instrumentation-开关的实际验证范围)。
 - 已有开关只控制事件 CSV，统计始终执行；作业 1 basic 有逐字节结果/统计对比且上一轮回归通过，作业 2、3 缺同类成对断言。未改代码或新增测试结果。
 
 ## 2026-09-09：Model 职责分层与 Trace 等价回归
 
-- 用户提出三层结构；已抽取共享数值/延迟实现和 Instrumentation，保留原 SystemC 模块协议、时序与阶段范围。阅读入口与取舍见 [Model 分层](model-structure.md)，协作与讲解见 [AI 日志](ai-log.md)、[学习日志](learning-log.md)。
+- 用户提出三层结构；已抽取共享数值/延迟实现和 Instrumentation，保留原 SystemC 模块协议、时序与阶段范围。阅读入口与取舍见 [Model 分层](archive/model-structure.md)，协作与讲解见 [AI 日志](ai-log.md)、[学习日志](learning-log.md)。
 - 重构前基线 0df1381 的 Release 12/12；重构后 Release/Debug 各 12/12，分别含 96 个 Trace 开/关成对场景；372 份基线文件哈希相同。主机 Profiling 3 次烟雾运行结果/统计一致。
 - 原始构建错误、修复与验证命令见 [证据](evidence/model-structure-validation.md)；最终只调整注释与文档。全量 Instrumentation 总开关仍未实施。
 - 源码、测试和记录一起本地提交；保留用户已有 README 修改，未推进作业 4。
 
 ## 2026-09-09：Transform 从输入到输出正向计算
 
-- 根据用户可读性反馈，修改作业 1 Transform 实现与接口说明；采用下一状态统一提交，保留原时序、容量和同拍补位。决策见 [D-018](decisions.md#d-018作业-1-transform-正向计算下一拍状态)，讲解见 [学习日志](learning-log.md)，协作见 [AI 日志](ai-log.md)。
+- 根据用户可读性反馈，修改作业 1 Transform 实现与接口说明；采用下一状态统一提交，保留原时序、容量和同拍补位。决策见 [D-018](archive/decisions.md#d-018作业-1-transform-正向计算下一拍状态)，讲解见 [学习日志](learning-log.md)，协作见 [AI 日志](ai-log.md)。
 - Release/Debug 构建退出 0，阶段 1 回归各 1/1（每种 24 场景/1434 任务）；102 份基线结果、事件与统计文件哈希全部一致。clang-format 检查 cpp 与 Git 差异空白检查通过；[详细证据](evidence/stage1-forward-validation.md)。
 - 未推进其他阶段；用户已有 README 暂存修改不纳入本轮提交。用户理解审阅仍待完成。
 
@@ -270,18 +270,18 @@
 
 ## 2026-09-09：按用户选择恢复倒序
 
-- 作业 1 Transform 恢复下游优先原地更新，源码/头文件补充空槽反向传播、同拍补位和防跨级说明；[D-019](decisions.md#d-019用户选择恢复作业-1-倒序原地更新) 替代 D-018，历史保留。
+- 作业 1 Transform 恢复下游优先原地更新，源码/头文件补充空槽反向传播、同拍补位和防跨级说明；[D-019](archive/decisions.md#d-019用户选择恢复作业-1-倒序原地更新) 替代 D-018，历史保留。
 - Release/Debug 阶段 1 构建和回归均通过，102 份基线文件哈希一致；cpp 格式与差异空白检查通过。[验证证据](evidence/stage1-forward-validation.md#2026-09-09用户选择恢复倒序)，讨论与用户判断见学习/AI 日志。
 - 未改其他阶段，未纳入用户已有 README 暂存修改。
 
 ## 2026-09-09：详细解释三层架构
 
-- 对照当前 Compute、planGcd 和 EventRecorder 解释数值、周期、事件、汇总、主机耗时与必要契约；补充 [分层阅读示例](model-structure.md) 和 [学习记录](learning-log.md)。
+- 对照当前 Compute、planGcd 和 EventRecorder 解释数值、周期、事件、汇总、主机耗时与必要契约；补充 [分层阅读示例](archive/model-structure.md) 和 [学习记录](learning-log.md)。
 - 仅文档更新，核对源码及既有单任务时间线，未重新运行模型测试。用户已有暂存 README 修改保持原状，不纳入文档提交。
 
 ## 2026-09-09：作业 4 独立初始版本
 
-- 用户明确要把所需源码整合进 stage4 后再改模型；建立 30 个独立源码/头文件及 stage4_gcd，旧作业与旧共享实现保持原样。来源和取舍见 [初始版本](stage4-initial.md)。
+- 用户明确要把所需源码整合进 stage4 后再改模型；建立 30 个独立源码/头文件及 stage4_gcd，旧作业与旧共享实现保持原样。来源和取舍见 [初始版本](archive/stage4-initial.md)。
 - Release/Debug 全量测试各 13/13，新旧模型各配置 276 份生成文件逐字节一致；[验证证据](evidence/stage4-initial/validation.md)。仍为逐周期模型，事件改造、性能比较与缺陷案例待完成。
 - 代码与记录本地提交；用户已有 README 暂存修改不纳入。未推送远端。
 
@@ -294,13 +294,13 @@
 
 ## 2026-09-10：Parser 定时输入与空间事件
 
-- 按用户纠正保持原输入节拍；移除 Parser 时钟端口与 System 绑定，添加定时输入、满 FIFO 事件等待和 EOF 退出。其余模块保留时钟，详见 [D-021 与设计](stage4-parser.md)。
+- 按用户纠正保持原输入节拍；移除 Parser 时钟端口与 System 绑定，添加定时输入、满 FIFO 事件等待和 EOF 退出。其余模块保留时钟，详见 [D-021 与设计](archive/stage4-parser.md)。
 - Release/Debug 构建通过、全量各 14/14；最终补强事件比较时间单调性后阶段 4 各 2/2。新增无时钟测试验证 1 ns 首次输入、5.5 ns 释放后 6 ns 恢复、无满队列/EOF 轮询。保留 [B-009 原始失败及回归证据](evidence/stage4-parser/validation.md)。
 - 未改作业 1～3、未宣称完整事件模型或性能验收完成。代码与记录本地提交，不推送远端。工作期间另出现 README 提交 f158491，本轮未修改 README。
 
 ## 2026-09-10：全部移除时钟并对照作业 3
 
-- stage4 全系统改为集中式最早事件调度，移除时钟对象、端口、边沿敏感和固定周期观察；绝对计算完成时间与区间统计保持原语义。[D-022 与设计](stage4-events.md)。
+- stage4 全系统改为集中式最早事件调度，移除时钟对象、端口、边沿敏感和固定周期观察；绝对计算完成时间与区间统计保持原语义。[D-022 与设计](archive/stage4-events.md)。
 - Release/Debug 全量各 15/15；31 个既有场景加 4 个边界场景，新旧结果、完成周期及统计一致。31 场景的事件 CSV 实际逐字节一致；百万周期慢输出为 8 次事件批次，最大跳跃 999,988 周期。
 - 首次诊断日志比较失败已保留为 B-010，并修正适配；[逐场景对照和原始证据](evidence/stage4-events/validation.md)。无处理器功能/时序失败，不编造阶段 4 缺陷案例；正式主机性能比较待完成。
 - 本轮源码、测试、记录一起本地提交，不修改旧阶段、不推送远端。
@@ -308,13 +308,13 @@
 ## 2026-09-10：完成时钟/事件模型性能与开销对照
 
 - 增加可选 Windows profiling 构建目标、交替重复测量脚本与静态图；两模型生产源码不变。10 配置、140 次正式测量，独立 GCD 与输出/统计哈希一致；有 Trace 两组日志也一致。Release 原有 CTest 15/15。
-- 报告覆盖功能、系统周期/吞吐/延迟/利用率、模型/进程耗时、CPU、峰值内存、delta 轮次、跳过比例及同输入 Trace 成本。[完整报告及图](model-comparison.md)，原始样本见其证据链接。
+- 报告覆盖功能、系统周期/吞吐/延迟/利用率、模型/进程耗时、CPU、峰值内存、delta 轮次、跳过比例及同输入 Trace 成本。[完整报告及图](archive/model-comparison.md)，原始样本见其证据链接。
 - 长计算约快 5.78×，混合约快 2.85×；连续零延迟近似持平，Trace 可使事件模型更慢并增大内存。真实性能设计案例 B-011 已记录，优化尚未实施。
 - 测量方法见 D-023；代码、图表与过程记录一起本地提交，不推送远端。
 
 ## 2026-09-10：统一运行时检查命名
 
-- 按用户反馈，将公共运行时契约函数及所有生产/测试调用从 `requireCondition` 改为 `assertCondition`；当前规范同步更新，历史记录保留旧名并由 [D-024](decisions.md#d-024运行时契约检查采用-assertcondition-命名) 说明替代关系。
+- 按用户反馈，将公共运行时契约函数及所有生产/测试调用从 `requireCondition` 改为 `assertCondition`；当前规范同步更新，历史记录保留旧名并由 [D-024](archive/decisions.md#d-024运行时契约检查采用-assertcondition-命名) 说明替代关系。
 - 验证：Release 完整构建成功；先运行 `ctest --test-dir build -R '^contract_' --output-on-failure`，契约检查 6/6 通过，再运行全量 `ctest --test-dir build --output-on-failure`，15/15 通过。语义仍为条件失败抛所选异常，Debug/Release 均执行。
 
 ## 2026-09-10：解释任务统计的 `BOUNDARY_COUNT`
@@ -326,20 +326,20 @@
 
 ## 2026-09-10：修复用户审查的四项问题
 
-- 核实并修复五个模型入口的 ns 单位换算与超长参数诊断，清除 Stage4 死统计字段并显式整理头文件依赖；[逐项判断和实现](review-fixes.md)。
+- 核实并修复五个模型入口的 ns 单位换算与超长参数诊断，清除 Stage4 死统计字段并显式整理头文件依赖；[逐项判断和实现](archive/review-fixes.md)。
 - B-012/B-013 修复前新增测试 10/10 失败，原始证据保留；修复后 Release/Debug 各 25/25。八个相关头文件单独包含编译及五个实际 CLI 超长参数检查通过。
 - 默认周期/功能/时序不变，未重测主机性能。代码、证据和本轮记录本地提交；已有其他未提交学习记录保持原状，不推送远端。
 
 ## 2026-09-10：设计作业 1～4 的统计与报告方式
 
-- 新增 [指标与呈现方案](metrics-presentation.md)，给出统一计时边界、公式和覆盖状态、阶段表格/图形、单因素实验与最小场景矩阵；关联 D-025。
+- 新增 [指标与呈现方案](archive/metrics-presentation.md)，给出统一计时边界、公式和覆盖状态、阶段表格/图形、单因素实验与最小场景矩阵；关联 D-025。
 - 已核对各阶段现有统计实现及任务统计、保序影响、双模型测量文档；已有数据只作为历史依据，未生成新实测结果。轮前关于 constexpr 的学习记录保持原状，单独留在工作区。
 - 本轮为文档设计，核对差异和本地链接，不运行无关模型测试；模型实现与阶段验收状态不变。后续可先从已有 CSV 派生报表，再按需要补计数器。
 
 ## 2026-09-10：第二轮规范与风格修复（Stage4）
 
-- 按用户要求实施审查意见 5～12：容量类型统一、重复信号读取、注释错位、EventRecorder const/mutable、Usage 字段、用法字符串常量化、内部不变量 logic_error、限定符一致；[逐项记录](review-fixes.md)。
-- WSL g++ 11.4 环境验证：Debug/Release 各 25/25 通过、-Wall -Wextra -Wpedantic 零警告；用法字符串与统计输出逐字节不变。同日补测 Windows（Strawberry MinGW）双配置重建零警告、ctest 各 25/25，exe 输出与 WSL 一致（仅 CRLF 文本模式差异）；[验证记录](review-fixes.md)。
+- 按用户要求实施审查意见 5～12：容量类型统一、重复信号读取、注释错位、EventRecorder const/mutable、Usage 字段、用法字符串常量化、内部不变量 logic_error、限定符一致；[逐项记录](archive/review-fixes.md)。
+- WSL g++ 11.4 环境验证：Debug/Release 各 25/25 通过、-Wall -Wextra -Wpedantic 零警告；用法字符串与统计输出逐字节不变。同日补测 Windows（Strawberry MinGW）双配置重建零警告、ctest 各 25/25，exe 输出与 WSL 一致（仅 CRLF 文本模式差异）；[验证记录](archive/review-fixes.md)。
 - 本轮无新缺陷案例，仅风格与维护性修改，不改任何数值。代码与记录本地提交；工作区另有用户未提交的 constexpr 学习记录，随日志文件一并保留。
 
 
@@ -362,10 +362,10 @@
 
 ## 2026-09-10：新增 SystemC Web 查看器工具
 
-- 用户提出用 Python 脚本 + 前端网页动画展示 SystemC 模块链接与运行周期；AI 给出设计并实现首版，关联 [D-026](decisions.md#d-026)、[A-019](ai-log.md#2026-09-10设计并实现-systemc-web-查看器a-019)。
+- 用户提出用 Python 脚本 + 前端网页动画展示 SystemC 模块链接与运行周期；AI 给出设计并实现首版，关联 [D-026](archive/decisions.md#d-026)、[A-019](ai-log.md#2026-09-10设计并实现-systemc-web-查看器a-019)。
 - 新增 `scripts/scviz.py` 与 `scripts/scviz/`（model/sc_parser/events/webgen/template.html），零第三方依赖；生成 `web/stage1.html`（自包含，内嵌结构 + 事件 trace）。
 - 验证：对作业 1 源码运行后解析得到 top=System、模块 m_clk/m_parser/m_transform/m_compute/m_output（拓扑序）、7 根连线（4 时钟 + 3 FIFO）、8 条任务、end_cycle=79，与 stage1-stats.csv 一致；生成 HTML 经 Node 校验 JS 语法通过。未在浏览器中人工目测动画（沙箱无图形浏览器），视觉与交互效果待用户打开确认。
-- 设计文档见 [web-viewer.md](web-viewer.md)；生成物 `/web/` 加入 .gitignore，按命令重建。
+- 设计文档见 [web-viewer.md](archive/web-viewer.md)；生成物 `/web/` 加入 .gitignore，按命令重建。
 
 ## 2026-09-10：提交导出脚本与最终设计文档初稿
 
@@ -380,7 +380,7 @@
 
 - 应"生成 1~4 的网页看看效果"，把查看器推广到四个阶段：解析器新增 `sc_signal` 握手连线、`sc_vector` 向量端口/通道展开、计算扇出的循环/指针数组绑定展开、`ready`/`base` 背压反向边识别，事件载入兼容阶段 2～4 的新增结构事件（`link`/`compute_unit`/`reorder_*`/`window_store` 等）。修正三处自身缺陷：数组模板嵌套尖括号解析失败、带 `{"label"}` 的信号通道漏检、布局把前向边误判为反向边。
 - 生成 `web/stage1..4.html` 及 `web/index.html`（`web/` 已 gitignore，按命令重建）。已核对：各页模块/连线/方向/背压边与源码一致（stage2 握手、stage3 扇出与重排、stage4 事件模型无共享时钟），JS 语法经 Node 校验通过；动画视觉仍待用户在浏览器确认。
-- 文档更新 [web-viewer.md](web-viewer.md)；设计取舍见 [D-026](decisions.md#d-026)。
+- 文档更新 [web-viewer.md](archive/web-viewer.md)；设计取舍见 [D-026](archive/decisions.md#d-026)。
 
 
 ## 2026-09-11：解释作业2阻塞统计的含义
@@ -391,11 +391,19 @@
 
 ## 2026-09-11：FIFO 与握手的数据对照和选型
 
-- 新增 [证据与选型说明](fifo-handshake-evidence.md)，核对历史 Stage1/2 三组输入输出哈希、容量/输出节拍扫描与慢输出时间线；参考 AMD 官方文档解释弹性缓冲和异步 FIFO。
+- 新增 [证据与选型说明](archive/fifo-handshake-evidence.md)，核对历史 Stage1/2 三组输入输出哈希、容量/输出节拍扫描与慢输出时间线；参考 AMD 官方文档解释弹性缓冲和异步 FIFO。
 - 仅文档分析，未运行新模型测试；结论区分已有实测与未覆盖场景，其他工作区修改不纳入提交。
 
 ## 2026-09-11：按开源审美实施 A 类风格修改（全阶段）
 
-- 实施审查 A 类 1～8 项：[[nodiscard]] 查询函数、operator== 自由函数+!=、static→匿名命名空间、write*Stats 断言去重、消息改写、事件名 string_view、include 字母序、using 声明标注；[逐项记录](review-fixes.md)。
+- 实施审查 A 类 1～8 项：[[nodiscard]] 查询函数、operator== 自由函数+!=、static→匿名命名空间、write*Stats 断言去重、消息改写、事件名 string_view、include 字母序、using 声明标注；[逐项记录](archive/review-fixes.md)。
 - [[nodiscard]] 抓到 model_entry.cpp 丢弃返回值；verify.cpp nullptr 用例随契约更新，首轮构建即段错误暴露后修复。
 - 四环境验证（Linux/Windows PowerShell 各 Debug+Release）均 25/25、零警告；正常输出逐字节不变，仅非法参数消息文本变化。代码与证据本地提交。
+
+## 2026-09-11：按三方面要求精简融合文档
+
+- 用户要求精简过多设计文档，协作记录按题目三方面组织。实施：31 个历史文档 git mv 到 docs/archive/（原文保留，附 README 说明去向），顶层仅留 8 个（ai-log、coding-style、final-design、learning-log、metrics-results、process、status、work-log）。
+- 重写 [ai-log.md](ai-log.md)：按「向 agent 提出的重要设计要求（18 条时间线）／对 agent 方案的主要修改（9 例）／发现 agent 实现问题时的判断与处理（原则＋B-006/B-011 主动案例＋三轮审查＋AI 自身错误表）」组织，融合原 decisions/defects/review-fixes/engineering-audit 的协作内容；process.md 同步新分工，status.md 重写为完成态。
+- 全库链接核查修复：保留文档指向归档文档的链接加 archive/ 前缀（learning-log 15 处、work-log/metrics-results/final-design/coding-style 若干）；归档文档指向顶层与 evidence 的相对路径上调一级；发现并修复 3 个 evidence 文件回链已归档文档的断链（此前未被检查覆盖）。
+- 导出脚本同步：docs 顶层＋archive 整体导出，docs/evidence 全量复制使导出包内全部文档链接有效（暴露并修复了此前导出包 evidence 断链的历史缺口）；补充 profile_model.py；README 映射计数改为动态。仓库与导出包链接检查均 ALL OK。
+- 融合取舍为 AI 方案：三方面的条目选取与摘录粒度待用户审阅；原文均在 archive/ 与 Git 历史，未静默删改。

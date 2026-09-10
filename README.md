@@ -43,14 +43,13 @@ cmake --build build-linux --parallel 4
 ctest --test-dir build-linux --output-on-failure
 ```
 
-两套环境共用同一源码和测试，产物目录均已加入 .gitignore；双环境完整验证日志见 [docs/evidence/dual-environment/](docs/evidence/dual-environment/)。模型运行示例见[流水线](docs/stage1-run.md)、[握手](docs/stage2-run.md)和[双实例保序](docs/stage3-run.md)。
+两套环境共用同一源码和测试，产物目录均已加入 .gitignore；双环境完整验证日志见 [docs/evidence/dual-environment/](docs/evidence/dual-environment/)。模型运行示例见[流水线](docs/archive/stage1-run.md)、[握手](docs/archive/stage2-run.md)和[双实例保序](docs/archive/stage3-run.md)。
 
 ## 文档
 
-- **理解模型**：[SystemC 入门](docs/day01.md) · [架构设计](docs/final-design.md) · [职责分层](docs/model-structure.md)
-- **观察与优化**：[Trace 可视化](docs/trace-viewer.md) · [任务统计](docs/task-statistics.md) · [架构优化分析](docs/stages1-3-optimization-review.md)
-- **学习与复盘**：[学习记录](docs/learning-log.md) · [设计决策](docs/decisions.md) · [缺陷记录](docs/defects.md)
-- **持续演进**：[工作日志](docs/work-log.md) · [AI 协作记录](docs/ai-log.md) · [记录方式](docs/process.md)
+- **核心**：[最终设计](docs/final-design.md) · [实测结果](docs/metrics-results.md) · [项目状态](docs/status.md)
+- **协作与过程**：[AI 协作记录](docs/ai-log.md)（设计要求/方案修改/问题处理三方面） · [工作日志](docs/work-log.md) · [学习记录](docs/learning-log.md) · [记录方式](docs/process.md)
+- **历史归档**：各阶段设计规格、双模型对比、工具说明等见 [docs/archive/](docs/archive/)
 
 ## 依赖
 

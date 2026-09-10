@@ -57,4 +57,4 @@ scripts/scviz/model.py    数据模型 dataclass
 - 布局为单行数据流 + 下方反馈弧，复杂层级（嵌套子模块递归展开）未逐层展开。
 - 后续可选：libclang 精确解析、VCD 波形接入（已有 `day01_basics.vcd`）、TLM-2.0 socket 图。
 
-设计取舍与协作记录见 [decisions.md](decisions.md) / [ai-log.md](ai-log.md)。
+设计取舍与协作记录见 [decisions.md](decisions.md) / [ai-log.md](../ai-log.md)。

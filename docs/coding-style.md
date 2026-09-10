@@ -25,7 +25,7 @@
 - 默认 runtime_error；非法参数可选 invalid_argument，内部不变量可选 logic_error。保留有诊断价值的错误说明。
 - 不重定义标准 assert；不在可被 NDEBUG 消除的断言中执行 nb_read/nb_write 等业务操作。
 - 纯查询/全域合法计算无需虚构断言；头文件记录参数单位、借用寿命、调用约束和异常，保留时序说明。
-- 实施范围、例外和验证见 [命名与运行时契约](code-contracts.md)。
+- 实施范围、例外和验证见 [命名与运行时契约](archive/code-contracts.md)。
 
 ## 2026-09-09：头文件接口注释
 
@@ -37,5 +37,5 @@
 ## 2026-09-09：Model 分层补充
 
 - 前述 TestEventLog 命名被 EventRecorder 替代：该观察器同时承载正式任务统计，成员引用为 m_recorder；纯测试流仍为 m_testStream。
-- 模块观测计数统一归入 m_statistics，硬件控制状态保留在模块中；共享数值运算和延迟规则见 [Model 分层](model-structure.md)。
+- 模块观测计数统一归入 m_statistics，硬件控制状态保留在模块中；共享数值运算和延迟规则见 [Model 分层](archive/model-structure.md)。
 - clang-format 关闭 ReflowComments，避免自动重排破坏头文件 ASCII 接口图。

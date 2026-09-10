@@ -4,7 +4,7 @@
 
 ## 数据支持什么
 
-来源：[运行明细](evidence/metrics-matrix/runs.csv)，run_id 2/8、4/10、6/12；每对输入与输出 SHA256 相同。默认 D=2、输出间隔 P=1、单 Compute。Stage1 比 Stage2 多一条 Transform→Compute FIFO，因此是两套实际架构的比较，不是相同存储容量下只改协议。
+来源：[运行明细](../evidence/metrics-matrix/runs.csv)，run_id 2/8、4/10、6/12；每对输入与输出 SHA256 相同。默认 D=2、输出间隔 P=1、单 Compute。Stage1 比 Stage2 多一条 Transform→Compute FIFO，因此是两套实际架构的比较，不是相同存储容量下只改协议。
 
 | 输入 | Stage1 总周期 | Stage2 总周期 | Stage1 端到端 P95 | Stage2 端到端 P95 |
 |---|---:|---:|---:|---:|
@@ -14,9 +14,9 @@
 
 单任务支持当前实现减少一拍传输。长流总时间仅差一拍，吞吐几乎相同；P95 大幅下降还包括队列容量和进入模型时刻的影响，不能全部归因为少一拍传输。端到端从 Parser 成功发送开始，不含进入模型前等待。普通 FIFO 也有直通等变体，不能推广成所有 FIFO 必然多一拍。
 
-[Stage2 深度扫描](evidence/metrics-matrix/a2_depth.csv)：同一万条混合任务，P=1，D=1/2/8/32 时，总周期均为 476083，吞吐均约 0.021005 任务/周期，端到端 P95 分别为 202/251/545/1705 周期。这里 D 同时改变 Parser→Transform 与 Compute→Output 两条 FIFO，不是单独扫描已移除的中间 FIFO。支持当前饱和计算场景中增加缓冲不提高吞吐、更多任务进入模型内排队；不能据此声称所有负载都无需 FIFO。
+[Stage2 深度扫描](../evidence/metrics-matrix/a2_depth.csv)：同一万条混合任务，P=1，D=1/2/8/32 时，总周期均为 476083，吞吐均约 0.021005 任务/周期，端到端 P95 分别为 202/251/545/1705 周期。这里 D 同时改变 Parser→Transform 与 Compute→Output 两条 FIFO，不是单独扫描已移除的中间 FIFO。支持当前饱和计算场景中增加缓冲不提高吞吐、更多任务进入模型内排队；不能据此声称所有负载都无需 FIFO。
 
-[Stage2 输出节拍扫描](evidence/metrics-matrix/a2_period.csv)：(48,18) × 10000，D=2。
+[Stage2 输出节拍扫描](../evidence/metrics-matrix/a2_period.csv)：(48,18) × 10000，D=2。
 
 | 输出间隔 P | 总周期 | 吞吐（任务/周期） | 结果等待周期 | 端到端 P95 |
 |---:|---:|---:|---:|---:|
@@ -27,7 +27,7 @@
 
 P=1→16 吞吐下降约 56.25%，证实输出速度不足会造成结果等待、限制系统吞吐。稳态接受率近似 1/max(7,P)，有限运行有启动/排空成本，不能写成所有测点精确相等。
 
-[慢输出时间线](evidence/metrics-matrix/timeline_slow_sink.csv)，24 个短任务、P=8、D=2：任务 10 在 80 完成、81 写出，任务 11 在 82 接收；后续 Compute 接收间隔达到 8 周期，Parser 后期发送时刻为 115、123、131、139、147，也间隔 8 周期。说明结果背压传播到上游。它不是 Stage1/Stage2 首次阻塞时刻的成对对照。
+[慢输出时间线](../evidence/metrics-matrix/timeline_slow_sink.csv)，24 个短任务、P=8、D=2：任务 10 在 80 完成、81 写出，任务 11 在 82 接收；后续 Compute 接收间隔达到 8 周期，Parser 后期发送时刻为 115、123、131、139、147，也间隔 8 周期。说明结果背压传播到上游。它不是 Stage1/Stage2 首次阻塞时刻的成对对照。
 
 ## 选型建议（工程推论，非新增实验）
 

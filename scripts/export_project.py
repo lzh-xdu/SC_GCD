@@ -36,7 +36,7 @@ from pathlib import Path
 
 IGNORE_PATTERNS = shutil.ignore_patterns("__pycache__", "*.pyc", "*.pyo")
 BUILD_SCRIPTS = ("setup.ps1", "build-test.ps1")
-MEASUREMENT_SCRIPTS = ("run_metrics_matrix.py", "metrics_svg.py")
+MEASUREMENT_SCRIPTS = ("run_metrics_matrix.py", "metrics_svg.py", "profile_model.py")
 
 
 def digest(path: Path) -> str:
@@ -106,18 +106,21 @@ def count_files(folder: Path) -> int:
 
 
 def write_readme(export: Path, log: list[str], options) -> int:
+    docs_count = count_files(export / "docs")
     mapping = [
         ("1. 所有 SystemC 源代码", "src/", count_files(export / "src")),
         ("2. 编译脚本或 CMakeLists.txt", "CMakeLists.txt、.clang-format、scripts/（setup.ps1、build-test.ps1）",
          count_files(export / "scripts") + 2),
-        ("3. 测试输入", "tests/（用例输入与期望输出、验证脚本）；tests/metrics-inputs/（13 个性能场景输入）",
+        ("3. 测试输入", "tests/（用例输入与期望输出、验证脚本）；tests/metrics-inputs/（性能场景输入）",
          count_files(export / "tests")),
         ("4. 功能输出结果", "results/functional/（每个测量配置一份，每行一个最终 GCD）",
          count_files(export / "results" / "functional")),
         ("5. 性能统计结果",
-         "results/performance/runs/（每配置统计 CSV）、summary/（汇总表、图、时间线）、evidence/（历史测量证据）",
-         count_files(export / "results" / "performance")),
-        ("6. 设计文档", "docs/（38 个 .md，含最终设计与实测报告）", count_files(export / "docs")),
+         "results/performance/runs/（每配置统计 CSV）与 summary/（汇总表、图、时间线）；"
+         "原始测量证据在 docs/evidence/（与文档链接一致）",
+         count_files(export / "results" / "performance") + count_files(export / "docs" / "evidence")),
+        ("6. 设计文档", f"docs/（{docs_count} 个 .md：最终设计、实测结果、AI 协作记录等；历史文档在 docs/archive/）",
+         docs_count),
     ]
     total = sum(count for _, _, count in mapping)
     lines = [
@@ -142,8 +145,9 @@ def write_readme(export: Path, log: list[str], options) -> int:
         "├── src/                   SystemC 源代码：common/ model/(functional|timing|instrumentation) stage1~4",
         "├── tests/                 测试脚本、用例输入与期望输出；metrics-inputs/ 性能场景输入",
         "├── results/functional/    功能输出结果（文件名＝运行配置标签）",
-        "├── results/performance/   runs/ 每配置统计 CSV；summary/ 汇总表与图；evidence/ 历史证据",
-        "└── docs/                  设计文档（final-design.md 为最终设计，metrics-results.md 为实测报告）",
+        "├── results/performance/   runs/ 每配置统计 CSV；summary/ 汇总表与图",
+        "├── docs/                  设计文档（final-design.md 最终设计、ai-log.md 协作记录、",
+        "│                          metrics-results.md 实测报告；evidence/ 原始证据，archive/ 历史文档）",
         "```",
         "",
         "结果文件命名：`<model>-<case>-D<depth>-P<period>[-R<result_depth>[-W<window>-S<seed>]]-trace|notrace`，",
@@ -234,16 +238,13 @@ def main():
 
     stats = export / "results" / "performance"
     copy_tree(evidence / "metrics-matrix", stats / "summary", "metrics summary", log)
-    for item in sorted(evidence.iterdir()) if evidence.is_dir() else []:
-        if item.name == "metrics-matrix":
-            continue
-        if item.is_dir():
-            copy_tree(item, stats / "evidence" / item.name, f"evidence {item.name}", log)
-        else:
-            copy_file(item, stats / "evidence" / item.name, "evidence file", log)
+    # Full evidence tree keeps every docs/ link (and archive/ links) valid in
+    # the export; metrics-matrix is intentionally also exposed as summary/.
+    copy_tree(evidence, export / "docs" / "evidence", "evidence tree", log)
 
     for item in sorted(root.joinpath("docs").glob("*.md")):
         copy_file(item, export / "docs" / item.name, "design doc", log)
+    copy_tree(root / "docs" / "archive", export / "docs" / "archive", "archived design docs", log)
 
     total = write_readme(export, log, options)
     print("\n".join(entry for entry in log if not entry.startswith("OK"))

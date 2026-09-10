@@ -36,4 +36,4 @@ ctest --test-dir build -R stage4_initial_equivalence --output-on-failure
 
 Release/Debug 均构建成功、全量 CTest 13/13 通过。每种配置对原模型与新模型分别运行 31 个有效场景及 9 类非法输入，包含 Trace 开关检查、窗口 1/2/8、种子 1/7/42、背压、乱序完成和有序输出；两者各 276 份生成文件逐字节一致（包含输入、结果、事件、统计及汇总，不代表 276 个独立测试场景）。
 
-记录见 [初始版本验证](evidence/stage4-initial/validation.md)。本轮未测量主机仿真提速，未产生作业 4 的真实缺陷案例。下一步先明确事件唤醒与同拍行为，再逐个模块改造；初始版本提交作为后续对照点。
+记录见 [初始版本验证](../evidence/stage4-initial/validation.md)。本轮未测量主机仿真提速，未产生作业 4 的真实缺陷案例。下一步先明确事件唤醒与同拍行为，再逐个模块改造；初始版本提交作为后续对照点。

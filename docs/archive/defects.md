@@ -73,7 +73,7 @@
 - 实际：依赖配置尝试导出 Windows 用户包注册表，产生拒绝访问警告。
 - 修正：设置 CMAKE_EXPORT_NO_PACKAGE_REGISTRY，继续使用工程内依赖。
 - 验证：重新配置无该警告，增量构建及 CTest 通过。
-- 证据：[CMakeLists.txt](../CMakeLists.txt)、工作日志。
+- 证据：[CMakeLists.txt](../../CMakeLists.txt)、工作日志。
 
 ## 阶段 3 主动场景：待设计与执行
 
@@ -94,7 +94,7 @@
 ## 2026-09-09：重构遗漏统计字段访问（已修正）
 
 - 将 Compute 计数集中到 m_statistics 后，Release 编译暴露双实例报告仍按旧指针字段读取；首次构建退出 1。
-- 定位、原始错误摘录、修正及两种构建回归证据见 [Model 分层验证](evidence/model-structure-validation.md)。另同步窗口占用观察的派发计数访问。
+- 定位、原始错误摘录、修正及两种构建回归证据见 [Model 分层验证](../evidence/model-structure-validation.md)。另同步窗口占用观察的派发计数访问。
 - 版本为基线 0df1381 加本轮重构，修复与记录同提交；这是 AI 重构编译缺陷，不计为硬件设计缺陷案例。
 
 ## B-009：Parser 事件迁移暴露日志比较过度约束
@@ -103,7 +103,7 @@
 - 触发：将初版 Parser 的 SC_METHOD 改为无时钟 SC_THREAD 后，主动运行新旧等价对照；基线 1f252ab 加本轮 Parser/System 改动，Release，默认窗口 8/种子 1/FIFO 2，basic 输入。
 - 预期：事件内容、时间点、结果和统计一致；原测试另外要求 CSV 全局行序相同。实际 basic/events.csv 断言失败（CTest 退出 8），同拍 parser_send 与 transform_accept 等行交换；29 个场景存在行序差异，其余结果与统计不变。
 - 原因：独立进程的同拍执行顺序不是模块间因果协议；逐字节日志断言对初始复制适用，对进程迁移过度约束。
-- 修正：Parser 事件流、剩余事件流分别严格比较，完整时间序列必须非递减；保留全部功能、握手、容量和统计断言。原始日志、两份 basic 事件及回归见 [验证记录](evidence/stage4-parser/validation.md)。
+- 修正：Parser 事件流、剩余事件流分别严格比较，完整时间序列必须非递减；保留全部功能、握手、容量和统计断言。原始日志、两份 basic 事件及回归见 [验证记录](../evidence/stage4-parser/validation.md)。
 - 回归：Release/Debug 全量各 14/14；最终强化时间非递减检查后阶段 4 各 2/2。未宣称整个事件模型完成。
 
 ## B-010：事件调度诊断与旧日志整文件比较冲突
@@ -111,7 +111,7 @@
 - 2026-09-10，测试适配问题，已修复；不计为作业 4 处理器缺陷案例。
 - 触发：d78a477 加本轮全系统事件迁移后，Release 执行 `ctest --test-dir build -R stage4 --output-on-failure`。basic 默认配置结果/统计/事件均一致，原测试仍报告 basic/run.log 差异并退出 8。
 - 实际额外内容为 `EVENT_SCHEDULER activations=33 max_jump_cycles=7`；该诊断描述实现开销，不属于硬件输出或时序语义。期望应为正式结果及原诊断一致，并单独核查新诊断。
-- 修正只过滤新增诊断行参与旧日志比较，新边界测试明确解析并断言批次与跳跃；没有忽略正式结果、统计、事件时间或错误诊断。原始失败及最终双配置 15/15 证据见 [验证记录](evidence/stage4-events/validation.md)。
+- 修正只过滤新增诊断行参与旧日志比较，新边界测试明确解析并断言批次与跳跃；没有忽略正式结果、统计、事件时间或错误诊断。原始失败及最终双配置 15/15 证据见 [验证记录](../evidence/stage4-events/validation.md)。
 
 ## B-011：详细 Trace 使事件模型更慢且内存增长
 
@@ -121,7 +121,7 @@
 - 复现：构建 stage3_window_profile/stage4_profile 后，运行 `python scripts/compare_model_performance.py --cases mixed_small_off mixed_trace --report tmp/reproduce-b011`。预热各 1 次、串行交替各 7 次正式测量。
 - 预期与实际：功能/系统时间/统计要求一致且实际满足。AI 性能假设为减少内核推进可能节省耗时；实际 Trace on 时事件入口耗时中位数 32.317 ms，高于时钟模型 25.518 ms（约慢 26.6%）；工作集 11.86 对 5.65 MiB。Trace off 同输入则为 5.388 对 12.276 ms（事件快 2.28×）。同样的 2.01 MiB 日志逐字节一致；delta 轮次 15,531 对 95,307，不能解释为更多模拟工作。
 - 定位：stage4 EventRecorder::append 为行构造字符串并缓存在 vector，repeat 展开区间，flushTrace 使用 stable_sort 后写出；stage3 直接写流。这是与实测相符的设计解释，尚未分离各函数、分配和 I/O 的耗时贡献。
-- 原始证据：[主实验样本](evidence/model-comparison/samples.jsonl)、[同输入控制样本](evidence/model-comparison/trace-controls/samples.jsonl)、[完整报告](model-comparison.md)；七次结果/统计哈希稳定。未制造功能失败或修改数据挑选最好一次。
+- 原始证据：[主实验样本](../evidence/model-comparison/samples.jsonl)、[同输入控制样本](../evidence/model-comparison/trace-controls/samples.jsonl)、[完整报告](model-comparison.md)；七次结果/统计哈希稳定。未制造功能失败或修改数据挑选最好一次。
 - 修正建议（未实施）：改为按事件批次增量输出，或用区间表示长阻塞，在测试端归一化。需保留正确时间点、次数和顺序。
 - 回归状态：本轮只测量并验证包装入口等价，原模型未改；Release CTest 15/15。未声称优化已完成，内存/耗时限制仍存在。
 

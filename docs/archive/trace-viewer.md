@@ -56,4 +56,4 @@ F/Q/O 包含 sc_fifo 固有的下一沿可读延迟，不能全算成可消除�
 
 CSV 无主机耗时、delta 次数、进程唤醒次数和 FIFO 容量，因此不能展示主机模拟速度、精确满载率或 Parser 每次失败发送。以后比较作业 4，需相同输入、构建配置和 trace 开关下重复测量实际耗时；播放速度不是仿真性能。本轮不提前实现后续阶段。
 
-验证见 [验证记录](evidence/stage1/trace-viewer-validation.md)。查看器只读输入，不改动模型。
+验证见 [验证记录](../evidence/stage1/trace-viewer-validation.md)。查看器只读输入，不改动模型。

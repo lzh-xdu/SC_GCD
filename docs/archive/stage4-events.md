@@ -40,8 +40,8 @@ Release/Debug 各 CTest 15/15。每种配置包括既有 31 个有效场景及 9
 | window_slow_sink | 611 | 611 | 210 |
 | long_sink（输出周期 1,000,000） | 1,000,000 | 1,000,000 | 8 |
 
-完整 [Release 对照](evidence/stage4-events/release-cycles.csv)、[Debug 对照](evidence/stage4-events/debug-cycles.csv) 和 [新增边界对照](evidence/stage4-events/release-scheduler.csv)。长等待最大一次跨越 999,988 周期，作为没有固定周期轮询的回归断言。
+完整 [Release 对照](../evidence/stage4-events/release-cycles.csv)、[Debug 对照](../evidence/stage4-events/debug-cycles.csv) 和 [新增边界对照](../evidence/stage4-events/release-scheduler.csv)。长等待最大一次跨越 999,988 周期，作为没有固定周期轮询的回归断言。
 
-本轮没有观察到处理器功能/时序缺陷；首次测试失败来自新增诊断行与旧日志整文件比较冲突，原始证据保留在 [验证记录](evidence/stage4-events/validation.md)。不将这一测试比较问题当作作业 4 的处理器缺陷案例。真实缺陷案例、正式主机耗时/开销性能比较及用户理解验收仍待完成；事件批次减少不能单独证明主机运行更快。
+本轮没有观察到处理器功能/时序缺陷；首次测试失败来自新增诊断行与旧日志整文件比较冲突，原始证据保留在 [验证记录](../evidence/stage4-events/validation.md)。不将这一测试比较问题当作作业 4 的处理器缺陷案例。真实缺陷案例、正式主机耗时/开销性能比较及用户理解验收仍待完成；事件批次减少不能单独证明主机运行更快。
 
 后续进展（同日）：已完成 [两模型效率与开销实测](model-comparison.md)，包括无 Trace 和有 Trace 的收益/退化。实测暴露 B-011：详细 Trace 下事件模型更慢且内存增加，作为真实性能设计问题记录，优化待完成；上述段落保留初始迁移时的状态。

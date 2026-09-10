@@ -9,7 +9,7 @@
 | `ctest --test-dir build --output-on-failure` | 13/13，退出 0 |
 | `ctest --test-dir build/debug --output-on-failure` | 13/13，退出 0 |
 
-新增 `stage4_initial_equivalence` 调用 `tests/stage4/compare_initial.py`，分别运行既有独立数值/边沿/握手/容量检查，然后比较生成文件集合及内容。两种配置各 276 份文件一致；覆盖范围见 [初始版本](../../stage4-initial.md)。失败会保留生成文件供定位；本轮没有构建或测试失败。
+新增 `stage4_initial_equivalence` 调用 `tests/stage4/compare_initial.py`，分别运行既有独立数值/边沿/握手/容量检查，然后比较生成文件集合及内容。两种配置各 276 份文件一致；覆盖范围见 [初始版本](../../archive/stage4-initial.md)。失败会保留生成文件供定位；本轮没有构建或测试失败。
 
 原始测试摘要：[Release](release-tests.log)、[Debug](debug-tests.log)；等价断言输出见 [comparison.txt](comparison.txt)。完整运行产物在被忽略的 `build/stage4-initial-tests/` 与 `build/debug/stage4-initial-tests/`，可用上述命令重建。
 

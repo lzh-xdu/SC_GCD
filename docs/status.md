@@ -1,34 +1,28 @@
 # 项目状态
 
-更新：2026-09-10。
+更新：2026-09-11。
 
-完整需求、验收和预算见 [总体计划](master-plan.md)。21 小时为初始预算，实际剩余时间尚未统计。
+四阶段均已实现并实测；完整需求与预算背景见 [archive/master-plan.md](archive/master-plan.md)（初始计划，历史保留）。文档已于 2026-09-11 精简融合，协作记录集中在 [ai-log.md](ai-log.md)，技术设计见 [final-design.md](final-design.md)。
 
 | 阶段 | 当前状态 | 验收证据/欠缺 |
 |---|---|---|
-| 环境与学习 | 最小工程已验证，学习进行中 | 首次构建和 1/1 CTest 通过，见工作日志；候选人尚未独立修改并验证示例 |
-| 作业 1 | 扩展验证通过，待用户理解审阅 | 输出分离、24 个有效场景/1434 项任务、14 类非法输入，Release/Debug 各 CTest 2/2；见 stage1-test-matrix.md，不等于理解验收完成 |
-| 作业 2 | 已实现且独立验证，待理解审阅 | valid/ready/data、保持与阻塞统计；Debug 全 CTest 3/3，Release 新阶段通过，见 stage2-run.md |
-| 作业 3 | 旧轮转与新择闲窗口均验证，待理解审阅 | 新方案、先测旧基线、收益/退化及容量对照见stage3-window.md；Debug全6/6；原B-006证据保留 |
-| 作业 4 | 事件模型与本机效率/开销实测完成（2026-09-10） | 31+4 场景等价；新增 10 配置、140 次正式性能测量，记录 Trace 性能/内存设计问题 B-011；见 [实测对比](model-comparison.md)。Trace 优化及用户理解验收待完成，不等于无条件提速或跨机器性能结论 |
+| 环境与学习 | 双工具链（Windows MinGW / WSL GCC）构建验证，学习进行中 | 两环境 Release/Debug 各 25/25、零警告，见 [evidence/dual-environment/](evidence/dual-environment/) |
+| 作业 1 | 扩展验证通过，待用户理解审阅 | 输出分离、24 个有效场景/1434 项任务、14 类非法输入；见 [archive/stage1-test-matrix.md](archive/stage1-test-matrix.md)，不等于理解验收完成 |
+| 作业 2 | 已实现且独立验证，待理解审阅 | valid/ready/data、保持与阻塞统计；见 [archive/stage2-run.md](archive/stage2-run.md) |
+| 作业 3 | 旧轮转与新择闲窗口均验证，B-006 主动案例完成 | 收益/退化及容量对照见 [archive/stage3-window.md](archive/stage3-window.md)；案例见 [ai-log.md](ai-log.md) §三 |
+| 作业 4 | 事件模型等价验证与双平台效率/开销实测完成 | 31+4 场景等价、140 次正式测量；B-011 主动案例完成（Trace 性能/内存问题，优化未实施）。见 [metrics-results.md](metrics-results.md) §4 与 [archive/model-comparison.md](archive/model-comparison.md) |
+| 指标矩阵 | 2026-09-10 完成（75 次运行＋160 次主机测量） | [metrics-results.md](metrics-results.md) 与 [evidence/metrics-matrix/](evidence/metrics-matrix/)；满载占比与窗口驻留分布未实施 |
 
-## 待定设计
+## 待定事项
 
-本阶段计时边界、缓冲、零输入、统计规则已作为 AI 首版实现选择写入 [四模块规格](stage1-design.md)，关联 D-007；待用户审阅。
+- 用户理解验收（逐模块解释代码）未完成；ai-log/learning-log 中的 AI 解释不代替候选人验收。
+- 作业 1～3 优化建议与 58 组配置探测见 [archive/stages1-3-optimization-review.md](archive/stages1-3-optimization-review.md)，未替换默认参数。
+- B-011 Trace 优化、乱序输出对照实验、缓冲满载占比等补充观测未实施。
 
 ## 提交与公开发布
 
-- 2026-09-06 已初始化本地项目 Git 仓库，分支 main；初始化前工作作为首个提交中的历史补记保留。
-- 用户指定远端：https://github.com/lzh-xdu/SC_GCD 。首次检查时为空仓库；现已有持续提交。本轮 2026-09-06 GitHub 元数据检查仍为 visibility=private。
-- 首次提交 `73407ee` 已推送到 origin/main；包含基础示例与历史补记、记录规则。后续持续按真实工作单元提交。
-- 沙箱内 Git 凭据及 .git 写入受限；经允许在用户环境执行并仅对本次命令指定 safe.directory 后，提交与推送成功，未修改全局 Git 配置。
-- 公开发布和可访问性验证：未完成。
-- 原题 PDF 不默认纳入发布内容；提交自己的实现、测试和设计记录。
+- 本地 Git 仓库分支 main；初始化前工作作为首个提交的历史补记保留。
+- 远端 https://github.com/lzh-xdu/SC_GCD 持续推送中；最近检查仍为 private，公开发布和匿名访问验证未完成。
+- 原题 PDF 不纳入发布内容；提交自己的实现、测试和设计记录。
 
-6.6 逐项审核及未完成项见 [工程审核](engineering-audit.md)。
-
-作业1～3进一步优化建议与58组配置探测见[优化审查](stages1-3-optimization-review.md)；本轮只分析，未替换默认模型或参数。
-
-2026-09-10：作业 1～4 指标矩阵实测完成（75 次模型运行＋160 次主机测量，Linux/WSL 进程口径；Windows 效率基线保留引用）。表图与证据见 [实测结果](metrics-results.md) 与 [evidence/metrics-matrix/](evidence/metrics-matrix/)；连续阻塞段已离线导出，满载占比与窗口驻留分布未实施。本轮未修改模型源码。
-
-2026-09-07：提交设计统一入口见 [最终设计](final-design.md)；各阶段新增 [统一任务延迟与阻塞原因](task-statistics.md)。
+6.6 逐项审核快照见 [archive/engineering-audit.md](archive/engineering-audit.md)（2026-09-06），后续完成项以上表为准。

@@ -36,7 +36,7 @@
 
 ## 4. 验证方法
 
-每次测量运行均用独立 `math.gcd` 参考校验输出值与顺序；CTest 25/25（Windows MinGW 与 WSL g++ 双工具链、Release/Debug）；作业 4 与作业 3 窗口模型按 9 场景比较输出文件与完整统计哈希一致、2 场景事件 Trace 逐字节一致；同配置重复运行及 Trace 开/关的统计哈希一致（确定性与被动观察者契约）。作业 3、4 各保留至少一个主动暴露的真实缺陷案例（B-006/B-011 等，见 [缺陷记录](defects.md)）。
+每次测量运行均用独立 `math.gcd` 参考校验输出值与顺序；CTest 25/25（Windows MinGW 与 WSL g++ 双工具链、Release/Debug）；作业 4 与作业 3 窗口模型按 9 场景比较输出文件与完整统计哈希一致、2 场景事件 Trace 逐字节一致；同配置重复运行及 Trace 开/关的统计哈希一致（确定性与被动观察者契约）。作业 3、4 各保留至少一个主动暴露的真实缺陷案例（B-006/B-011 等，见 [缺陷记录](archive/defects.md)）。
 
 ## 5. 主要实测发现（2026-09-10，Linux/WSL Release；详见 [实测结果](metrics-results.md)）
 
@@ -58,8 +58,7 @@
 
 | 主题 | 文档 |
 |---|---|
-| 各阶段设计 | [阶段1](stage1-design.md) · [阶段2](stage2-design.md) · [阶段3窗口](stage3-window.md) · [阶段4事件](stage4-events.md) |
-| 统计与实测 | [指标设计](metrics-presentation.md) · [实测结果](metrics-results.md) · [双模型对比](model-comparison.md) · [任务统计口径](task-statistics.md) |
-| 过程与质量 | [决策记录](decisions.md) · [缺陷记录](defects.md) · [工程审核](engineering-audit.md) · [状态](status.md) · [工作日志](work-log.md) |
+| 设计与实测 | [实测结果](metrics-results.md)（含 Windows 入口径基线摘要）；历史阶段规格与双模型报告见 [archive/](archive/) |
+| 协作与过程 | [AI 协作记录](ai-log.md)（三方面，含缺陷案例） · [状态](status.md) · [工作日志](work-log.md) · [记录方式](process.md) · [学习记录](learning-log.md) |
 
 提交导出：`python3 scripts/export_project.py` 生成根目录 `export/`，保持项目原始目录布局（CMakeLists.txt、src/、tests/、scripts/ 同级，构建脚本可直接使用），六类提交内容与目录的映射、一键构建/测试与结果复现命令写入生成的 `export/README.md`。
