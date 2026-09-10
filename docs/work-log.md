@@ -366,3 +366,9 @@
 - 新增 `scripts/scviz.py` 与 `scripts/scviz/`（model/sc_parser/events/webgen/template.html），零第三方依赖；生成 `web/stage1.html`（自包含，内嵌结构 + 事件 trace）。
 - 验证：对作业 1 源码运行后解析得到 top=System、模块 m_clk/m_parser/m_transform/m_compute/m_output（拓扑序）、7 根连线（4 时钟 + 3 FIFO）、8 条任务、end_cycle=79，与 stage1-stats.csv 一致；生成 HTML 经 Node 校验 JS 语法通过。未在浏览器中人工目测动画（沙箱无图形浏览器），视觉与交互效果待用户打开确认。
 - 设计文档见 [web-viewer.md](web-viewer.md)；生成物 `/web/` 加入 .gitignore，按命令重建。
+
+## 2026-09-10：提交导出脚本与最终设计文档初稿
+
+- 新增 `scripts/export_project.py`：一键把六类内容（SystemC 源码、编译配置、测试、功能输出、性能统计、设计文档）复制到根目录临时 `export/`（已加入 .gitignore，可随时重建）；自动生成 README 清单（生成时间、Git HEAD、目录说明、文件计数与复现命令）。实测导出 1128 个文件：68 个唯一运行配置的功能输出与统计、13 个场景输入、25 个汇总表/图。
+- 按用户要求重写 [最终设计](final-design.md)：压缩为概述/时序契约/决策/验证/实测发现/边界/索引七节，纳入四阶段完成态与实测结论；替代 2026-09-07「作业4待实现」版本（历史在 Git）。该文档为 AI 草稿，待用户审阅修订。
+- 修复导出脚本两处缺陷：profile 目录场景名提取用了原始目录名（误将模型名当场景）、内容去重把同名异内容写法颠倒；修复后按场景名各存一份并检测同名冲突。

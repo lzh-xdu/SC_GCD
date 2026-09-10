@@ -288,3 +288,9 @@
 - AI 实现过程中发现并修正一处自身缺陷：模块节点初始按类型名字典序排列，导致图从左到右是 Compute/Output/Parser/Transform，与数据流不符；改为按 FIFO 连线拓扑排序后才得到 Parser→Transform→Compute→Output。另修正 SVG 宽度不足裁掉最后一个模块的问题。
 - 待用户判断：render 方向（是否偏好真实 trace、是否要 VCD/libclang/TLM 扩展）；AI 方案尚未获用户批准，仅记为建议与已实施首版。
 - 证据：解析输出模块 7 根连线（4 时钟 + 3 FIFO）、8 条任务、end_cycle=79，与 stage1-stats.csv 一致；生成 HTML 经 Node 校验 JS 语法通过。详见 [web-viewer.md](web-viewer.md) 与 [decisions.md](decisions.md#d-026)。
+
+## 2026-09-10：导出脚本与最终设计文档（AI 方案，用户要求执行）
+
+- 用户要求写导出脚本并补最终设计文档。AI 方案：导出目录按六类内容分树（src/build/tests/results/docs）＋自生成 README 清单；运行配置按标签去重（profile 重复运行的输出已被 run_metrics_matrix.py 校验一致）；设计文档压缩为七节并把实测发现前置，替代过时的"待实现"版本，未删除原结论（Git 历史保留）。
+- AI 自查发现导出脚本两处缺陷（场景名取自未去前缀的目录名；内容去重在同名异内容时行为颠倒），已在同轮修复并重跑导出验证（68 配置/13 场景输入，无告警）。
+- 最终设计文档为 AI 起草，其取舍（如"实测发现"选取的六条）待用户审阅确认，未记为用户已批准。
