@@ -263,3 +263,9 @@
 - 用户确认 1～4 已修复后要求继续第二轮八项；AI 在 `9b34b47` 基线实施，范围仅 Stage4，逐项判断与验证见 [review-fixes](review-fixes.md)。
 - 对首轮审查结论的一处更正：compute.hpp 顶部两个 @brief 实为 @file 与 @class 各自摘要，属 Doxygen 惯例而非重复，未改；实际仅移动错位至 advance() 的注释。
 - 全部为结构性修改，用法字符串与统计输出逐字节不变（人工比对）。WSL 双配置 25/25、零警告；Windows 构建未重跑，不宣称等价于用户环境验收。
+
+
+## 2026-09-10：解释 Stage4 进程形式与调度选择
+
+- 用户质疑 SC_METHOD 改为 data 敏感是否即可去掉 clock；AI 对照实际代码，确认 Dispatcher::route 仍是 SC_METHOD，并说明完整事件方案还须处理完成期限、背压和原输入节拍。
+- 将集中调度明确为实现取舍而非 SystemC 限制；分散 SC_METHOD/事件方案为可行备选，未自动改写代码。学习结论见 [学习记录](learning-log.md#2026-09-10sc_method-与事件调度不是互斥选择)。

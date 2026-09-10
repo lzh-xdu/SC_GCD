@@ -341,3 +341,9 @@
 - 按用户要求实施审查意见 5～12：容量类型统一、重复信号读取、注释错位、EventRecorder const/mutable、Usage 字段、用法字符串常量化、内部不变量 logic_error、限定符一致；[逐项记录](review-fixes.md)。
 - WSL g++ 11.4 环境验证：Debug/Release 各 25/25 通过、-Wall -Wextra -Wpedantic 零警告；用法字符串与统计输出逐字节不变。Windows 侧构建与性能未重跑。
 - 本轮无新缺陷案例，仅风格与维护性修改，不改任何数值。代码与记录本地提交；工作区另有用户未提交的 constexpr 学习记录，随日志文件一并保留。
+
+
+## 2026-09-10：讲解 Stage4 的 SC_METHOD 与 advance
+
+- 核查 System::runEvents、Dispatcher::route、Compute 完成期限及 Parser 节拍；解释信号变化、事务事件与时间推进的区别，见 [学习记录](learning-log.md#2026-09-10sc_method-与事件调度不是互斥选择)。
+- 仅追加讲解记录；核对本地 SystemC 源码及 Accellera sc_wait.cpp，未修改模型或重跑测试。工作区其他改动保留，不纳入本轮提交。
