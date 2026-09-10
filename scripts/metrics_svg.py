@@ -171,8 +171,13 @@ def grouped_bar_chart(path, categories, series, *, ylabel, title, xlabel=None, l
     canvas.save(Path(path))
 
 
-def line_chart(path, xs, series, *, xlabel, ylabel, title, log_y=False, height=430, width=880):
-    """One polyline per series sharing the same x values."""
+def line_chart(path, xs, series, *, xlabel, ylabel, title, log_y=False, height=430, width=880, dashed=()):
+    """One polyline per series sharing the same x values.
+
+    Names listed in ``dashed`` draw with a dashed stroke so series that are
+    numerically almost identical (and would otherwise completely overlap)
+    remain visually distinguishable.
+    """
     canvas = _Canvas(width, height)
     axis = _Axis(72, 64, width - 20, height - 58, min(xs), max(xs), 0, 1, log_y)
     values = [v for vs in series.values() for v in vs if v > 0]
@@ -184,10 +189,11 @@ def line_chart(path, xs, series, *, xlabel, ylabel, title, log_y=False, height=4
     _draw_axes(canvas, axis, xlabel, ylabel, [(x, _fmt(x)) for x in xs])
     for column, (name, ys) in enumerate(series.items()):
         color = PALETTE[column % len(PALETTE)]
+        pattern = "7 5" if name in dashed else None
         points = [(axis.px(x), axis.py(y)) for x, y in zip(xs, ys)]
         if len(points) >= 2:
             for (x1, y1), (x2, y2) in zip(points, points[1:]):
-                canvas.line(x1, y1, x2, y2, stroke=color, width=2.2)
+                canvas.line(x1, y1, x2, y2, stroke=color, width=2.2, dash=pattern)
         for x, y in points:
             canvas.parts.append(
                 f"<circle cx='{x:.1f}' cy='{y:.1f}' r='4' fill='{color}'/>")

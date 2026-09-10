@@ -29,10 +29,10 @@
 <text x='229.6' y='119.1' font-size='10' font-family='sans-serif' text-anchor='middle' fill='#374151'>0.857</text>
 <text x='439.7' y='114.0' font-size='10' font-family='sans-serif' text-anchor='middle' fill='#374151'>0.875</text>
 <text x='860.0' y='96.2' font-size='10' font-family='sans-serif' text-anchor='middle' fill='#374151'>0.937</text>
-<line x1='72.0' y1='127.2' x2='124.5' y2='127.2' stroke='#dc2626' stroke-width='2.2'/>
-<line x1='124.5' y1='127.2' x2='229.6' y2='127.2' stroke='#dc2626' stroke-width='2.2'/>
-<line x1='229.6' y1='127.2' x2='439.7' y2='122.1' stroke='#dc2626' stroke-width='2.2'/>
-<line x1='439.7' y1='122.1' x2='860.0' y2='104.3' stroke='#dc2626' stroke-width='2.2'/>
+<line x1='72.0' y1='127.2' x2='124.5' y2='127.2' stroke='#dc2626' stroke-width='2.2' stroke-dasharray='7 5'/>
+<line x1='124.5' y1='127.2' x2='229.6' y2='127.2' stroke='#dc2626' stroke-width='2.2' stroke-dasharray='7 5'/>
+<line x1='229.6' y1='127.2' x2='439.7' y2='122.1' stroke='#dc2626' stroke-width='2.2' stroke-dasharray='7 5'/>
+<line x1='439.7' y1='122.1' x2='860.0' y2='104.3' stroke='#dc2626' stroke-width='2.2' stroke-dasharray='7 5'/>
 <circle cx='72.0' cy='127.2' r='4' fill='#dc2626'/>
 <circle cx='124.5' cy='127.2' r='4' fill='#dc2626'/>
 <circle cx='229.6' cy='127.2' r='4' fill='#dc2626'/>
@@ -47,5 +47,5 @@
 <text x='88.0' y='31.0' font-size='12' font-family='sans-serif' text-anchor='start' fill='#111827'>阻塞/有效 S/V</text>
 <rect x='193.5' y='21.0' width='12.0' height='12.0' fill='#dc2626' stroke='none'/>
 <text x='209.5' y='31.0' font-size='12' font-family='sans-serif' text-anchor='start' fill='#111827'>阻塞/全程 S/T</text>
-<text x='440.0' y='18.0' font-size='15' font-family='sans-serif' text-anchor='middle' fill='#111827' font-weight='bold'>作业2 输出节拍扫描：阻塞率 vs P</text>
+<text x='440.0' y='18.0' font-size='15' font-family='sans-serif' text-anchor='middle' fill='#111827' font-weight='bold'>作业2 输出节拍扫描：阻塞率 vs P（S/T 虚线，与 S/V 几乎重合）</text>
 </svg>

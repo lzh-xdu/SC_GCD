@@ -407,3 +407,8 @@
 - 全库链接核查修复：保留文档指向归档文档的链接加 archive/ 前缀（learning-log 15 处、work-log/metrics-results/final-design/coding-style 若干）；归档文档指向顶层与 evidence 的相对路径上调一级；发现并修复 3 个 evidence 文件回链已归档文档的断链（此前未被检查覆盖）。
 - 导出脚本同步：docs 顶层＋archive 整体导出，docs/evidence 全量复制使导出包内全部文档链接有效（暴露并修复了此前导出包 evidence 断链的历史缺口）；补充 profile_model.py；README 映射计数改为动态。仓库与导出包链接检查均 ALL OK。
 - 融合取舍为 AI 方案：三方面的条目选取与摘录粒度待用户审阅；原文均在 archive/ 与 Git 历史，未静默删改。
+
+## 2026-09-11：修复阻塞率图中重合序列的显示问题
+
+- 用户发现 a2_depth_blocked 图中 S/V 序列疑似为 0。核实数据无误（S/V 全深度恒 0.979、S/T 0.9789，两者仅差 0.01 个百分点），根因是两条折线数值几乎相同、像素级完全重叠，后画的 S/T 实线盖住了 S/V。
+- 修复：metrics_svg.line_chart 增加 dashed 参数，S/T 改虚线并在标题注明"与 S/V 几乎重合"；a2_depth/a2_period 两张阻塞率图从既有 CSV 重新生成（未重跑测量），run_metrics_matrix.py 同步该样式，导出包已刷新。
