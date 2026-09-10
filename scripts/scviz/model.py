@@ -28,6 +28,7 @@ class Wire:
     source_port: str = ""
     target_port: str = ""
     label: str = ""
+    back: bool = False  # closes a cycle (drawn as a feedback arc)
 
 
 @dataclass

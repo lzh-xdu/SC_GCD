@@ -19,11 +19,11 @@ python -B scripts/scviz.py `
          src/stage1/compute.hpp src/stage1/compute.cpp `
          src/stage1/output.hpp src/stage1/output.cpp `
   --events build/debug/stage1-events.csv `
-  --top System --clock-period 1.0 `
+  --top System --clock-period 1.0 --title "Stage 1" `
   --out web/stage1.html
 ```
 
-然后直接打开 `web/stage1.html`，或 `python -m http.server -d web` 后访问。
+阶段 2～4 需把跨阶段复用的头/实现一并传入（例：stage2 复用 stage1 的 Parser/Output；stage3 复用 stage2 的 Transform/Compute/Payload），事件 CSV 分别用 `build/stage2-tests/basic/events.csv`、`build/stage3-tests/basic/events.csv`、`build/stage4-initial-tests/baseline/basic/events.csv`。已在 `web/` 下生成 4 页及 `index.html` 导航。
 
 ## 页面内容
 
@@ -46,15 +46,15 @@ scripts/scviz/model.py    数据模型 dataclass
 
 ## 数据来源与真实性
 
-- **结构**：正则解析 `SC_MODULE`/`class X : public sc_module`、`sc_in/out/fifo_in/fifo_out/signal/clock` 成员、`instance.port(member)` 绑定、`record(…, "event")` 字符串字面量。事件名按"模块类型小写为前缀"自动归属到模块。
-- **周期**：直接使用真实仿真事件 CSV，不另做伪仿真器；区间 `[start, stop)` 与 `trace_tui.py` 完全一致，动画展示的是实际仿真时序而非推测。
+- **结构**：正则解析 `SC_MODULE`/`class X : public sc_module`、`sc_in/out/fifo_in/fifo_out/signal/clock` 成员（含 `sc_vector` 向量）、`instance.port(member)` 绑定及计算扇出的循环写法（`arr[i]->port(ch[i])`、`obj.port[i](...)`）。解析器先展开向量与循环，再把同一 FIFO/信号通道的 out→in 绑定合并为连线；信号中 `ready`/`base` 通道归为背压反向边（见局限）。事件名按"模块类型小写为前缀"自动归属。
+- **周期**：直接使用真实仿真事件 CSV，不另做伪仿真器；七个核心事件的区间 `[start, stop)` 与 `trace_tui.py` 一致，动画展示实际仿真时序而非推测。阶段 2～4 新增的结构事件（`link`/`compute_unit`/`reorder_*`/`window_store` 等）保留在周期读数与模块高亮中，不改变区间渲染。
 
 ## 局限与后续
 
-- 正则解析非 C++ 前端：只识别单标识符绑定 `a.b(x)`，不识别 TLM socket、`sc_port`、位置绑定、多重绑定 `bind()`。
-- 事件→模块靠名字前缀自动匹配，异构命名需手动映射（后续加 `--event-map`）。
-- 同类模块多实例时事件只能归属到第一个实例。
-- 布局为单行拓扑，复杂层级（嵌套子模块递归展开）与内部 `sc_signal` 节点暂未逐层展开。
+- 正则解析非 C++ 前端：只识别单标识符与本项目循环/向量绑定写法，不识别 TLM socket、`sc_port`、位置绑定、`bind()`。
+- 背压反向边按通道名启发式判定（`ready`/`base`），更通用的握手方向推断需语义分析。
+- 事件→模块靠名字前缀自动匹配，异构命名需手动映射；同类模块多实例（如两个 Compute）事件只能归属到类型层（高亮到第一个实例）。
+- 布局为单行数据流 + 下方反馈弧，复杂层级（嵌套子模块递归展开）未逐层展开。
 - 后续可选：libclang 精确解析、VCD 波形接入（已有 `day01_basics.vcd`）、TLM-2.0 socket 图。
 
 设计取舍与协作记录见 [decisions.md](decisions.md) / [ai-log.md](ai-log.md)。

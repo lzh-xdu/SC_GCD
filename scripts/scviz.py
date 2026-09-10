@@ -34,6 +34,7 @@ def parse_args(argv):
     parser.add_argument("--top", help="top module name (default: auto-detected)")
     parser.add_argument("--clock-period", type=float, default=1.0, help="clock period in ns")
     parser.add_argument("--out", required=True, help="output HTML path")
+    parser.add_argument("--title", default="SystemC Module Viewer", help="page title")
     return parser.parse_args(argv)
 
 
@@ -52,7 +53,7 @@ def main(argv=None):
             event_module[event] = module.type
     trace = events.load_events(args.events, event_module=event_module)
 
-    data = webgen.build_data(graph, trace)
+    data = webgen.build_data(graph, trace, title=args.title)
     template = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scviz", "template.html")
     html = webgen.render(template, data)
     webgen.write_output(args.out, html)

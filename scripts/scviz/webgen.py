@@ -4,10 +4,11 @@ import json
 import os
 
 
-def build_data(graph, trace):
+def build_data(graph, trace, title="SystemC Module Viewer"):
     """Combine the structural graph and event trace into one frontend payload."""
     return {
         "meta": {
+            "title": title,
             "top": graph.top,
             "clock": graph.clock,
             "clock_period_ns": graph.clock_period_ns,
@@ -29,6 +30,7 @@ def build_data(graph, trace):
             {
                 "from": w.source, "to": w.target, "kind": w.kind,
                 "from_port": w.source_port, "to_port": w.target_port, "label": w.label,
+                "back": w.back,
             }
             for w in graph.wires
         ],
