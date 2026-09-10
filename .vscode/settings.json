@@ -1,4 +1,6 @@
 {
+    // 机器相关工具链位置：换机器只需改这一个值。
+    // 其余 .vscode 文件均以 ${config:scGcd.toolchainBin} 引用，见 docs/archive/vscode-debug.md。
     "scGcd.toolchainBin": "C:/Strawberry/c/bin",
     "C_Cpp.clang_format_style": "file",
     "C_Cpp.default.cppStandard": "c++17",

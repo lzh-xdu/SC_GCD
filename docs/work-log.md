@@ -450,3 +450,9 @@
 - 在含未提交修改（event_recorder Trace 优化延续、fair-trace 证据、Windows 日志刷新）的工作区重跑 export_project.py：2082 个文件，零缺失零告警。
 - 验证：工作区 26/26 → 导出包挂 third_party 独立构建零警告、ctest 26/26；README 两条复现命令（stage1 混合、stage3_window 偏斜）输出与统计均逐字节一致；链接检查仅剩 1 处真实断链：perf-trace README 指向尚未编写的 fair-trace/README.md，待该轮工作收尾后补写并重导。
 - 导出后已清理验证用的 build/ 与 third_party 链接；本轮仅追加日志，未提交（避免与进行中的 fair-trace 修改混合）。
+
+## 2026-09-11：开源化收尾（LICENSE/CI/标签/.vscode 说明）
+
+- 按开源审美审查结论实施用户确认的 5 项：新增 MIT LICENSE（AI 默认选择待用户确认，换协议只需换此文件）；新增 GitHub Actions CI（Linux Release 构建+全量 ctest，SystemC 3.0.1 固定 commit 缓存，YAML 本地解析验证，命令与已验证的 Linux 路径一致）；在四个作业状态翻转为完成的提交上打 annotated 标签 stage1～stage4；.vscode/settings.json 注明换机只改 scGcd.toolchainBin 一处；删除根目录遗留的 day01_basics.vcd。
+- README 加 CI 徽章（私有仓库期间外部不可见）、MIT 声明与里程碑标签说明。文件头 All rights reserved 与 MIT 并存的表述张力未批量改写（340+ 文件），LICENSE 文件为许可依据。
+- 决策：保留 .vscode 提交（文档链 + 机器路径已集中化）；stage3_window 命名与 src 阶段复制保留为有意取舍。提交并推送 main 与全部标签。

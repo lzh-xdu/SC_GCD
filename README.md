@@ -1,5 +1,7 @@
 # SystemC 架构与仿真实践
 
+[![CI](https://github.com/lzh-xdu/SC_GCD/actions/workflows/ci.yml/badge.svg)](https://github.com/lzh-xdu/SC_GCD/actions/workflows/ci.yml)
+
 以 GCD 流式处理器为载体，学习 SystemC 建模、架构设计与仿真优化。通过逐步演进模型、验证时序、比较性能，记录设计取舍、调试过程与理解的成长。
 
 ## 探索方向
@@ -51,6 +53,12 @@ ctest --test-dir build-linux --output-on-failure
 - **协作与过程**：[AI 协作记录](docs/ai-log.md)（设计要求/方案修改/问题处理三方面） · [工作日志](docs/work-log.md) · [学习记录](docs/learning-log.md) · [记录方式](docs/process.md)
 - **历史归档**：各阶段设计规格、双模型对比、工具说明等见 [docs/archive/](docs/archive/)
 
-## 依赖
+## 依赖与许可
+
+本项目代码采用 [MIT 许可](LICENSE)（2026 SC_GCD contributors）。
 
 [Accellera SystemC](https://github.com/accellera-official/systemc) 固定为 3.0.1，采用 Apache-2.0 许可；详见依赖源码中的 LICENSE 与 NOTICE。
+
+## 里程碑
+
+四个作业各自验收通过时打有 git 标签：`stage1`、`stage2`、`stage3`、`stage4`（见 `git tag -l -n`）。

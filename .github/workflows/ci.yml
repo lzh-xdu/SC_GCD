@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out sources
+        uses: actions/checkout@v4
+
+      - name: Cache SystemC 3.0.1 source
+        uses: actions/cache@v4
+        with:
+          path: third_party/systemc
+          key: systemc-3.0.1-11ad094d282fd5330b27ab57f90f9d231a763da1
+
+      - name: Fetch pinned SystemC 3.0.1
+        run: |
+          if [ ! -f third_party/systemc/CMakeLists.txt ]; then
+            git clone --depth 1 --branch 3.0.1 https://github.com/accellera-official/systemc.git third_party/systemc
+          fi
+          test "$(git -C third_party/systemc rev-parse HEAD)" = 11ad094d282fd5330b27ab57f90f9d231a763da1
+
+      - name: Configure
+        run: >-
+          cmake -S . -B build
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_CXX_COMPILER=g++
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Build
+        run: cmake --build build --parallel 4
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
