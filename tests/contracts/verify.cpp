@@ -15,7 +15,7 @@ template <typename Exception, typename Action> void expectException(Action testA
     try {
         testAction();
     } catch (const Exception& testError) {
-        requireCondition(std::string(testError.what()) == testMessage, "unexpected exception message");
+        assertCondition(std::string(testError.what()) == testMessage, "unexpected exception message");
         return;
     }
     throw std::runtime_error("expected exception was not thrown");
@@ -23,11 +23,11 @@ template <typename Exception, typename Action> void expectException(Action testA
 
 void checkHelper() {
     int testEvaluations = 0;
-    requireCondition(++testEvaluations == 1, "condition evaluated more than once");
+    assertCondition(++testEvaluations == 1, "condition evaluated more than once");
     expectException<std::runtime_error>(
-        [&testEvaluations]() { requireCondition(++testEvaluations == 0, "runtime failure"); }, "runtime failure");
-    requireCondition(testEvaluations == 2, "failed condition evaluation count changed");
-    expectException<std::invalid_argument>([]() { requireCondition<std::invalid_argument>(false, "argument failure"); },
+        [&testEvaluations]() { assertCondition(++testEvaluations == 0, "runtime failure"); }, "runtime failure");
+    assertCondition(testEvaluations == 2, "failed condition evaluation count changed");
+    expectException<std::invalid_argument>([]() { assertCondition<std::invalid_argument>(false, "argument failure"); },
                                            "argument failure");
 }
 
@@ -61,7 +61,7 @@ void checkModule(const std::string& testCase) {
             [&testOutput, &testLog]() { stage1::Output testModule("output", testOutput, testLog, 1); },
             "output stream is not writable");
     } else {
-        requireCondition(testCase == "event", "unknown test case");
+        assertCondition(testCase == "event", "unknown test case");
         expectException<std::invalid_argument>([&testLog]() { testLog.record(0, nullptr); }, "null event name");
     }
 }
@@ -69,7 +69,7 @@ void checkModule(const std::string& testCase) {
 
 int sc_main(int testArgc, char** testArgv) {
     try {
-        requireCondition(testArgc == 2, "expected test case argument");
+        assertCondition(testArgc == 2, "expected test case argument");
         const std::string testCase(testArgv[1]);
         if (testCase == "helper") {
             checkHelper();

@@ -19,15 +19,15 @@ Output::Output(sc_core::sc_module_name name, std::ostream& output, EventRecorder
     , m_output(output)
     , m_recorder(recorder)
     , m_testOutputPeriod(testOutputPeriod) {
-    requireCondition<std::invalid_argument>(testOutputPeriod > 0, "output period must be nonzero");
-    requireCondition(static_cast<bool>(output), "output stream is not writable");
+    assertCondition<std::invalid_argument>(testOutputPeriod > 0, "output period must be nonzero");
+    assertCondition(static_cast<bool>(output), "output stream is not writable");
     SC_METHOD(tick);
     sensitive << m_clk.pos();
     dont_initialize();
 }
 void Output::tick() {
-    requireCondition<std::logic_error>(m_testOutputPeriod > 0, "output period must be nonzero");
-    requireCondition(static_cast<bool>(m_output), "output file write failed");
+    assertCondition<std::logic_error>(m_testOutputPeriod > 0, "output period must be nonzero");
+    assertCondition(static_cast<bool>(m_output), "output file write failed");
     if (currentCycle() % m_testOutputPeriod != 0) {
         return;
     }
@@ -35,9 +35,9 @@ void Output::tick() {
     if (!m_resultsIn.nb_read(result)) {
         return;
     }
-    requireCondition<std::logic_error>(result.m_id == m_received, "out-of-order result");
+    assertCondition<std::logic_error>(result.m_id == m_received, "out-of-order result");
     m_output << result.m_gcd << '\n';
-    requireCondition(static_cast<bool>(m_output), "output file write failed");
+    assertCondition(static_cast<bool>(m_output), "output file write failed");
     m_recorder.record(result.m_id, "output", 0, 0, result.m_gcd);
     ++m_received;
 }

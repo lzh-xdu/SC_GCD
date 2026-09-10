@@ -29,9 +29,9 @@ void writeHostProfile(double elapsedMs) {
     FILETIME exited{};
     FILETIME kernel{};
     FILETIME user{};
-    requireCondition(GetProcessMemoryInfo(GetCurrentProcess(), &memory, sizeof(memory)) != 0,
+    assertCondition(GetProcessMemoryInfo(GetCurrentProcess(), &memory, sizeof(memory)) != 0,
                      "cannot measure process memory");
-    requireCondition(GetProcessTimes(GetCurrentProcess(), &created, &exited, &kernel, &user) != 0,
+    assertCondition(GetProcessTimes(GetCurrentProcess(), &created, &exited, &kernel, &user) != 0,
                      "cannot measure process CPU time");
     std::cerr << std::setprecision(12) << "HOST_PROFILE model_ms=" << elapsedMs
               << " cpu_ms=" << fileTimeMs(kernel) + fileTimeMs(user)

@@ -9,7 +9,7 @@
 
 namespace stage3_window {
 static std::uint32_t nextRandom(std::uint32_t state) {
-    requireCondition<std::logic_error>(state != 0, "random state must be nonzero");
+    assertCondition<std::logic_error>(state != 0, "random state must be nonzero");
     constexpr unsigned LEFT_SHIFT_FIRST = 13;
     constexpr unsigned RIGHT_SHIFT = 17;
     constexpr unsigned LEFT_SHIFT_LAST = 5;
@@ -23,7 +23,7 @@ Dispatcher::Dispatcher(sc_core::sc_module_name name, stage1::EventRecorder& reco
     : sc_module(name)
     , m_recorder(recorder)
     , m_window(window) {
-    requireCondition<std::invalid_argument>(window > 0 && seed > 0, "window and seed must be nonzero");
+    assertCondition<std::invalid_argument>(window > 0 && seed > 0, "window and seed must be nonzero");
     m_randomState.write(seed);
     SC_METHOD(route);
     sensitive << m_dataIn << m_validIn << m_baseIn << m_randomState;
@@ -35,12 +35,12 @@ Dispatcher::Dispatcher(sc_core::sc_module_name name, stage1::EventRecorder& reco
     dont_initialize();
 }
 bool Dispatcher::hasCredit() const {
-    requireCondition<std::logic_error>(m_window > 0, "window must be nonzero");
+    assertCondition<std::logic_error>(m_window > 0, "window must be nonzero");
     const auto id = m_dataIn.read().m_id;
     return id >= m_baseIn.read() && id - m_baseIn.read() < m_window;
 }
 unsigned Dispatcher::selectedUnit() const {
-    requireCondition<std::logic_error>(m_randomState.read() != 0, "random state must be nonzero");
+    assertCondition<std::logic_error>(m_randomState.read() != 0, "random state must be nonzero");
     if (m_readyIn[0].read() && m_readyIn[1].read()) {
         return m_randomState.read() % UNIT_COUNT;
     }

@@ -15,9 +15,9 @@ Transform::Transform(sc_core::sc_module_name name, EventRecorder& recorder)
     m_validOut.initialize(false);
 }
 void Transform::advance() {
-    requireCondition<std::logic_error>(m_validOut.read() == m_orderedStage.has_value(),
+    assertCondition<std::logic_error>(m_validOut.read() == m_orderedStage.has_value(),
                                        "transform valid does not match ordered slot");
-    requireCondition<std::logic_error>(!m_orderedStage || m_dataOut.read() == *m_orderedStage,
+    assertCondition<std::logic_error>(!m_orderedStage || m_dataOut.read() == *m_orderedStage,
                                        "transform signal does not match held payload");
     // Read old signal values; ordinary optional storage is updated immediately.
     if (m_validOut.read()) {
@@ -56,7 +56,7 @@ std::uint64_t Transform::nextDelay() const {
 }
 void Transform::accountSkipped(std::uint64_t first, std::uint64_t count) {
     if (m_orderedStage) {
-        requireCondition(!m_readyIn.read(), "skipped a ready transform transfer");
+        assertCondition(!m_readyIn.read(), "skipped a ready transform transfer");
         m_statistics.m_validCycles += count;
         m_statistics.m_blockedCycles += count;
         m_recorder.repeat(first, count, m_orderedStage->m_id, "link", m_orderedStage->m_a, m_orderedStage->m_b, 0);

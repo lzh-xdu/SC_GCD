@@ -19,7 +19,7 @@ static unsigned bits(std::uint64_t value) {
     return count;
 }
 std::pair<std::uint64_t, std::uint64_t> planGcd(std::uint64_t a, std::uint64_t b) {
-    requireCondition<std::logic_error>(a >= b, "compute requires ordered magnitudes");
+    assertCondition<std::logic_error>(a >= b, "compute requires ordered magnitudes");
     std::uint64_t latency = 0;
     while (b != 0) {
         constexpr int MIN_REMAINDER_CYCLES = 1;

@@ -6,7 +6,7 @@
  * Interface:
  *
  * condition / message --> +------------------+ --> normal return (true)
- *                         | requireCondition | --> Exception(message) (false)
+ *                         | assertCondition | --> Exception(message) (false)
  *                         +------------------+
  *
  * Protocol:
@@ -34,7 +34,7 @@
  * @note 不替代标准 assert 宏，不终止进程；有副作用的 I/O 检查也始终执行。
  */
 template <typename Exception = std::runtime_error, typename Message>
-inline void requireCondition(bool condition, const Message& message) {
+inline void assertCondition(bool condition, const Message& message) {
     if (!condition) {
         throw Exception(message);
     }

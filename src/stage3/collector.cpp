@@ -31,10 +31,10 @@ void Collector::tick() {
         return;
     }
     stage1::Result result;
-    requireCondition<std::logic_error>(m_resultsIn[selected].nb_read(result),
+    assertCondition<std::logic_error>(m_resultsIn[selected].nb_read(result),
                                        "collector lost reserved channel capacity");
-    requireCondition<std::logic_error>(result.m_id == m_nextId, "collector received unexpected result id");
-    requireCondition<std::logic_error>(m_resultsOut.nb_write(result), "collector lost reserved output capacity");
+    assertCondition<std::logic_error>(result.m_id == m_nextId, "collector received unexpected result id");
+    assertCondition<std::logic_error>(m_resultsOut.nb_write(result), "collector lost reserved output capacity");
     m_recorder.record(result.m_id, "reorder_emit", 0, 0, result.m_gcd);
     ++m_nextId;
 }

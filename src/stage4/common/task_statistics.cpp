@@ -18,7 +18,7 @@ void TaskStatistics::record(std::uint64_t id, std::string_view event, std::uint6
     }
     const auto index = static_cast<std::size_t>(found - EVENTS.begin());
     auto& timeline = m_pending[id];
-    requireCondition<std::logic_error>(
+    assertCondition<std::logic_error>(
         !(index != timeline.m_next || (index > 0 && cycle < timeline.m_edges[index - 1])),
         "invalid task statistics event sequence");
     timeline.m_edges[index] = cycle;
@@ -34,8 +34,8 @@ void TaskStatistics::record(std::uint64_t id, std::string_view event, std::uint6
 }
 
 void TaskStatistics::write(std::ostream& stream) const {
-    requireCondition(static_cast<bool>(stream), "statistics stream is not writable");
-    requireCondition<std::logic_error>(m_pending.empty(), "unfinished task statistics at drain");
+    assertCondition(static_cast<bool>(stream), "statistics stream is not writable");
+    assertCondition<std::logic_error>(m_pending.empty(), "unfinished task statistics at drain");
     constexpr std::array<std::string_view, BOUNDARY_COUNT> NAMES{"precompute", "compute", "result_wait", "delivery",
                                                                  "end_to_end"};
     stream << "task_latency_count," << m_samples.back().size() << '\n';

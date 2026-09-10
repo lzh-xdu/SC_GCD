@@ -20,7 +20,7 @@ Parser::Parser(sc_core::sc_module_name name, std::istream& input, EventRecorder&
     : sc_module(name)
     , m_input(input)
     , m_recorder(recorder) {
-    requireCondition(static_cast<bool>(input), "input stream is not readable");
+    assertCondition(static_cast<bool>(input), "input stream is not readable");
     if (!scheduledBySystem) {
         SC_THREAD(run);
     }
@@ -52,13 +52,13 @@ void Parser::run() {
     }
 }
 void Parser::readAndSend() {
-    requireCondition(!m_input.bad() && (m_eof || !m_input.fail()), "input file read failed");
+    assertCondition(!m_input.bad() && (m_eof || !m_input.fail()), "input file read failed");
     if (m_eof || m_tasksOut.num_free() == 0) {
         return;
     }
     std::string line;
     if (!std::getline(m_input, line)) {
-        requireCondition(m_input.eof(), "input file read failed");
+        assertCondition(m_input.eof(), "input file read failed");
         m_eof = true;
         return;
     }
@@ -66,11 +66,11 @@ void Parser::readAndSend() {
     std::int64_t a;
     std::int64_t b;
     std::string extra;
-    requireCondition((row >> a >> b) && !(row >> extra) && a >= std::numeric_limits<std::int32_t>::min() &&
+    assertCondition((row >> a >> b) && !(row >> extra) && a >= std::numeric_limits<std::int32_t>::min() &&
                          a <= std::numeric_limits<std::int32_t>::max() &&
                          b >= std::numeric_limits<std::int32_t>::min() && b <= std::numeric_limits<std::int32_t>::max(),
                      "invalid input line " + std::to_string(m_sent + 1));
-    requireCondition<std::logic_error>(
+    assertCondition<std::logic_error>(
         m_tasksOut.nb_write({m_sent, static_cast<std::int32_t>(a), static_cast<std::int32_t>(b)}),
         "parser lost reserved FIFO space");
     m_recorder.record(m_sent, "parser_send");

@@ -132,21 +132,21 @@ void System::observe() {
 }
 
 std::uint64_t parsePositiveInteger(const char* text, std::uint64_t limit) {
-    requireCondition<std::invalid_argument>(text != nullptr && limit > 0, "invalid option parser arguments");
+    assertCondition<std::invalid_argument>(text != nullptr && limit > 0, "invalid option parser arguments");
     const std::string optionText(text);
-    requireCondition(!optionText.empty() && optionText.find_first_not_of("0123456789") == std::string::npos,
+    assertCondition(!optionText.empty() && optionText.find_first_not_of("0123456789") == std::string::npos,
                      "expected parsePositiveInteger integer option");
     const auto parsedOptionValue = std::stoull(optionText);
-    requireCondition(parsedOptionValue > 0 && parsedOptionValue <= limit, "option out of range");
+    assertCondition(parsedOptionValue > 0 && parsedOptionValue <= limit, "option out of range");
     return parsedOptionValue;
 }
 
 Options parseOptions(int argc, char** argv) {
-    requireCondition<std::invalid_argument>(argc >= MIN_COMMAND_LINE_ARGUMENT_COUNT &&
+    assertCondition<std::invalid_argument>(argc >= MIN_COMMAND_LINE_ARGUMENT_COUNT &&
                                                 argc <= MAX_COMMAND_LINE_ARGUMENT_COUNT && argv != nullptr,
                                             "invalid command line arguments");
     for (int argument = 0; argument < argc; ++argument) {
-        requireCondition<std::invalid_argument>(argv[argument] != nullptr, "null command line argument");
+        assertCondition<std::invalid_argument>(argv[argument] != nullptr, "null command line argument");
     }
     Options options;
     if (argc > FIFO_DEPTH_ARGUMENT_INDEX) {
@@ -167,7 +167,7 @@ Options parseOptions(int argc, char** argv) {
 }
 
 void checkDistinctPaths(char** argv, bool testTraceEnabled) {
-    requireCondition<std::invalid_argument>(argv != nullptr, "null command line arguments");
+    assertCondition<std::invalid_argument>(argv != nullptr, "null command line arguments");
     // Prevent accidentally truncating an input or using one file for two outputs.
     std::vector<std::filesystem::path> paths;
     std::vector<int> arguments{INPUT_FILE_ARGUMENT_INDEX, OUTPUT_FILE_ARGUMENT_INDEX, STATISTICS_FILE_ARGUMENT_INDEX};
@@ -177,7 +177,7 @@ void checkDistinctPaths(char** argv, bool testTraceEnabled) {
     for (const int argument : arguments) {
         const auto path = std::filesystem::weakly_canonical(argv[argument]);
         for (const auto& previous : paths) {
-            requireCondition(
+            assertCondition(
                 !(path == previous || (std::filesystem::exists(path) && std::filesystem::exists(previous) &&
                                        std::filesystem::equivalent(path, previous))),
                 "input, output, stats and events must be distinct files");
@@ -187,8 +187,8 @@ void checkDistinctPaths(char** argv, bool testTraceEnabled) {
 }
 
 void writeQueueStats(std::ostream& stats, const System& system, int depth) {
-    requireCondition(static_cast<bool>(stats), "statistics stream is not writable");
-    requireCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
+    assertCondition(static_cast<bool>(stats), "statistics stream is not writable");
+    assertCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
     const std::array<const char*, OBSERVED_FIFO_COUNT> fifoMetricNames{"parser_to_transform", "compute_to_output"};
     for (unsigned index = 0; index < OBSERVED_FIFO_COUNT; ++index) {
         stats << fifoMetricNames[index] << "_capacity," << depth << '\n'
@@ -202,8 +202,8 @@ void writeQueueStats(std::ostream& stats, const System& system, int depth) {
 }
 
 void writeHandshakeStats(std::ostream& stats, const System& system, const Options& options) {
-    requireCondition(static_cast<bool>(stats), "statistics stream is not writable");
-    requireCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
+    assertCondition(static_cast<bool>(stats), "statistics stream is not writable");
+    assertCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
     const auto handshakeValidCycles = system.m_transform.m_statistics.m_validCycles;
     stats << "handshake_valid_cycles," << handshakeValidCycles << "\nhandshake_blocked_cycles,"
           << system.m_transform.m_statistics.m_blockedCycles << "\nhandshake_blocked_fraction,"
@@ -218,8 +218,8 @@ void writeHandshakeStats(std::ostream& stats, const System& system, const Option
 }
 
 void writeStats(std::ostream& stats, const System& system, const Options& options) {
-    requireCondition(static_cast<bool>(stats), "statistics stream is not writable");
-    requireCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
+    assertCondition(static_cast<bool>(stats), "statistics stream is not writable");
+    assertCondition<std::logic_error>(system.m_cycles > 0, "statistics require observed cycles");
     const auto elapsedSimulationCycles = system.m_cycles;
     stats << std::setprecision(STATISTICS_SIGNIFICANT_DIGITS) << "metric,value\n"
           << "cycles," << elapsedSimulationCycles << "\ntasks," << system.m_output.m_received << "\nsimulated_time_ns,"
@@ -239,7 +239,7 @@ void flushFiles(std::ofstream& output, std::ofstream& stats, std::ofstream& test
     if (testTraceEnabled) {
         testEvents.flush();
     }
-    requireCondition(output && stats && (!testTraceEnabled || testEvents), "file flush failed");
+    assertCondition(output && stats && (!testTraceEnabled || testEvents), "file flush failed");
 }
 
 void openTestEvents(std::ofstream& testEvents, EventRecorder& recorder, char** argv, bool testTraceEnabled) {
@@ -247,7 +247,7 @@ void openTestEvents(std::ofstream& testEvents, EventRecorder& recorder, char** a
         return;
     }
     testEvents.open(argv[TEST_EVENT_LOG_ARGUMENT_INDEX]);
-    requireCondition(static_cast<bool>(testEvents), "cannot open events");
+    assertCondition(static_cast<bool>(testEvents), "cannot open events");
     testEvents << "id,event,cycle,a,b,value,latency\n";
     recorder.m_testStream = &testEvents;
 }
@@ -256,18 +256,18 @@ int run(int argc, char** argv) {
     const auto options = parseOptions(argc, argv);
     checkDistinctPaths(argv, options.m_testTraceEnabled);
     std::ifstream input(argv[INPUT_FILE_ARGUMENT_INDEX]);
-    requireCondition(static_cast<bool>(input), "cannot open input");
+    assertCondition(static_cast<bool>(input), "cannot open input");
     std::ofstream output(argv[OUTPUT_FILE_ARGUMENT_INDEX]);
     std::ofstream stats(argv[STATISTICS_FILE_ARGUMENT_INDEX]);
     std::ofstream testEvents;
-    requireCondition(output && stats, "cannot open output or stats");
+    assertCondition(output && stats, "cannot open output or stats");
     EventRecorder recorder;
     openTestEvents(testEvents, recorder, argv, options.m_testTraceEnabled);
     System system("system", input, output, recorder, options);
     // Include the last allowed rising edge, but no extra rising edge.
     sc_core::sc_start(sc_core::sc_time(
         static_cast<double>(options.m_maxCycles) + SIMULATION_STOP_MARGIN_AFTER_LAST_EDGE_NS, sc_core::SC_NS));
-    requireCondition(system.m_finished, "simulation cycle limit exceeded");
+    assertCondition(system.m_finished, "simulation cycle limit exceeded");
     writeStats(stats, system, options);
     recorder.m_statistics.write(stats);
     stats << "compute0_idle_no_input_cycles," << system.m_compute.m_statistics.m_idleNoInputCycles << '\n';

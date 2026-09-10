@@ -19,7 +19,7 @@ Dispatcher::Dispatcher(sc_core::sc_module_name name, stage1::EventRecorder& reco
     dont_initialize();
 }
 void Dispatcher::route() {
-    requireCondition<std::logic_error>(m_turn.read() < UNIT_COUNT, "dispatcher turn out of range");
+    assertCondition<std::logic_error>(m_turn.read() < UNIT_COUNT, "dispatcher turn out of range");
     const auto selected = m_turn.read();
     m_readyOut.write(m_readyIn[selected].read());
     for (unsigned unit = 0; unit < UNIT_COUNT; ++unit) {
@@ -28,7 +28,7 @@ void Dispatcher::route() {
     }
 }
 void Dispatcher::tick() {
-    requireCondition<std::logic_error>(m_turn.read() < UNIT_COUNT, "dispatcher turn out of range");
+    assertCondition<std::logic_error>(m_turn.read() < UNIT_COUNT, "dispatcher turn out of range");
     if (!m_validIn.read()) {
         return;
     }

@@ -25,31 +25,31 @@ SC_MODULE(ParserTest) {
 
     void checkTiming() {
         wait(sc_core::sc_time(1.5, sc_core::SC_NS));
-        requireCondition(m_testParser.m_sent == 1 && m_testFifo.num_available() == 1, "first input must be at 1 ns");
+        assertCondition(m_testParser.m_sent == 1 && m_testFifo.num_available() == 1, "first input must be at 1 ns");
         // At 2 ns the parser observes full and sleeps; no clock or periodic observer exists.
         wait(sc_core::sc_time(1, sc_core::SC_NS));
         const auto testDeltaBefore = sc_core::sc_delta_count();
         wait(sc_core::sc_time(3, sc_core::SC_NS));
-        requireCondition(sc_core::sc_delta_count() == testDeltaBefore + 1, "blocked parser is polling");
-        requireCondition(m_testParser.m_sent == 1, "full FIFO must prevent further input");
+        assertCondition(sc_core::sc_delta_count() == testDeltaBefore + 1, "blocked parser is polling");
+        assertCondition(m_testParser.m_sent == 1, "full FIFO must prevent further input");
         stage4::RawTask testTask;
-        requireCondition(m_testFifo.nb_read(testTask) && testTask.m_id == 0 && testTask.m_a == 48 && testTask.m_b == 18,
+        assertCondition(m_testFifo.nb_read(testTask) && testTask.m_id == 0 && testTask.m_a == 48 && testTask.m_b == 18,
                          "first task lost or changed");
         wait(sc_core::sc_time(0.25, sc_core::SC_NS));
-        requireCondition(m_testParser.m_sent == 1, "5.5 ns release must not send before 6 ns");
+        assertCondition(m_testParser.m_sent == 1, "5.5 ns release must not send before 6 ns");
         wait(sc_core::sc_time(0.5, sc_core::SC_NS));
-        requireCondition(m_testParser.m_sent == 2 && m_testFifo.num_available() == 1, "must resume at 6 ns");
+        assertCondition(m_testParser.m_sent == 2 && m_testFifo.num_available() == 1, "must resume at 6 ns");
         wait(sc_core::sc_time(1.25, sc_core::SC_NS));
-        requireCondition(m_testFifo.nb_read(testTask) && testTask.m_id == 1 && testTask.m_a == 100 &&
+        assertCondition(m_testFifo.nb_read(testTask) && testTask.m_id == 1 && testTask.m_a == 100 &&
                              testTask.m_b == 25,
                          "second task lost or changed");
         wait(sc_core::sc_time(0.25, sc_core::SC_NS));
-        requireCondition(!m_testParser.m_eof, "EOF must wait for the 8 ns input boundary");
+        assertCondition(!m_testParser.m_eof, "EOF must wait for the 8 ns input boundary");
         wait(sc_core::sc_time(0.5, sc_core::SC_NS));
-        requireCondition(m_testParser.m_eof, "EOF must terminate the input thread");
+        assertCondition(m_testParser.m_eof, "EOF must terminate the input thread");
         const auto testDeltaAtEof = sc_core::sc_delta_count();
         wait(sc_core::sc_time(3, sc_core::SC_NS));
-        requireCondition(sc_core::sc_delta_count() == testDeltaAtEof + 1, "parser still wakes after EOF");
+        assertCondition(sc_core::sc_delta_count() == testDeltaAtEof + 1, "parser still wakes after EOF");
         m_testFinished = true;
         sc_core::sc_stop();
     }
@@ -59,7 +59,7 @@ SC_MODULE(ParserTest) {
 int sc_main(int, char**) {
     ParserTest testSystem("test_system");
     sc_core::sc_start();
-    requireCondition(testSystem.m_testFinished, "parser timing test did not finish");
+    assertCondition(testSystem.m_testFinished, "parser timing test did not finish");
     std::cout << "PASS clockless parser: first=1 ns, release=5.5 ns, resume=6 ns, EOF=8 ns, no blocked/EOF polling\n";
     return 0;
 }

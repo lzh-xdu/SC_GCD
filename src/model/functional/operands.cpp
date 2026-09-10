@@ -17,7 +17,7 @@ std::pair<std::uint64_t, std::uint64_t> order(std::uint64_t a, std::uint64_t b) 
     return {std::max(a, b), std::min(a, b)};
 }
 std::uint64_t remainder(std::uint64_t a, std::uint64_t b) {
-    requireCondition<std::logic_error>(b != 0, "remainder requires nonzero divisor");
+    assertCondition<std::logic_error>(b != 0, "remainder requires nonzero divisor");
     return a % b;
 }
 } // namespace model::functional

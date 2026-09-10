@@ -22,7 +22,7 @@ Compute::Compute(sc_core::sc_module_name name, EventRecorder& recorder)
     dont_initialize();
 }
 void Compute::deliver() {
-    requireCondition<std::logic_error>(m_state == State::RESULT_PENDING, "compute result is not ready");
+    assertCondition<std::logic_error>(m_state == State::RESULT_PENDING, "compute result is not ready");
     if (m_resultsOut.nb_write(m_result)) {
         m_recorder.record(m_result.m_id, "compute_emit", 0, 0, m_result.m_gcd);
         m_state = State::IDLE;
@@ -31,7 +31,7 @@ void Compute::deliver() {
     }
 }
 void Compute::tick() {
-    requireCondition<std::logic_error>(m_state != State::BUSY || m_remaining > 0,
+    assertCondition<std::logic_error>(m_state != State::BUSY || m_remaining > 0,
                                        "busy compute has no remaining cycles");
     if (m_state == State::BUSY) {
         ++m_statistics.m_busyCycles;

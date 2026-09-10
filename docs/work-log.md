@@ -311,3 +311,13 @@
 - 报告覆盖功能、系统周期/吞吐/延迟/利用率、模型/进程耗时、CPU、峰值内存、delta 轮次、跳过比例及同输入 Trace 成本。[完整报告及图](model-comparison.md)，原始样本见其证据链接。
 - 长计算约快 5.78×，混合约快 2.85×；连续零延迟近似持平，Trace 可使事件模型更慢并增大内存。真实性能设计案例 B-011 已记录，优化尚未实施。
 - 测量方法见 D-023；代码、图表与过程记录一起本地提交，不推送远端。
+
+## 2026-09-10：统一运行时检查命名
+
+- 按用户反馈，将公共运行时契约函数及所有生产/测试调用从 `requireCondition` 改为 `assertCondition`；当前规范同步更新，历史记录保留旧名并由 [D-024](decisions.md#d-024运行时契约检查采用-assertcondition-命名) 说明替代关系。
+- 验证：Release 完整构建成功；先运行 `ctest --test-dir build -R '^contract_' --output-on-failure`，契约检查 6/6 通过，再运行全量 `ctest --test-dir build --output-on-failure`，15/15 通过。语义仍为条件失败抛所选异常，Debug/Release 均执行。
+
+## 2026-09-10：解释任务统计的 `BOUNDARY_COUNT`
+
+- 用户澄清提问对象为 `TaskStatistics::BOUNDARY_COUNT`；核对 stage4 的 task_statistics 头/实现，说明五个事件边界如何驱动时间线、样本数组、完成判定和四段加端到端统计。
+- 仅新增学习与协作记录，未改模型或运行测试；详细理解沉淀见 [L-016](learning-log.md#l-016boundary_count-是统计边界数量不是普通局部-const)，协作更正见 [AI 日志](ai-log.md)。

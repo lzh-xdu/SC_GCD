@@ -21,7 +21,7 @@
 ## 2026-09-07：命名和运行时契约补充
 
 - 配置常量名称表达对象、用途和单位；命令行位置用 ARGUMENT_INDEX，容量用 CAPACITY_TASKS，周期用 CYCLES。
-- 函数入口检查真实前置条件；操作完成后检查 I/O 结果，数据取得后检查业务约束。使用 common/contract.hpp 的 requireCondition，Release 同样抛异常。
+- 函数入口检查真实前置条件；操作完成后检查 I/O 结果，数据取得后检查业务约束。使用 common/contract.hpp 的 assertCondition，Release 同样抛异常。
 - 默认 runtime_error；非法参数可选 invalid_argument，内部不变量可选 logic_error。保留有诊断价值的错误说明。
 - 不重定义标准 assert；不在可被 NDEBUG 消除的断言中执行 nb_read/nb_write 等业务操作。
 - 纯查询/全域合法计算无需虚构断言；头文件记录参数单位、借用寿命、调用约束和异常，保留时序说明。

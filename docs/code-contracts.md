@@ -3,7 +3,7 @@
 ## 范围与决定
 
 用户要求：各阶段 main.cpp 的 const 命名更准确，函数入口检查输入/环境并抛异常，改善头文件注释。
-AI 实施选择：使用 `requireCondition(condition, message)`，以错误说明替代含义不明的布尔参数。
+AI 实施选择：使用 `assertCondition(condition, message)`，以错误说明替代含义不明的布尔参数。
 标准 C++17 `assert` 仅接受一个条件，失败终止进程，不抛 C++ 异常；NDEBUG 可以禁用它。
 本项目辅助函数始终执行，默认抛 runtime_error；参数错误选 invalid_argument，内部不变量选 logic_error。
 没有重定义 assert，也没有把该命名选择记作用户明确批准。

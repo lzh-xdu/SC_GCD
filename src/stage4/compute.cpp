@@ -17,7 +17,7 @@ Compute::Compute(sc_core::sc_module_name name, EventRecorder& recorder, unsigned
     m_readyOut.initialize(true);
 }
 void Compute::deliver() {
-    requireCondition<std::logic_error>(m_state == State::RESULT_PENDING, "compute result is not ready");
+    assertCondition<std::logic_error>(m_state == State::RESULT_PENDING, "compute result is not ready");
     if (m_resultsOut.nb_write(m_result)) {
         m_recorder.record(m_result.m_id, "compute_emit", 0, 0, m_result.m_gcd);
         m_state = State::IDLE;
@@ -26,7 +26,7 @@ void Compute::deliver() {
     }
 }
 void Compute::accept() {
-    requireCondition<std::logic_error>(m_state == State::IDLE && m_validIn.read() && m_readyOut.read(),
+    assertCondition<std::logic_error>(m_state == State::IDLE && m_validIn.read() && m_readyOut.read(),
                                        "compute acceptance requires idle valid/ready handshake");
     const auto task = m_dataIn.read();
     const auto [value, latency] = model::timing::planGcd(task.m_a, task.m_b);
@@ -43,7 +43,7 @@ void Compute::accept() {
     }
 }
 void Compute::advance() {
-    requireCondition<std::logic_error>(m_state != State::BUSY || currentCycle() <= m_completeCycle,
+    assertCondition<std::logic_error>(m_state != State::BUSY || currentCycle() <= m_completeCycle,
                                        "missed compute completion deadline");
     if (m_state == State::BUSY) {
         ++m_statistics.m_busyCycles;
@@ -74,7 +74,7 @@ std::uint64_t Compute::nextDelay() const {
 }
 void Compute::accountSkipped(std::uint64_t, std::uint64_t count) {
     if (m_state == State::BUSY) {
-        requireCondition(m_completeCycle > currentCycle() + count, "skipped compute completion deadline");
+        assertCondition(m_completeCycle > currentCycle() + count, "skipped compute completion deadline");
         m_statistics.m_busyCycles += count;
     } else if (m_state == State::RESULT_PENDING) {
         m_statistics.m_resultWaitCycles += count;

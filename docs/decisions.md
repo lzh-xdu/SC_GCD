@@ -169,3 +169,9 @@
 - AI 采用独立 Windows profiling 目标，原模型入口完整复用，不改生产源码；记录模型入口/整个进程耗时、CPU、峰值工作集/commit、SystemC delta 轮次和事件批次。1 次预热、7 次正式测量、两模型顺序逐轮交替，避免同时运行模型争抢资源。
 - 功能由 math.gcd 独立校验，包装与普通二进制结果/统计/Trace 哈希一致；主实验 8 配置，补测 2 个同输入 Trace-off 控制。保留所有重复样本、中位数、四分位数及最值，不用一次最快结果。
 - 状态：本机测量已完成。限制：不是纯 sc_start 耗时，CPU 计时粒度有限、未控制频率和背景活动，未测总进程唤醒/事件通知次数。Trace 问题 B-011 的优化仅为建议，未实施。见 [实测报告](model-comparison.md)。
+
+## D-024：运行时契约检查采用 assertCondition 命名
+
+- 2026-09-10，用户指出 `requireCondition` 不够常见，希望名称接近 `assert`。选择 `assertCondition(condition, message)`，统一替换各阶段、测试和当前规范中的调用。
+- 该函数仍在条件为假时抛出指定异常，并在 Debug/Release 都生效；它不是标准 `assert` 宏，因而不受 `NDEBUG` 移除。保留 `Condition` 后缀以避免调用者误以为会终止进程或编译期消除。
+- 状态：已实施并验证：Release 完整构建成功，`ctest --output-on-failure` 15/15 通过（含 `contract_checks` 的 6 项）。`requireCondition` 仅保留在历史日志中，作为被替代的旧命名记录。
